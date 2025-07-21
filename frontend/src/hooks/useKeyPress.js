@@ -14,7 +14,6 @@ export const useKeyPress = (keys, callback, disable = false) => {
     if (e.repeat) return; // To prevent this function from triggering on key hold e.g. Ctrl hold
 
     lastKeyPressed.current.add(normalizeKey(e.key));
-
     if (keysSet.isSubsetOf(lastKeyPressed.current) && !disable) {
       e.preventDefault();
       callback(e);

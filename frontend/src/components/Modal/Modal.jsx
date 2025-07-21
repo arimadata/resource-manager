@@ -1,33 +1,32 @@
 import { MdClose } from "react-icons/md";
 import { useEffect, useRef } from "react";
-import { useTranslation } from "../../contexts/TranslationProvider";
 import "./Modal.scss";
 
 const Modal = ({
   children,
-  show,
-  setShow,
+  isOpen,
+  closeModal,
   heading,
   dialogWidth = "25%",
-  contentClassName = "",
   closeButton = true,
 }) => {
   const modalRef = useRef(null);
-  const t = useTranslation();
 
   const handleKeyDown = (e) => {
+    e.stopPropagation();
     if (e.key === "Escape") {
-      setShow(false);
+      e.preventDefault();
+      closeModal();
     }
   };
 
   useEffect(() => {
-    if (show) {
+    if (isOpen) {
       modalRef.current.showModal();
     } else {
       modalRef.current.close();
     }
-  }, [show]);
+  }, [isOpen]);
 
   return (
     <dialog
@@ -41,9 +40,9 @@ const Modal = ({
         {closeButton && (
           <MdClose
             size={18}
-            onClick={() => setShow(false)}
+            onClick={() => closeModal()}
             className="close-icon"
-            title={t("close")}
+            title="Close"
           />
         )}
       </div>

@@ -1,10 +1,18 @@
 import "./NameInput.scss";
 
-const NameInput = ({ nameInputRef, maxLength, value, onChange, onKeyDown, onClick, rows }) => {
+const NameInput = ({
+  nameInputRef,
+  maxLength,
+  value,
+  onChange,
+  onKeyDown,
+  onClick,
+  rows,
+}) => {
   return (
     <textarea
       ref={nameInputRef}
-      className="rename-file"
+      className="rename-item"
       maxLength={maxLength}
       value={value}
       onChange={onChange}

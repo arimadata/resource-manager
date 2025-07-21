@@ -3,7 +3,13 @@ import { FaChevronRight } from "react-icons/fa6";
 import SubMenu from "./SubMenu";
 import "./ContextMenu.scss";
 
-const ContextMenu = ({ filesViewRef, contextMenuRef, menuItems, visible, clickPosition }) => {
+const ContextMenu = ({
+  itemsViewRef,
+  contextMenuRef,
+  menuItems,
+  visible,
+  clickPosition,
+}) => {
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [activeSubMenuIndex, setActiveSubMenuIndex] = useState(null);
@@ -14,7 +20,7 @@ const ContextMenu = ({ filesViewRef, contextMenuRef, menuItems, visible, clickPo
   const contextMenuPosition = () => {
     const { clickX, clickY } = clickPosition;
 
-    const container = filesViewRef.current;
+    const container = itemsViewRef.current;
     const containerRect = container.getBoundingClientRect();
     const scrollBarWidth = container.offsetWidth - container.clientWidth;
 
@@ -25,7 +31,8 @@ const ContextMenu = ({ filesViewRef, contextMenuRef, menuItems, visible, clickPo
 
     // Check if there is enough space at the right for the context menu
     const leftToCursor = clickX - containerRect.left;
-    const right = containerRect.width - (leftToCursor + scrollBarWidth) > menuWidth;
+    const right =
+      containerRect.width - (leftToCursor + scrollBarWidth) > menuWidth;
     const left = !right;
 
     const topToCursor = clickY - containerRect.top;
@@ -85,19 +92,25 @@ const ContextMenu = ({ filesViewRef, contextMenuRef, menuItems, visible, clickPo
               .filter((item) => !item.hidden)
               .map((item, index) => {
                 const hasChildren = item.hasOwnProperty("children");
-                const activeSubMenu = activeSubMenuIndex === index && hasChildren;
+                const activeSubMenu =
+                  activeSubMenuIndex === index && hasChildren;
                 return (
                   <div key={item.title}>
                     <li
                       onClick={item.onClick}
-                      className={`${item.className ?? ""} ${activeSubMenu ? "active" : ""}`}
+                      className={`${item.className ?? ""} ${
+                        activeSubMenu ? "active" : ""
+                      }`}
                       onMouseOver={() => handleMouseOver(index)}
                     >
                       {item.icon}
                       <span>{item.title}</span>
                       {hasChildren && (
                         <>
-                          <FaChevronRight size={14} className="list-expand-icon" />
+                          <FaChevronRight
+                            size={14}
+                            className="list-expand-icon"
+                          />
                           {activeSubMenu && (
                             <SubMenu
                               subMenuRef={subMenuRef}
@@ -108,10 +121,7 @@ const ContextMenu = ({ filesViewRef, contextMenuRef, menuItems, visible, clickPo
                         </>
                       )}
                     </li>
-                    {item.divider &&
-                      index !== menuItems.filter((item) => !item.hidden).length - 1 && (
-                        <div className="divider"></div>
-                      )}
+                    {item.divider && <div className="divider"></div>}
                   </div>
                 );
               })}

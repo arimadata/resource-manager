@@ -1,0 +1,5 @@
+export const arraysEqual = (arr1, arr2) => {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+  if (arr1.length !== arr2.length) return false;
+  return arr1.every((item, index) => item === arr2[index]);
+};

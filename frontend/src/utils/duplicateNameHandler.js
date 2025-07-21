@@ -1,31 +1,24 @@
-export const duplicateNameHandler = (originalFileName, isDirectory, files) => {
-  if (files.find((f) => f.name === originalFileName)) {
-    const fileExtension = isDirectory ? "" : "." + originalFileName.split(".").pop();
-    const fileName = isDirectory
-      ? originalFileName
-      : originalFileName.split(".").slice(0, -1).join(".");
-
-    // Generating new file name for duplicate file
-    let maxFileNum = 0;
-    // If there exists a file with name fileName (1), fileName (2), etc.
-    // Check if the number is greater than the maxFileNum, then set it to that greater number
-    const fileNameRegex = new RegExp(`${fileName} \\(\\d+\\)`);
-    files.forEach((f) => {
-      const fName = f.isDirectory ? f.name : f.name.split(".").slice(0, -1).join(".");
-      if (fileNameRegex.test(fName)) {
-        const fileNumStr = fName.split(`${fileName} (`).pop().slice(0, -1);
-        const fileNum = parseInt(fileNumStr);
-        if (!isNaN(fileNum) && fileNum > maxFileNum) {
-          maxFileNum = fileNum;
+export const duplicateNameHandler = (itemName, items) => {
+  if (items.find((i) => i.displayName === itemName)) {
+    // Generating new item name for duplicate item
+    let maxItemNum = 0;
+    // If there exists a item with name itemName (1), itemName (2), etc.
+    // Check if the number is greater than the maxItemNum, then set it to that greater number
+    const itemNameRegex = new RegExp(`${itemName} \\(\\d+\\)`);
+    items.forEach((i) => {
+      if (itemNameRegex.test(i.displayName)) {
+        const itemNumStr = i.displayName
+          .split(`${itemName} (`)
+          .pop()
+          .slice(0, -1);
+        const itemNum = parseInt(itemNumStr);
+        if (!isNaN(itemNum) && itemNum > maxItemNum) {
+          maxItemNum = itemNum;
         }
       }
     });
-    const appendNum = ` (${++maxFileNum})`;
-    const newFileName = fileName + appendNum + fileExtension;
-    //
-
-    return newFileName;
+    return `${itemName} (${++maxItemNum})`;
   } else {
-    return originalFileName;
+    return itemName;
   }
 };

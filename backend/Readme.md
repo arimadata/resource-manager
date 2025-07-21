@@ -1,121 +1,386 @@
-# 📂 File Manager Backend
+# Flask Resource Manager API
 
-This backend provides a RESTful API for managing files and folders, intended to be used with a front-end file manager component. It allows users to perform various operations such as creating folders, uploading files, renaming, moving, copying, deleting, and downloading files. All APIs are documented using **Swagger**.
+A professional Flask-based resource manager backend with PostgreSQL and SQLAlchemy. This API provides comprehensive resource management capabilities for files, folders, and external resources (MMM, reports, audiences) including upload, download, copy, move, rename, delete, and favorite operations.
 
-## 🚀 Getting Started
+## Features
 
-### Prerequisites
+- 🗂️ **Resource Management**: Create, read, update, delete files, folders, and external resources
+- 📤 **File Upload**: Secure file upload with MIME type detection
+- 📥 **File Download**: Direct file download with proper headers and ZIP creation
+- 🔄 **Copy & Move**: Copy and move resources with recursive support
+- ✏️ **Rename**: Rename resources with path updates
+- 👁️ **File Preview**: Serve files for preview with unsupported file type filtering
+- 📝 **External Resources**: Create and manage non-file resources (MMM, audience, report types)
+- ⭐ **Favorites**: Mark/unmark resources as favorites
+- 🏷️ **Resource Types**: Support for file, folder, mmm, audience, and report resource types
+- 🔗 **External IDs**: Link to external databases via resource IDs
+- 🗃️ **PostgreSQL**: Robust database with SQLAlchemy ORM
+- 🔗 **RESTful API**: Clean, RESTful endpoints with proper HTTP methods
+- 🔄 **Multi-Format Support**: Supports both JSON and Form data for compatibility
+- 📚 **Swagger Documentation**: Auto-generated API documentation
+- 🛡️ **Error Handling**: Comprehensive error handling and validation
+- 🔧 **Configuration Management**: Environment-based configuration
+- 🚀 **Production Ready**: Gunicorn WSGI server support
+- ⚡ **FastAPI Integration**: All FastAPI routes integrated with database persistence
 
-Make sure you have the following installed:
+## Architecture
 
-- [Node.js](https://nodejs.org/) 🟢
-- [npm](https://www.npmjs.com/) 📦
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/Saifullah-dev/react-file-manager.git
-   ```
-
-2. Navigate to the `backend` directory:
-
-   ```bash
-   cd backend
-   ```
-
-3. Install the dependencies:
-   ```bash
-   npm i
-   ```
-
-### 🎯 Running the Backend
-
-1. Create a `.env` file based on the `.env.example` and set your environment variables accordingly.
-
-2. Start the server:
-
-   ```bash
-   npm run devStart
-   ```
-
-   This will start the backend server on `http://localhost:3000`.
-
-### ![swagger-icon](https://github.com/user-attachments/assets/9cb14fef-febc-4b52-873c-52dfc80e601e) API Documentation
-
-The API documentation is generated through **Swagger** and can be viewed [here](https://app.swaggerhub.com/apis-docs/SaifullahZubair/file-system_api/1.0.0).
-
-1. To Generate the Swagger docs:
-
-   ```bash
-   npm run genDocs
-   ```
-
-2. Access the Swagger documentation:
-   Open [http://localhost:3000/api-docs/](http://localhost:3000/api-docs/) in your browser to see all available API endpoints and their details.
-
-### ![postman-icon](https://github.com/user-attachments/assets/b0bd6b21-056e-4934-a4d6-b8dc6f7fd6d5) Postman Collection
-
-You can download and use the Postman collection from [here](https://github.com/user-attachments/files/17149486/File.Management.API.postman_collection.json).
-
-## 🔧 API Endpoints
-
-The backend supports the following file system operations:
-
-- **📁 Create a Folder**: `/folder`
-- **⬆️ Upload a File**: `/upload`
-- **📋 Copy File(s) or Folder(s)**: `/copy`
-- **📂 Get All Files/Folders**: `/`
-- **⬇️ Download File(s) or Folder(s)**: `/download`
-- **📤 Move File(s) or Folder(s)**: `/move`
-- **✏️ Rename a File or Folder**: `/rename`
-- **🗑️ Delete File(s) or Folder(s)**: `/`
-
-Refer to the [Swagger Documentation](http://localhost:3000/api-docs/) for detailed request/response formats.
-
-## 🗂️ Folder Structure
+This project follows Flask best practices with the **Application Factory Pattern**:
 
 ```
-backend/
-│
+flask_backend/
 ├── app/
-│   ├── config/
-│   │   └── db.config.js        # Database configuration (if applicable)
-│   ├── controllers/            # API controllers for various file system operations
-│   │   ├── copyItem.controller.js
-│   │   ├── createFolder.controller.js
-│   │   ├── deleteItem.controller.js
-│   │   ├── downloadFile.controller.js
-│   │   ├── getItems.controller.js
-│   │   ├── moveItem.controller.js
-│   │   ├── renameItem.controller.js
-│   │   └── uploadFile.controller.js
-│   ├── middlewares/            # Custom middlewares
-│   │   ├── errorHandler.middleware.js
-│   │   └── multer.middleware.js
-│   ├── models/
-│   │   └── FileSystem.model.js # Mongoose model for file system (if using a DB)
-│   └── routes/
-│       └── fileSystem.routes.js # Route definitions for file system operations
-│
-├── public/
-│   └── uploads/                # Uploaded files will be stored here
-│
-├── swagger.js                   # Swagger configuration
-├── package.json
-├── server.js                    # Entry point of the application
-└── .env                         # Environment variables
+│   ├── __init__.py              # Application factory
+│   ├── extensions.py            # Flask extensions
+│   ├── models/                  # SQLAlchemy models
+│   │   ├── __init__.py
+│   │   └── file_system.py       # Resource model
+│   ├── api/                     # API blueprints
+│   │   ├── __init__.py
+│   │   └── file_system/
+│   │       ├── __init__.py
+│   │       ├── routes.py
+│   │       └── controllers.py
+│   └── utils/                   # Utility functions
+│       ├── __init__.py
+│       └── file_utils.py
+├── static/uploads/              # File storage directory
+├── migrations/                  # Database migrations
+├── config.py                    # Configuration classes
+├── run.py                       # Application entry point
+├── requirements.txt             # Python dependencies
+├── env.example                  # Environment variables template
+└── README.md                    # This file
 ```
 
-### 📁 Uploads and Folder Creation
+## Prerequisites
 
-- All uploaded files and folders created through the API are placed in the `/public/uploads/` directory. Ensure this directory has the appropriate permissions set to allow file storage.
+- Python 3.8+
+- PostgreSQL 12+
+- pip (Python package manager)
 
-## ⚠️ Error Handling
+## Quick Start
 
-Custom error handling is provided via the middleware in `errorHandler.middleware.js`.
+### 1. Clone and Setup
 
-## 📜 License
+```bash
+# Clone the repository
+git clone <repository-url>
+cd flask_backend
 
-React File Manager is [MIT Licensed](LICENSE).
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Database Setup
+
+```bash
+# Install PostgreSQL and create a database
+createdb resourcemanager_dev
+
+# Or use Docker
+docker run -d \
+  --name postgres-resourcemanager \
+  -e POSTGRES_DB=resourcemanager_dev \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -p 5432:5432 \
+  postgres:13
+
+docker run -d --name postgres-resourcemanager -e POSTGRES_DB=resourcemanager_dev -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -p 5432:5432 postgres:13
+```
+
+### 3. Environment Configuration
+
+```bash
+# Copy environment template
+cp env.example .env
+
+# Edit .env with your database credentials
+# DATABASE_URL=postgresql://postgres:password@localhost:5432/resourcemanager_dev
+```
+
+### 4. Initialize Database
+
+```bash
+# Initialize database tables
+flask init-db
+
+# Or reset database if needed
+flask reset-db
+```
+
+### 5. Run the Application
+
+```bash
+# Development server
+python run.py
+
+# Or using Flask CLI
+flask run
+
+# Production server (install gunicorn first)
+gunicorn -w 4 -b 0.0.0.0:5000 "app:create_app()"
+```
+
+The API will be available at `http://localhost:5000`
+
+## API Documentation
+
+Once the server is running, visit `http://localhost:5000/api-docs/` for interactive Swagger documentation.
+
+### Base URL
+
+```
+http://localhost:5000/api/file-system
+```
+
+### Endpoints
+
+#### 📁 Create Folder
+
+```http
+POST /folder
+Content-Type: application/json
+
+{
+  "name": "My Folder",
+  "parentId": 1  // optional, null for root
+}
+```
+
+#### 📤 Upload File
+
+```http
+POST /upload
+Content-Type: multipart/form-data
+
+file: <file>
+parentId: 1  // optional, null for root
+```
+
+#### 📋 Get Resources
+
+```http
+GET /  // Returns all resources (files, folders, and external resources)
+```
+
+#### 📄 Download Resource(s)
+
+```http
+GET /download?files=123  // Single resource
+GET /download?files=123,456,789  // Multiple resources (creates ZIP)
+```
+
+#### 🔄 Copy Resources
+
+```http
+POST /copy
+Content-Type: application/json
+
+{
+  "sourceIds": [123, 456],
+  "destinationId": 789  // optional, null for root
+}
+```
+
+#### ➡️ Move Resources
+
+```http
+PUT /move
+Content-Type: application/json
+
+{
+  "sourceIds": [123, 456],
+  "destinationId": 789  // optional, null for root
+}
+```
+
+#### ✏️ Rename Resource
+
+```http
+PATCH /rename
+Content-Type: application/json
+
+{
+  "id": 123,
+  "newName": "New Name.txt"
+}
+```
+
+#### 🗑️ Delete Resources
+
+```http
+DELETE /
+Content-Type: application/json
+
+{
+  "ids": [123, 456, 789]
+}
+```
+
+#### ⭐ Toggle Favorite
+
+```http
+POST /favorite
+Content-Type: application/json
+
+{
+  "id": 123,
+  "isFavorited": true  // optional, will toggle if not provided
+}
+```
+
+#### 👁️ Preview File
+
+```http
+GET /preview/{file_path}  // Serve file for preview
+```
+
+#### 📝 Create External Resource
+
+```http
+POST /item
+Content-Type: application/json
+
+{
+  "name": "My Report",
+  "parentId": 123,  // optional, null for root
+  "type": "report",  // mmm, audience, or report
+  "resourceId": "ext_report_456"  // optional, external resource ID
+}
+```
+
+#### 📥 Download by Path (FastAPI style)
+
+```http
+GET /download//{file_path}  // Download file by path
+```
+
+## Database Schema
+
+### Resources Table
+
+| Column        | Type         | Description                                   |
+| ------------- | ------------ | --------------------------------------------- |
+| id            | Integer      | Primary key                                   |
+| name          | String(255)  | Resource name                                 |
+| is_directory  | Boolean      | True for folders, false for files/resources   |
+| path          | String(1000) | Full path from root                           |
+| parent_id     | Integer      | Foreign key to parent folder                  |
+| size          | BigInteger   | File size in bytes (null for folders/virtual) |
+| mime_type     | String(100)  | MIME type (null for folders)                  |
+| resource_type | String(50)   | Type: file, folder, mmm, audience, report     |
+| resource_id   | String(255)  | External resource ID (for non-file types)     |
+| is_favorite   | Boolean      | Favorite status (default: false)              |
+| created_at    | DateTime     | Creation timestamp                            |
+| updated_at    | DateTime     | Last modification timestamp                   |
+
+## Configuration
+
+The application supports multiple environments through configuration classes:
+
+- **Development**: Debug enabled, local PostgreSQL
+- **Production**: Debug disabled, environment-based database URL
+- **Testing**: In-memory SQLite for tests
+
+### Environment Variables
+
+| Variable           | Description                            | Default                                                           |
+| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
+| FLASK_ENV          | Environment (development/production)   | development                                                       |
+| SECRET_KEY         | Flask secret key                       | dev-secret-key-change-in-production                               |
+| DATABASE_URL       | PostgreSQL connection string           | postgresql://postgres:password@localhost:5432/resourcemanager_dev |
+| CORS_ORIGINS       | Allowed CORS origins (comma-separated) | http://localhost:3000                                             |
+| MAX_CONTENT_LENGTH | Maximum file upload size in bytes      | 52428800 (50MB)                                                   |
+
+## Error Handling
+
+The API provides consistent error responses:
+
+```json
+{
+  "error": "Description of the error"
+}
+```
+
+Common HTTP status codes:
+
+- `200`: Success
+- `201`: Created
+- `400`: Bad Request
+- `404`: Not Found
+- `500`: Internal Server Error
+
+## Security Features
+
+- ✅ **Secure Filenames**: Werkzeug's `secure_filename()` prevents path traversal
+- ✅ **File Size Limits**: Configurable maximum upload size
+- ✅ **MIME Type Detection**: Automatic MIME type detection and storage
+- ✅ **CORS Protection**: Configurable CORS origins
+- ✅ **SQL Injection Protection**: SQLAlchemy ORM with parameterized queries
+- ✅ **Path Validation**: Prevents access outside upload directory
+
+## Testing
+
+```bash
+# Run tests (when implemented)
+python -m pytest
+
+# Run with coverage
+python -m pytest --cov=app
+```
+
+## Deployment
+
+### Using Gunicorn (Recommended)
+
+```bash
+# Install gunicorn
+pip install gunicorn
+
+# Run with gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 "app:create_app()"
+```
+
+### Using Docker
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+EXPOSE 5000
+
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:create_app()"]
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Flask team for the excellent web framework
+- SQLAlchemy team for the powerful ORM
+- PostgreSQL team for the robust database system
