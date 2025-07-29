@@ -9,9 +9,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.js",
-      name: "ReactFileManager",
-      fileName: (format) => `react-file-manager.${format}.js`,
-      formats: ["es"],
+      name: "ResourceManager",
+      fileName: (format) => `resource-manager.${format}.js`,
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
       external: ["react", "react-dom"],

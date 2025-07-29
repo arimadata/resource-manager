@@ -18,14 +18,29 @@ A React resource manager with event-driven architecture and keyboard shortcuts. 
 ## 🚀 Installation
 
 ```bash
-npm i @arimadata/resource-manager
+npm install @arima/resource-manager
+```
+
+### Importing Styles
+
+Don't forget to import the CSS styles in your application:
+
+```jsx
+import { ResourceManager } from "@arima/resource-manager";
+import "@arima/resource-manager/dist/style.css";
+```
+
+Or if you prefer to import from the styles export:
+
+```jsx
+import { ResourceManager } from "@arima/resource-manager";
+import "@arima/resource-manager/styles";
 ```
 
 ## 💻 Basic Usage
 
 ```jsx
 import { useState } from "react";
-import { ResourceManager } from "@arimadata/resource-manager";
 
 function App() {
   const [items, setItems] = useState([
