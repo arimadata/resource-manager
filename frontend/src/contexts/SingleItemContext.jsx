@@ -15,6 +15,7 @@ import { useSelection } from "./SelectionContext";
 import { useNavigation } from "./NavigationContext";
 import { duplicateNameHandler } from "../utils/duplicateNameHandler";
 import { useItems } from "./ItemsContext";
+import { useIcon } from "../hooks/useIcons";
 
 const SingleItemContext = createContext();
 
@@ -22,6 +23,8 @@ export const SingleItemProvider = ({
   children,
   eventBroker,
   resourceManagerCfg,
+  customEmptySelecCtxItems = [],
+  customSelecCtxItems = [],
 }) => {
   const [visible, setVisible] = useState(false);
   const [isSelectionCtx, setIsSelectionCtx] = useState(false);
@@ -33,6 +36,7 @@ export const SingleItemProvider = ({
   const { selectedItems, selectedItemIndexes, unselectAll } = useSelection();
   const { currentPath, setCurrentPath, currentPathItems, setCurrentPathItems } =
     useNavigation();
+  const getIcon = useIcon();
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -162,8 +166,60 @@ export const SingleItemProvider = ({
     setVisible(false);
   };
 
+  ////////////////////////////////////////////////////////////
+  // Context Menu Items
+
+  // Append custom menu items provided by user to the
+  const processCustomMenuItems = (customItems, type) => {
+    const ctxItems = type === "empty" ? currentPathItems : rightClickedItem;
+    return customItems.map((item) => {
+      const isHidden =
+        typeof item.hidden === "function"
+          ? item.hidden(ctxItems)
+          : Boolean(item.hidden);
+
+      const processedItem = {
+        ...item,
+        icon:
+          typeof item.icon === "string" ? getIcon(item.icon, 18) : item.icon,
+        onClick: item.onClick ? () => item.onClick(ctxItems) : undefined,
+        hidden: isHidden,
+      };
+
+      // Process children
+      if (item.children && item.children.length > 0) {
+        processedItem.children = item.children.map((child) => {
+          const isChildHidden =
+            typeof child.hidden === "function"
+              ? child.hidden(ctxItems)
+              : Boolean(child.hidden);
+
+          return {
+            ...child,
+            icon:
+              typeof child.icon === "string"
+                ? getIcon(child.icon, 18)
+                : child.icon,
+            onClick: child.onClick ? () => child.onClick(ctxItems) : undefined,
+            hidden: isChildHidden,
+          };
+        });
+
+        // Hide parent if all children are hidden
+        const visibleChildren = processedItem.children.filter(
+          (child) => !child.hidden
+        );
+        if (visibleChildren.length === 0) {
+          processedItem.hidden = true;
+        }
+      }
+
+      return processedItem;
+    });
+  };
+
   // Context Menu - General: when selecting empty space //
-  const emptySelecCtxItems = [
+  const defaultEmptySelecCtxItems = [
     {
       title: "Refresh",
       icon: <FiRefreshCw size={18} />,
@@ -188,8 +244,18 @@ export const SingleItemProvider = ({
     },
   ].filter(Boolean); // remove undefined/falsy items
 
+  // Merge custom items with default items
+  const processedCustomEmptyItems = processCustomMenuItems(
+    customEmptySelecCtxItems,
+    "empty"
+  );
+  const emptySelecCtxItems = [
+    ...processedCustomEmptyItems,
+    ...defaultEmptySelecCtxItems,
+  ];
+
   // Context Menu - Selected Items: when selecting an item //
-  const selecCtxItems = [
+  const defaultSelecCtxItems = [
     resourceManagerCfg.allowShareItem &&
       !rightClickedItem?.isDirectory && {
         title: "Share",
@@ -237,6 +303,13 @@ export const SingleItemProvider = ({
       onClick: handleDelete,
     },
   ].filter(Boolean); // remove undefined/falsy items
+
+  // Merge custom items with default items
+  const processedCustomSelecItems = processCustomMenuItems(
+    customSelecCtxItems,
+    "selected"
+  );
+  const selecCtxItems = [...processedCustomSelecItems, ...defaultSelecCtxItems];
 
   const handleFolderCreating = () => {
     eventBroker.publish("createFolder");

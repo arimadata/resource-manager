@@ -36,7 +36,9 @@ function App() {
     console.log("onCreateItem -> data:", data);
     // 1. Setup modal handlers as needed with API calls if necessary
     // Make sure they call "release" when done
-    const onConfirm = async (values) => {
+    const onConfirm = async (formData) => {
+      // await createItemAPI(formData);
+      // getItems();
       release();
     };
     const onCancel = () => {
@@ -268,56 +270,66 @@ function App() {
   ////////////////////////////////////////////////////
   // Context Menu
 
-  const customEmptySelecCtxItems = [
-    {
-      title: "custom Item 1",
-      icon: "FiRefreshCw",
-      divider: false,
-      children: [
-        {
-          title: "custom sub Item 1",
-          icon: "FiRefreshCw",
-          onClick: (e) => console.log("custom sub Item 1", e),
-        },
-        {
-          title: "custom sub Item 2",
-          icon: "FiRefreshCw",
-          onClick: (e) => console.log("custom sub Item 2", e),
-        },
-      ],
-    },
-    {
-      title: "custom Item 2",
-      icon: "FiRefreshCw",
-      onClick: (e) => console.log("custom Item 2", e),
-      divider: true,
-    },
-  ];
-  const customSelecCtxItems = [
-    {
-      title: "custom Item 1",
-      icon: "FiRefreshCw",
-      divider: false,
-      children: [
-        {
-          title: "custom sub Item 1",
-          icon: "FiRefreshCw",
-          onClick: (e) => console.log("custom sub Item 1", e),
-        },
-        {
-          title: "custom sub Item 2",
-          icon: "FiRefreshCw",
-          onClick: (e) => console.log("custom sub Item 2", e),
-        },
-      ],
-    },
-    {
-      title: "custom Item 2",
-      icon: "FiRefreshCw",
-      onClick: (e) => console.log("custom Item 2", e),
-      divider: true,
-    },
-  ];
+  const customEmptySelecCtxItems = [];
+  const customSelecCtxItems = [];
+
+  /////////////////////////////////////////////////////////////////
+  // Uncomment below to see how to add custom context menu items //
+  /////////////////////////////////////////////////////////////////
+
+  // const customEmptySelecCtxItems = [
+  //   {
+  //     title: "custom Item 1",
+  //     icon: "FaChurch",
+  //     children: [
+  //       {
+  //         title: "custom sub Item 1",
+  //         icon: "FaBaby",
+  //         onClick: (allItems) => console.log("custom sub Item 1", allItems),
+  //       },
+  //       {
+  //         title: "sub Item 2",
+  //         icon: "FaBaby",
+  //         onClick: (allItems) => console.log("custom sub Item 2", allItems),
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "custom sub Item 1",
+  //     icon: "FaBaby",
+  //     onClick: (allItems) => console.log("custom Item 2", allItems),
+  //     divider: true,
+  //   },
+  // ];
+  // const customSelecCtxItems = [
+  //   {
+  //     title: "Dev Tools",
+  //     icon: "FaBaby",
+  //     divider: false,
+  //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
+  //     children: [
+  //       {
+  //         title: "Make Dev Copy",
+  //         icon: "FaChurch",
+  //         onClick: (item) => console.log("Make Dev Copy", item),
+  //         hidden: false,
+  //       },
+  //       {
+  //         title: "Favorited Only",
+  //         icon: "FaCaretDown",
+  //         onClick: (item) => console.log("Favorited Item", item),
+  //         hidden: (item) => !item?.isFavorited, // Action can be performed on non-favorited items
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Build MMM",
+  //     icon: "FaAccessibleIcon",
+  //     onClick: (item) => console.log("Build MMM", item),
+  //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
+  //     divider: true,
+  //   },
+  // ];
 
   return (
     <div className="app">

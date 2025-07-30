@@ -100,7 +100,7 @@ type Item = {
 
 ## ⚙️ Event Handlers
 
-All event handlers receive data and an optional `lock` function for UI control:
+All event handlers receive data and an optional `lock` function for UI control.
 
 | Handler          | Parameters         | Description                                     |
 | ---------------- | ------------------ | ----------------------------------------------- |
@@ -118,20 +118,20 @@ All event handlers receive data and an optional `lock` function for UI control:
 
 ### Lock/Release Pattern
 
-```jsx
-const handleOperation = (data, lock) => {
-  // Option 1: No locking (default)
-  performOperation(data);
+You can optionally lock the resource manager (UI) if you need to prevent user interaction during async operations or to ensure order of operations.
 
-  // Option 2: Lock UI during async operation
+```jsx
+const onDelete = (items, lock) => {
+  // Optional: Lock UI during operation
   const release = lock();
-  performAsyncOperation(data)
-    .then((result) => {
+
+  deleteAPI(items)
+    .then(() => {
       // Update your state
-      setItems(result);
+      getItems();
     })
     .finally(() => {
-      release(); // Always release the lock
+      release(); // Always unlock UI if locked
     });
 };
 ```
@@ -141,19 +141,32 @@ const handleOperation = (data, lock) => {
 Some events like `onCreateItem` and `onShare` are modal events that require a different pattern:
 
 ```jsx
-const handleCreateItem = (data, release) => {
-  // Show your modal
-  setShowModal(true);
-
-  const handleConfirm = async (formData) => {
+const onCreateItem = (data, release) => {
+  console.log("onCreateItem -> data:", data);
+  // 1. Setup modal handlers as needed with API calls if necessary
+  // Make sure they call "release" when done
+  const onConfirm = async (formData) => {
     await createItemAPI(formData);
-    setItems((prev) => [...prev, newItem]);
-    release(); // Close modal and unlock
+    getItems();
+    release();
+  };
+  const onCancel = () => {
+    release();
   };
 
-  // Return cleanup function (called on ESC or cancel)
+  // 2. Open the dialog
+  setModal({
+    open: true,
+    Component: CreateModal,
+    data,
+    onConfirm,
+    onCancel,
+  });
+
+  // 3. Tell the package how to close your dialog
+  // Calling "release" will call this callback and unlock the package
   return () => {
-    setShowModal(false);
+    setModal(closedModal);
   };
 };
 ```
@@ -198,6 +211,51 @@ const handleCreateItem = (data, release) => {
 | `primaryColor`      | `string`           | Primary theme color (default: `"#6155b4"`)         |
 | `fontFamily`        | `string`           | Font family (default: `"Nunito Sans, sans-serif"`) |
 
+## 🎛️ Customization
+
+### Custom Context Menu Items
+
+Add custom right-click context menu items for both empty space and selected items:
+
+```jsx
+const customSelecCtxItems = [
+  {
+    title: "Dev Tools",
+    icon: "FaBaby", // String icon name or React component
+    hidden: (item) => item?.itemType === "folder", // Hide for folders
+    children: [
+      {
+        title: "Make Dev Copy",
+        icon: "FaChurch",
+        onClick: (item) => console.log("Processing:", item),
+        hidden: false, // Always visible
+      },
+      {
+        title: "Favorited Only",
+        icon: "FaCaretDown",
+        onClick: (item) => console.log("Favorited item:", item),
+        hidden: (item) => !item?.isFavorited, // Only for favorited items
+      },
+    ],
+  },
+];
+
+<ResourceManager
+  customSelecCtxItems={customSelecCtxItems}
+  customEmptySelecCtxItems={customEmptyItems}
+  // ... other props
+/>;
+```
+
+**Attributes:**
+
+- `title`: Display text
+- `icon`: Icon name (string) or React component
+- `onClick`: Callback function receiving the context item
+- `hidden`: Boolean or function to conditionally hide items
+- `children`: Array of sub-menu items
+- `divider`: Add separator after item
+
 ## 🏗️ Architecture
 
 The ResourceManager uses an event-driven architecture with:
@@ -224,3 +282,17 @@ python app.py
 ```
 
 The example backend uses MongoDB for persistence. See `backend/.env.example` for configuration.
+
+## 📋 TODO
+
+### Known Issues & Improvements
+
+- **Folder Deletion Behavior**: When deleting a folder, all child items become root-level items, which can lead to duplicate file names. Functionally okay, but may not be intended behavior.
+
+- **Customizable Header**: Change header to show details about the resource it manages and allow users to pick which attributes they want to display from the resource data.
+
+- **Browser Navigation**: Allow users to go "back" using browser back button or mouse back button for better navigation experience.
+
+- **Drag & Drop Enhancement**: Currently supports dragging items into folders, but needs ability to drag items up to parent directories using the breadcrumbs navigation.
+
+- **Sorting and Filtering**: Allow users to search items, filter and sort by columns.

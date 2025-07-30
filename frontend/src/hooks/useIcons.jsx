@@ -15,16 +15,10 @@ import * as Fa6Icons from "react-icons/fa6";
  */
 export const useIcon = () => {
   const getIcon = (iconName, size, props = {}) => {
-    // Normalize the icon name to ensure it starts with "Fa"
-    const normalizedName = iconName.startsWith("Fa")
-      ? iconName
-      : `Fa${iconName}`;
-
-    // Get the icon component from the imported icons
-    const IconComponent = Fa6Icons[normalizedName];
-
+    const IconComponent = Fa6Icons[iconName];
     if (!IconComponent) {
-      console.warn(`Icon "${normalizedName}" not found in react-icons/fa6`);
+      console.warn(`Icon "${iconName}" not found in react-icons/fa6`);
+      console.warn(`Available icons: ${Object.keys(Fa6Icons).join(", ")}`);
       return null;
     }
 

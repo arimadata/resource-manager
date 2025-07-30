@@ -62,6 +62,8 @@ const ResourceManager = ({
   allowRename = true,
   allowDelete = true,
   initialPath = null,
+  customEmptySelecCtxItems = [],
+  customSelecCtxItems = [],
   height = "100%",
   width = "100%",
   fontFamily = "Nunito Sans, sans-serif",
@@ -107,6 +109,8 @@ const ResourceManager = ({
               <SingleItemProvider
                 eventBroker={eventBroker}
                 resourceManagerCfg={resourceManagerCfg}
+                customEmptySelecCtxItems={customEmptySelecCtxItems}
+                customSelecCtxItems={customSelecCtxItems}
               >
                 <Toolbar
                   resourceManagerCfg={resourceManagerCfg}
@@ -191,6 +195,44 @@ ResourceManager.propTypes = {
   allowRename: PropTypes.bool,
   allowDelete: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
+  customEmptySelecCtxItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      onClick: PropTypes.func,
+      divider: PropTypes.bool,
+      hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+      className: PropTypes.string,
+      children: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+          onClick: PropTypes.func,
+          hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+          className: PropTypes.string,
+        })
+      ),
+    })
+  ),
+  customSelecCtxItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      onClick: PropTypes.func,
+      divider: PropTypes.bool,
+      hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+      className: PropTypes.string,
+      children: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+          onClick: PropTypes.func,
+          hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+          className: PropTypes.string,
+        })
+      ),
+    })
+  ),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryColor: PropTypes.string,
