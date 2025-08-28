@@ -293,6 +293,4 @@ The example backend uses MongoDB for persistence. See `backend/.env.example` for
 
 - **Browser Navigation**: Allow users to go "back" using browser back button or mouse back button for better navigation experience.
 
-- **Drag & Drop Enhancement**: Currently supports dragging items into folders, but needs ability to drag items up to parent directories using the breadcrumbs navigation.
-
 - **Sorting and Filtering**: Allow users to search items, filter and sort by columns.

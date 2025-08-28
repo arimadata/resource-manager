@@ -15,6 +15,7 @@ import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { arraysEqual } from "../../utils/arraysEqual";
+import Tooltip from "../../components/Tooltip/Tooltip";
 
 const dragIconSize = 50;
 
@@ -332,16 +333,7 @@ const Item = ({
 
       {/* Drag Icon & Tooltip Setup */}
       {tooltipPosition && (
-        <div
-          style={{
-            top: `${tooltipPosition.y}px`,
-            left: `${tooltipPosition.x}px`,
-          }}
-          className="drag-move-tooltip"
-        >
-          Move to{" "}
-          <span className="drop-zone-item-name">{item.displayName}</span>
-        </div>
+        <Tooltip tooltipPosition={tooltipPosition} name={item.displayName} />
       )}
 
       <div ref={dragIconRef} className="drag-icon">

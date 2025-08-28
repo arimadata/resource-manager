@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Loader from "../components/Loader/Loader";
 import Toolbar from "./Toolbar/Toolbar";
 import BreadCrumb from "./BreadCrumb/BreadCrumb";
@@ -174,6 +173,8 @@ ResourceManager.propTypes = {
     })
   ).isRequired,
   isLoading: PropTypes.bool,
+  onCreateFolder: PropTypes.func,
+  onCreateItem: PropTypes.func,
   onCreate: PropTypes.func,
   onRename: PropTypes.func,
   onDelete: PropTypes.func,
@@ -182,6 +183,7 @@ ResourceManager.propTypes = {
   onPaste: PropTypes.func,
   onShare: PropTypes.func,
   onFavorite: PropTypes.func,
+  onOpen: PropTypes.func,
   onRefresh: PropTypes.func,
   onSelect: PropTypes.func,
   allowCreateFolder: PropTypes.bool,

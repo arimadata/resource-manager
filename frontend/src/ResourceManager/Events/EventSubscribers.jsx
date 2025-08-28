@@ -110,7 +110,10 @@ export const EventSubscribers = ({
     // Clipboard events
     cutItems: cutItems,
     copyItems: copyItems,
-    pasteItems: () => pasteItems(eventBroker?.data || currentFolder),
+    pasteItems: () =>
+      pasteItems(
+        eventBroker?.data !== undefined ? eventBroker?.data : currentFolder
+      ),
     // Single item events
     createFolder: createFolder,
     createFolderDone: () => addOrReplaceItem(eventBroker?.data),

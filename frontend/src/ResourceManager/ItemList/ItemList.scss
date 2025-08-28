@@ -13,23 +13,6 @@
   padding: 8px;
   padding-right: 4px;
 
-  .drag-move-tooltip {
-    background-color: white;
-    font-size: 0.78em;
-    position: fixed;
-    text-wrap: nowrap;
-    border: 1px dashed black;
-    padding: 1px 5px 2px 24px;
-    border-radius: 3px;
-    font-weight: bold;
-    color: var(--file-manager-primary-color);
-    z-index: 2;
-
-    .drop-zone-item-name {
-      color: rgb(48, 48, 48);
-    }
-  }
-
   .item-container {
     border-radius: 5px;
     margin: 5px 0;

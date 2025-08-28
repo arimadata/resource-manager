@@ -64,4 +64,3 @@ export interface ResourceManagerProps {
 }
 
 export declare const ResourceManager: FC<ResourceManagerProps>;
-export default ResourceManager;
