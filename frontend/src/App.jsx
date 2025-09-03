@@ -17,6 +17,27 @@ const closedModal = {
   onCancel: null,
 };
 
+const headers = [
+  {
+    attribute: "displayName",
+    defaultValue: "None",
+    columnName: "Model Name",
+    transform: (v) => v + " 3123212",
+  },
+  {
+    attribute: "updatedAt",
+    defaultValue: "1/1/2025, 10:48:37 AM",
+    columnName: "Modified Date",
+    transform: (v) => new Date(v).toLocaleString(),
+    sortAccessor: (v) => new Date(v).getTime(),
+  },
+  {
+    attribute: "itemType",
+    defaultValue: "Unknown",
+    columnName: "Type",
+  },
+];
+
 function App() {
   const [loadingCount, setLoadingCount] = useState(0);
   const [items, setItems] = useState([]);
@@ -335,6 +356,7 @@ function App() {
     <div className="app">
       <div className="file-manager-container">
         <ResourceManager
+          headers={headers}
           items={items}
           isLoading={isLoading}
           onCopy={onCopy}

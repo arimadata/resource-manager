@@ -8,7 +8,7 @@ import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker }) => {
+const ItemList = ({ eventBroker, headers }) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
@@ -33,7 +33,7 @@ const ItemList = ({ eventBroker }) => {
       onContextMenu={handleContextMenu}
       onClick={() => eventBroker.publish("unselectAll")}
     >
-      <ItemsHeader eventBroker={eventBroker} />
+      <ItemsHeader eventBroker={eventBroker} headers={headers} />
       {currentPathItems?.length > 0 ? (
         <>
           {currentPathItems.map((item, index) => (
@@ -47,6 +47,7 @@ const ItemList = ({ eventBroker }) => {
               handleContextMenu={handleContextMenu}
               setVisible={setVisible}
               setRightClickedItem={setRightClickedItem}
+              headers={headers}
             />
           ))}
         </>

@@ -84,6 +84,19 @@ const BreadCrumb = ({ eventBroker }) => {
         ? itemMap.get(folder.path[folder.path.length - 1])
         : null;
 
+    if (clipBoard?.items && clipBoard.isMoving) {
+      const destinationPk = destinationFolder?.pk || null;
+      const allItemsInSameDirectory = clipBoard.items.every(
+        (item) => item.parentPk === destinationPk
+      );
+
+      if (allItemsInSameDirectory) {
+        setDragOverFolder(null);
+        setTooltipPosition(null);
+        return;
+      }
+    }
+
     eventBroker.publish("pasteItems", destinationFolder);
     setDragOverFolder(null);
     setTooltipPosition(null);

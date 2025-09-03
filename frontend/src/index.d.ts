@@ -1,5 +1,13 @@
 import { FC, ReactNode } from "react";
 
+export interface ResourceManagerHeader {
+  attribute: string;
+  defaultValue: string;
+  columnName?: string;
+  transform?: (value: any) => any;
+  sortAccessor?: (value: any) => any;
+}
+
 export interface ResourceManagerItem {
   pk: string;
   displayName: string;
@@ -30,20 +38,21 @@ export interface ContextMenuItem {
 }
 
 export interface ResourceManagerProps {
+  headers: ResourceManagerHeader[];
   items: ResourceManagerItem[];
-  isLoading: boolean;
-  onCreateFolder: (data: any, release: () => void) => void;
-  onCreateItem: (data: any, release: () => void) => void;
-  onRename: (data: any, release: () => void) => void;
-  onDelete: (data: any, release: () => void) => void;
-  onCut: (data: any, release: () => void) => void;
-  onCopy: (data: any, release: () => void) => void;
-  onPaste: (data: any, release: () => void) => void;
-  onShare: (data: any, release: () => void) => void;
-  onFavorite: (data: any, release: () => void) => void;
-  onRefresh: (data: any, release: () => void) => void;
-  onSelect: (data: any, release: () => void) => void;
-  onOpen: (data: any, release: () => void) => void;
+  isLoading?: boolean;
+  onCreateFolder?: (data: any, release: () => void) => void;
+  onCreateItem?: (data: any, release: () => void) => void;
+  onRename?: (data: any, release: () => void) => void;
+  onDelete?: (data: any, release: () => void) => void;
+  onCut?: (data: any, release: () => void) => void;
+  onCopy?: (data: any, release: () => void) => void;
+  onPaste?: (data: any, release: () => void) => void;
+  onShare?: (data: any, release: () => void) => void;
+  onFavorite?: (data: any, release: () => void) => void;
+  onRefresh?: (data: any, release: () => void) => void;
+  onSelect?: (data: any, release: () => void) => void;
+  onOpen?: (data: any, release: () => void) => void;
   allowCreateFolder?: boolean;
   allowCreateItem?: boolean;
   allowShareItem?: boolean;

@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa6";
+import PropTypes from "prop-types";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useNavigation } from "../../contexts/NavigationContext";
+import { SORT_DIRECTIONS } from "../../constants/sortDirections";
+import { useSorting } from "../../contexts/SortingContext";
 
-const ItemsHeader = ({ eventBroker }) => {
+const ItemsHeader = ({ eventBroker, headers }) => {
   const [showSelectAll, setShowSelectAll] = useState(false);
 
   const { selectedItems } = useSelection();
   const { currentPathItems } = useNavigation();
+  const { sortColumn, sortDirection, handleSort } = useSorting();
 
   const allItemsSelected = useMemo(() => {
     return (
@@ -23,6 +28,20 @@ const ItemsHeader = ({ eventBroker }) => {
     } else {
       eventBroker.publish("unselectAll");
     }
+  };
+
+  const renderSortIcon = (column) => {
+    if (column === sortColumn) {
+      switch (sortDirection) {
+        case SORT_DIRECTIONS.ASC:
+          return <FaSortUp className="sort-icon active" />;
+        case SORT_DIRECTIONS.DESC:
+          return <FaSortDown className="sort-icon active" />;
+        default:
+          return <FaSort className="sort-icon inactive" />;
+      }
+    }
+    return <FaSort className="sort-icon inactive" />;
   };
 
   return (
@@ -43,11 +62,36 @@ const ItemsHeader = ({ eventBroker }) => {
       </div>
       <div className="item-icon"> </div>
       <div className="item-icon"> </div>
-      <div className="item-name">Name</div>
-      <div className="item-standard">Last Modified</div>
-      <div className="item-standard">Misc</div>
+      {headers.map((header, i) => (
+        <div
+          key={header.attribute}
+          className={`sortable-header ${
+            i === 0 ? "item-name" : "item-standard"
+          }`}
+          onClick={() => handleSort(header.attribute)}
+          style={{ textTransform: "capitalize" }}
+        >
+          {header.columnName || header.attribute}
+          {renderSortIcon(header.attribute)}
+        </div>
+      ))}
     </div>
   );
+};
+
+ItemsHeader.propTypes = {
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func.isRequired,
+  }).isRequired,
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attribute: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string.isRequired,
+      columnName: PropTypes.string,
+      transform: PropTypes.func,
+      sortAccessor: PropTypes.func,
+    })
+  ).isRequired,
 };
 
 export default ItemsHeader;

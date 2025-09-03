@@ -9,6 +9,7 @@ import { SelectionProvider } from "../contexts/SelectionContext";
 import { ClipBoardProvider } from "../contexts/ClipboardContext";
 import { useEventBroker } from "../hooks/useEventBroker";
 import { SingleItemProvider } from "../contexts/SingleItemContext";
+import { SortingProvider } from "../contexts/SortingContext";
 import PropTypes from "prop-types";
 import { dateStringValidator } from "../validators/propValidators";
 import "./ResourceManager.scss";
@@ -37,6 +38,7 @@ import "./ResourceManager.scss";
  * };
  */
 const ResourceManager = ({
+  headers,
   items,
   isLoading,
   onCopy,
@@ -99,49 +101,51 @@ const ResourceManager = ({
       style={customStyles}
     >
       <Loader loading={isLoading} />
-      <ItemsProvider itemsData={items}>
-        <NavigationProvider initialPath={initialPath || []}>
-          <SelectionProvider eventBroker={eventBroker}>
-            <ClipBoardProvider eventBroker={eventBroker}>
-              {/* Toolbar with "New Folder", "Upload", "Refresh" */}
-              {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
-              <SingleItemProvider
-                eventBroker={eventBroker}
-                resourceManagerCfg={resourceManagerCfg}
-                customEmptySelecCtxItems={customEmptySelecCtxItems}
-                customSelecCtxItems={customSelecCtxItems}
-              >
-                <Toolbar
-                  resourceManagerCfg={resourceManagerCfg}
+      <SortingProvider>
+        <ItemsProvider itemsData={items}>
+          <NavigationProvider initialPath={initialPath || []} headers={headers}>
+            <SelectionProvider eventBroker={eventBroker}>
+              <ClipBoardProvider eventBroker={eventBroker}>
+                {/* Toolbar with "New Folder", "Upload", "Refresh" */}
+                {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
+                <SingleItemProvider
                   eventBroker={eventBroker}
-                />
-                <div className="folders-preview" style={{ width: "100%" }}>
-                  <BreadCrumb eventBroker={eventBroker} />
-                  {/* Main section with files and folders */}
-                  <ItemList eventBroker={eventBroker} />
-                </div>
-                {/* Event subscriber section such as "Delete" modal */}
-                <EventSubscribers
                   resourceManagerCfg={resourceManagerCfg}
-                  onCopy={onCopy}
-                  onCreateFolder={onCreateFolder}
-                  onCreateItem={onCreateItem}
-                  onCut={onCut}
-                  onDelete={onDelete}
-                  onFavorite={onFavorite}
-                  onOpen={onOpen}
-                  onPaste={onPaste}
-                  onRefresh={onRefresh}
-                  onRename={onRename}
-                  onSelect={onSelect}
-                  onShare={onShare}
-                  eventBroker={eventBroker}
-                />
-              </SingleItemProvider>
-            </ClipBoardProvider>
-          </SelectionProvider>
-        </NavigationProvider>
-      </ItemsProvider>
+                  customEmptySelecCtxItems={customEmptySelecCtxItems}
+                  customSelecCtxItems={customSelecCtxItems}
+                >
+                  <Toolbar
+                    resourceManagerCfg={resourceManagerCfg}
+                    eventBroker={eventBroker}
+                  />
+                  <div className="folders-preview" style={{ width: "100%" }}>
+                    <BreadCrumb eventBroker={eventBroker} />
+                    {/* Main section with files and folders */}
+                    <ItemList eventBroker={eventBroker} headers={headers} />
+                  </div>
+                  {/* Event subscriber section such as "Delete" modal */}
+                  <EventSubscribers
+                    resourceManagerCfg={resourceManagerCfg}
+                    onCopy={onCopy}
+                    onCreateFolder={onCreateFolder}
+                    onCreateItem={onCreateItem}
+                    onCut={onCut}
+                    onDelete={onDelete}
+                    onFavorite={onFavorite}
+                    onOpen={onOpen}
+                    onPaste={onPaste}
+                    onRefresh={onRefresh}
+                    onRename={onRename}
+                    onSelect={onSelect}
+                    onShare={onShare}
+                    eventBroker={eventBroker}
+                  />
+                </SingleItemProvider>
+              </ClipBoardProvider>
+            </SelectionProvider>
+          </NavigationProvider>
+        </ItemsProvider>
+      </SortingProvider>
     </main>
   );
 };
@@ -149,6 +153,15 @@ const ResourceManager = ({
 ResourceManager.displayName = "ResourceManager";
 
 ResourceManager.propTypes = {
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attribute: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string.isRequired,
+      columnName: PropTypes.string,
+      transform: PropTypes.func,
+      sortAccessor: PropTypes.func,
+    })
+  ).isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       // Original structure fields

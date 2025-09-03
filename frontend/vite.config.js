@@ -5,7 +5,9 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   publicDir: false,
   plugins: [
-    react(),
+    react({
+      jsxRuntime: "automatic",
+    }),
     {
       name: "create-types-declaration",
       async writeBundle() {
@@ -82,6 +84,7 @@ export default defineConfig({
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react/jsx-runtime": "React.jsxRuntime",
         },
       },
     },

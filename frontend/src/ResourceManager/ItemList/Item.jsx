@@ -9,7 +9,6 @@ import {
 import { useIcon } from "../../hooks/useIcons";
 import CreateFolderAction from "../Events/CreateFolder/CreateFolder.action";
 import RenameAction from "../Events/Rename/Rename.action";
-import { formatDate } from "../../utils/formatDate";
 import { useNavigation } from "../../contexts/NavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
@@ -27,6 +26,7 @@ const Item = ({
   eventBroker,
   handleContextMenu,
   setRightClickedItem,
+  headers,
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
   const [itemHovered, setItemHovered] = useState(false);
@@ -41,6 +41,16 @@ const Item = ({
   const { setSelectedItems, setHoveredItem } = useSelection();
   const { clipBoard, setClipBoard } = useClipBoard();
   const dragIconRef = useRef(null);
+
+  const getHeaderValue = (header) => {
+    let value = item.resource[header.attribute];
+
+    if (header.transform) {
+      value = header.transform(value) ?? header.defaultValue;
+    }
+
+    return value;
+  };
 
   const isItemMoving =
     clipBoard?.isMoving &&
@@ -288,13 +298,19 @@ const Item = ({
             ) : null}
           </div>
         ) : (
-          <span className="text-truncate item-name">{item.displayName}</span>
+          <span className="text-truncate item-name">
+            {getHeaderValue(headers[0])}
+          </span>
         )}
       </div>
 
-      {/* Modified Date & File Size */}
-      <div className="item-standard">{formatDate(item.updatedAt)}</div>
-      <div className="item-standard">{item.pk}</div>
+      {/* Dynamic Header Values */}
+      {headers &&
+        headers.slice(1).map((header) => (
+          <div key={header.attribute} className="item-standard">
+            {getHeaderValue(header)}
+          </div>
+        ))}
 
       {/* Hover Actions Overlay */}
       {itemHovered && (

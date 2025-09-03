@@ -65,17 +65,6 @@ export const ItemsProvider = ({ children, itemsData }) => {
           break;
         }
       }
-      // If no folder was found, use an item as template
-      if (!defaultFolderTemplate) {
-        setDefaultFolderTemplate({
-          ...newItems[0],
-          ...defaultValues,
-          iconName: "FaRegFolderOpen",
-          itemType: "folder",
-          resourcePk: null,
-          isDirectory: true,
-        });
-      }
     }
   };
 

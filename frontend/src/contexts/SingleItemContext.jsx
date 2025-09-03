@@ -75,12 +75,19 @@ export const SingleItemProvider = ({
           pk: tempPk,
           displayName: duplicateNameHandler("New Folder", currentPathItems),
           path: [...currentPath, tempPk],
+          itemType: "folder",
           isDirectory: true,
           isEditing: true,
           isTemporary: true,
           parentPk: currentPath.at(-1) || null,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          // TODO: For testing purposes
+          resource: {
+            displayName: duplicateNameHandler("New Folder", currentPathItems),
+            updatedAt: new Date().toISOString(),
+            itemType: "folder",
+          },
         },
       ];
     });

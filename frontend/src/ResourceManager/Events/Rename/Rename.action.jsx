@@ -73,6 +73,11 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
         ...item,
         displayName: renameItem,
         isEditing: false,
+        // TODO: For testing purposes
+        resource: {
+          ...item.resource,
+          displayName: renameItem,
+        },
       });
     }
   }
