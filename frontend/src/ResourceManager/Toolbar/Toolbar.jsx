@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   BsCopy,
   BsFolderPlus,
@@ -37,7 +36,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
       text: "Paste",
       show: !!resourceManagerCfg.allowPaste,
       disabled: !clipBoard?.items?.length,
-      onClick: () => eventBroker.publish("pasteItems"),
+      onClick: () => eventBroker.publish("pasteItems", currentFolder),
     },
   ];
 
@@ -58,7 +57,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
             {/* Share selected items - must have >= 1 non-directory item selected */}
             {resourceManagerCfg.allowShareItem && (
               <button
-                className="item-action f-action"
+                className="item-action f-action primary-action"
                 onClick={() => eventBroker.publish("shareItems")}
                 disabled={selectedItems.every((file) => file.isDirectory)}
               >
@@ -157,7 +156,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
         </div>
         <div>
           {toolbarRightItems.map((item, index) => (
-            <div key={index} className="toolbar-left-items">
+            <div key={index} className="toolbar-right-items">
               <button
                 className="item-action icon-only"
                 title={item.title}

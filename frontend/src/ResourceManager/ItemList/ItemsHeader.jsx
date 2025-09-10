@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa6";
+import { FaArrowDown } from "react-icons/fa6";
 import PropTypes from "prop-types";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { useSelection } from "../../contexts/SelectionContext";
@@ -31,17 +31,16 @@ const ItemsHeader = ({ eventBroker, headers }) => {
   };
 
   const renderSortIcon = (column) => {
-    if (column === sortColumn) {
-      switch (sortDirection) {
-        case SORT_DIRECTIONS.ASC:
-          return <FaSortUp className="sort-icon active" />;
-        case SORT_DIRECTIONS.DESC:
-          return <FaSortDown className="sort-icon active" />;
-        default:
-          return <FaSort className="sort-icon inactive" />;
-      }
+    if (column === sortColumn && sortDirection) {
+      return (
+        <FaArrowDown
+          className={`sort-icon active ${
+            sortDirection === SORT_DIRECTIONS.ASC ? "rotate-up" : ""
+          }`}
+        />
+      );
     }
-    return <FaSort className="sort-icon inactive" />;
+    return null;
   };
 
   return (
@@ -60,18 +59,18 @@ const ItemsHeader = ({ eventBroker, headers }) => {
           />
         )}
       </div>
-      <div className="item-icon"> </div>
-      <div className="item-icon"> </div>
+      <div className="item-icon-space"></div>
       {headers.map((header, i) => (
         <div
           key={header.attribute}
           className={`sortable-header ${
-            i === 0 ? "item-name" : "item-standard"
+            i === 0 ? "item-name-header" : "item-standard-header"
           }`}
           onClick={() => handleSort(header.attribute)}
-          style={{ textTransform: "capitalize" }}
         >
-          {header.columnName || header.attribute}
+          <span className="header-text">
+            {header.columnName || header.attribute}
+          </span>
           {renderSortIcon(header.attribute)}
         </div>
       ))}

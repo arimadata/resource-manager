@@ -85,11 +85,6 @@ const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
       displayName: newFolderName,
       isEditing: false,
       isTemporary: false,
-      // TODO: For testing purposes
-      resource: {
-        ...item.resource,
-        displayName: newFolderName,
-      },
     });
   }
 

@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  FaRegFile,
-  FaRegFolderOpen,
-  FaStar,
-  FaRegStar,
-  FaEllipsis,
-} from "react-icons/fa6";
+import { BsStarFill, BsStar, BsThreeDots } from "react-icons/bs";
+
 import { useIcon } from "../../hooks/useIcons";
 import CreateFolderAction from "../Events/CreateFolder/CreateFolder.action";
 import RenameAction from "../Events/Rename/Rename.action";
@@ -34,6 +29,7 @@ const Item = ({
   const [checkboxClassName, setCheckboxClassName] = useState("hidden");
   const [dropZoneClass, setDropZoneClass] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState(null);
 
   const iconSize = 20;
   const getIcon = useIcon();
@@ -43,12 +39,16 @@ const Item = ({
   const dragIconRef = useRef(null);
 
   const getHeaderValue = (header) => {
-    let value = item.resource[header.attribute];
+    let value =
+      item.itemType === "folder"
+        ? item[header.attribute]
+        : item.resource[header.attribute];
+
+    if (!value) return item.itemType === "folder" ? "--" : header.defaultValue;
 
     if (header.transform) {
       value = header.transform(value) ?? header.defaultValue;
     }
-
     return value;
   };
 
@@ -60,18 +60,20 @@ const Item = ({
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
 
-  // Get the appropriate icon for the item
   const getItemIcon = (size = iconSize) => {
-    // If iconName is provided, use it
-    if (item.iconName) {
-      return getIcon(item.iconName, size);
+    if (item.itemType === "folder") {
+      return getIcon("BsFolderFill", size);
     }
 
-    // Fallback to default icons based on item type
-    if (item.isDirectory) {
-      return <FaRegFolderOpen size={size} />;
-    } else {
-      return <FaRegFile size={size} />;
+    switch (item.resourceType) {
+      case "report":
+        return getIcon("BsFileEarmarkFill", size);
+      case "mmm":
+        return getIcon("BsFileEarmarkFill", size);
+      case "audience":
+        return getIcon("BsPeopleFill", size);
+      default:
+        return getIcon("BsFileEarmarkFill", size);
     }
   };
 
@@ -147,16 +149,34 @@ const Item = ({
   };
 
   // Selection Checkbox Functions
-  const handleMouseOver = () => {
+  const handleMouseOver = (e) => {
     setHoveredItem(item);
     setItemHovered(true);
     setCheckboxClassName("visible");
+
+    // Calculate the row position for the toolbar
+    const containerRect = itemsViewRef.current?.getBoundingClientRect();
+    const currentCell = e.currentTarget;
+
+    if (containerRect && currentCell) {
+      const cellRect = currentCell.getBoundingClientRect();
+
+      const hoverPos = {
+        top: cellRect.top,
+        left: containerRect.right - 200,
+        width: 150,
+        height: cellRect.height,
+      };
+
+      setHoverPosition(hoverPos);
+    }
   };
 
   const handleMouseLeave = () => {
     !itemSelected && setCheckboxClassName("hidden");
     setHoveredItem(null);
     setItemHovered(false);
+    setHoverPosition(null);
   };
 
   const handleCheckboxChange = (e) => {
@@ -238,22 +258,26 @@ const Item = ({
       className={`item-container ${dropZoneClass} ${
         itemSelected || !!item.isEditing ? "item-selected" : ""
       } ${isItemMoving ? "item-moving" : ""}`}
-      tabIndex={0}
-      title={item.displayName}
-      onClick={handleItemSelection}
-      onContextMenu={handleItemContextMenu}
-      onMouseOver={handleMouseOver}
+      onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
-      draggable={itemSelected}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragEnter={handleDragEnterOver}
-      onDragOver={handleDragEnterOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
     >
-      <div className="item">
-        {/* Selection Checkbox */}
+      {/* Selection Checkbox Cell */}
+      <div
+        className={`item-select-cell ${dropZoneClass} ${
+          itemSelected || !!item.isEditing ? "item-selected" : ""
+        } ${isItemMoving ? "item-moving" : ""}`}
+        onClick={handleItemSelection}
+        onContextMenu={handleItemContextMenu}
+        onMouseEnter={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
+        draggable={itemSelected}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragEnter={handleDragEnterOver}
+        onDragOver={handleDragEnterOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         {!item.isEditing && (
           <Checkbox
             name={item.displayName}
@@ -264,23 +288,46 @@ const Item = ({
             onClick={(e) => e.stopPropagation()}
           />
         )}
-        {/* Star (Favorite) Icon */}
-        <span
-          onClick={handleFavorite}
-          title={item.isFavorited ? "Unfavorite" : "Favorite"}
-          className="favorite-icon"
-        >
-          {item.isFavorited ? (
-            <FaStar size={iconSize} />
-          ) : (
-            <FaRegStar size={iconSize} />
-          )}
-        </span>
+      </div>
 
-        {/* Item Icon */}
-        {getItemIcon(iconSize)}
+      {/* Icon Cell */}
+      <div
+        className={`item-icon-cell ${dropZoneClass} ${
+          itemSelected || !!item.isEditing ? "item-selected" : ""
+        } ${isItemMoving ? "item-moving" : ""}`}
+        onClick={handleItemSelection}
+        onContextMenu={handleItemContextMenu}
+        onMouseEnter={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
+        draggable={itemSelected}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragEnter={handleDragEnterOver}
+        onDragOver={handleDragEnterOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <div className="item-icon-wrapper">{getItemIcon()}</div>
+      </div>
 
-        {/* Item Name */}
+      {/* Name Cell */}
+      <div
+        className={`item-name-cell ${dropZoneClass} ${
+          itemSelected || !!item.isEditing ? "item-selected" : ""
+        } ${isItemMoving ? "item-moving" : ""}`}
+        title={item.displayName}
+        onClick={handleItemSelection}
+        onContextMenu={handleItemContextMenu}
+        onMouseEnter={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
+        draggable={itemSelected}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragEnter={handleDragEnterOver}
+        onDragOver={handleDragEnterOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         {item.isEditing ? (
           <div className={`rename-item-container list`}>
             {eventBroker.event === "createFolder" ? (
@@ -298,52 +345,84 @@ const Item = ({
             ) : null}
           </div>
         ) : (
-          <span className="text-truncate item-name">
-            {getHeaderValue(headers[0])}
-          </span>
+          <>
+            <span className="item-name-text">{getHeaderValue(headers[0])}</span>
+            <span
+              onClick={handleFavorite}
+              title={item.isFavorited ? "Unfavorite" : "Favorite"}
+              className="favorite-icon-inline"
+            >
+              {item.isFavorited ? (
+                <BsStarFill size={20} color="#fbbf24" />
+              ) : (
+                <BsStar size={20} style={{ color: "#d1d5db" }} />
+              )}
+            </span>
+          </>
         )}
       </div>
 
-      {/* Dynamic Header Values */}
+      {/* Dynamic Header Value Cells */}
       {headers &&
         headers.slice(1).map((header) => (
-          <div key={header.attribute} className="item-standard">
+          <div
+            key={header.attribute}
+            className={`item-standard-cell ${dropZoneClass} ${
+              itemSelected || !!item.isEditing ? "item-selected" : ""
+            } ${isItemMoving ? "item-moving" : ""}`}
+            onMouseEnter={handleMouseOver}
+            onMouseLeave={handleMouseLeave}
+          >
             {getHeaderValue(header)}
           </div>
         ))}
 
       {/* Hover Actions Overlay */}
-      {itemHovered && (
-        <div className="item-hover-actions">
-          <button
-            className="action-btn"
-            title="Open"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleItemAccess(item);
-            }}
-          >
-            <span>Open</span>
-          </button>
-          {!item.isDirectory && (
+      {itemHovered && hoverPosition && (
+        <div
+          className={`item-hover-actions fixed-position ${
+            itemSelected ? "selected-background" : "default-background"
+          }`}
+          style={{
+            top: hoverPosition.top,
+            left: hoverPosition.left,
+            width: hoverPosition.width,
+            height: hoverPosition.height,
+          }}
+          onMouseEnter={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="actions-container">
             <button
-              className="action-btn share-btn"
-              title="Share"
+              className="action-btn"
+              title="Open"
               onClick={(e) => {
                 e.stopPropagation();
-                handleItemShare();
+                handleItemAccess(item);
               }}
             >
-              <span>Share</span>
+              <span>Open</span>
             </button>
-          )}
-          <button
-            className="action-btn more-btn"
-            title="More options"
-            onClick={handleItemContextMenu}
-          >
-            <FaEllipsis size={iconSize} />
-          </button>
+            {!item.isDirectory && (
+              <button
+                className="action-btn share-btn"
+                title="Share"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleItemShare();
+                }}
+              >
+                <span>Share</span>
+              </button>
+            )}
+            <button
+              className="action-btn more-btn"
+              title="More options"
+              onClick={handleItemContextMenu}
+            >
+              <BsThreeDots size={iconSize} />
+            </button>
+          </div>
         </div>
       )}
 

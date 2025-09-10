@@ -22,7 +22,6 @@ const headers = [
     attribute: "displayName",
     defaultValue: "None",
     columnName: "Model Name",
-    transform: (v) => v + " 3123212",
   },
   {
     attribute: "updatedAt",
@@ -31,16 +30,39 @@ const headers = [
     transform: (v) => new Date(v).toLocaleString(),
     sortAccessor: (v) => new Date(v).getTime(),
   },
+];
+
+const initialItems = [
   {
-    attribute: "itemType",
-    defaultValue: "Unknown",
-    columnName: "Type",
+    createdAt: "2025-09-09T09:35:17.634046Z",
+    displayName: "Report123",
+    iconName: "FaRegFileLines",
+    isFavorited: false,
+    itemType: "resource",
+    pk: "39bd6815-cb66-462b-b0f8-450bc9eda417",
+    resource: {
+      audienceIdsPk: "sp2023q3_us",
+      companyPk: "alex_test_inc",
+      createdAt: "2025-09-04T15:38:24.358281Z",
+      updatedAt: "2025-09-04T15:38:24.358281Z",
+      description: "d23312312",
+      displayName: "Report123",
+      pk: "6250780034072576",
+      userPk: "dmitry.oborsky@gmail.com",
+      tabs: [],
+    },
+    userPk: "dmitry.oborsky@gmail.com",
+    resourcePk: "6250780034072576",
+    resourceType: "report",
+    scope: "user",
+    scopePk: "dmitry.oborsky@gmail.com",
+    updatedAt: "2025-09-09T09:35:17.634046Z",
   },
 ];
 
 function App() {
   const [loadingCount, setLoadingCount] = useState(0);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(initialItems);
   const [modal, setModal] = useState(closedModal);
   const isMountRef = useRef(false);
 
@@ -376,7 +398,7 @@ function App() {
           customSelecCtxItems={customSelecCtxItems}
           height="100%"
           width="100%"
-          fontFamily="Nunito Sans, sans-serif"
+          fontFamily="Rubik, sans-serif"
           primaryColor="#6155b4"
         />
       </div>

@@ -1,4 +1,4 @@
-import * as Fa6Icons from "react-icons/fa6";
+import * as BsIcons from "react-icons/bs";
 
 /**
  * Hook to dynamically access react-icons/fa6 icons by string name
@@ -15,15 +15,15 @@ import * as Fa6Icons from "react-icons/fa6";
  */
 export const useIcon = () => {
   const getIcon = (iconName, size, props = {}) => {
-    const IconComponent = Fa6Icons[iconName];
+    const IconComponent = BsIcons[iconName];
     if (!IconComponent) {
       console.warn(`Icon "${iconName}" not found in react-icons/fa6`);
-      console.warn(`Available icons: ${Object.keys(Fa6Icons).join(", ")}`);
+      console.warn(`Available icons: ${Object.keys(BsIcons).join(", ")}`);
       return null;
     }
 
     // Return the icon component with size and additional props
-    return <IconComponent size={size} {...props} />;
+    return <IconComponent size={size} color="#B5CCFF" {...props} />;
   };
 
   return getIcon;

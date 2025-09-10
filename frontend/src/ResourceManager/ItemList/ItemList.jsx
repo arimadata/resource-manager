@@ -13,6 +13,8 @@ const ItemList = ({ eventBroker, headers }) => {
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
 
+  const gridTemplateColumns = `40px 32px ${headers.map(() => "1fr").join(" ")}`;
+
   const {
     emptySelecCtxItems,
     selecCtxItems,
@@ -30,6 +32,7 @@ const ItemList = ({ eventBroker, headers }) => {
     <div
       ref={itemsViewRef}
       className={`items list`}
+      style={{ gridTemplateColumns }}
       onContextMenu={handleContextMenu}
       onClick={() => eventBroker.publish("unselectAll")}
     >

@@ -14,11 +14,17 @@ export const sortItems = ({ items, sortColumn, sortDirection, headers }) => {
   const ascending = sortDirection === SORT_DIRECTIONS.ASC;
 
   return [...items].sort((a, b) => {
-    let value1 = a.resource[header.attribute] ?? header.defaultValue;
-    let value2 = b.resource[header.attribute] ?? header.defaultValue;
+    let value1 =
+      a.itemType === "folder"
+        ? a[header.attribute] ?? "--"
+        : a.resource[header.attribute] ?? header.defaultValue;
+    let value2 =
+      b.itemType === "folder"
+        ? b[header.attribute] ?? "--"
+        : b.resource[header.attribute] ?? header.defaultValue;
 
     // Apply transform if provided
-    if (header.transform) {
+    if (header.transform && value1 !== "--" && value2 !== "--") {
       value1 = header.transform(value1) ?? header.defaultValue;
       value2 = header.transform(value2) ?? header.defaultValue;
     }
