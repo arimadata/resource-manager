@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import SubMenu from "./SubMenu";
+import PropTypes from "prop-types";
 import "./ContextMenu.scss";
 
 const ContextMenu = ({
@@ -91,7 +92,10 @@ const ContextMenu = ({
             {menuItems
               .filter((item) => !item.hidden)
               .map((item, index) => {
-                const hasChildren = item.hasOwnProperty("children");
+                const hasChildren = Object.prototype.hasOwnProperty.call(
+                  item,
+                  "children"
+                );
                 const activeSubMenu =
                   activeSubMenuIndex === index && hasChildren;
                 return (
@@ -130,6 +134,33 @@ const ContextMenu = ({
       </div>
     );
   }
+};
+
+ContextMenu.displayName = "ContextMenu";
+ContextMenu.propTypes = {
+  itemsViewRef: PropTypes.object.isRequired,
+  contextMenuRef: PropTypes.object.isRequired,
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      onClick: PropTypes.func,
+      divider: PropTypes.bool,
+      hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+      className: PropTypes.string,
+      children: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+          onClick: PropTypes.func,
+          hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+          className: PropTypes.string,
+        })
+      ),
+    })
+  ).isRequired,
+  visible: PropTypes.bool.isRequired,
+  clickPosition: PropTypes.object.isRequired,
 };
 
 export default ContextMenu;

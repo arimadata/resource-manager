@@ -1,5 +1,6 @@
 import { MdClose } from "react-icons/md";
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import "./Modal.scss";
 
 const Modal = ({
@@ -49,6 +50,16 @@ const Modal = ({
       {children}
     </dialog>
   );
+};
+
+Modal.displayName = "Modal";
+Modal.propTypes = {
+  children: PropTypes.node.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  heading: PropTypes.string.isRequired,
+  dialogWidth: PropTypes.string,
+  closeButton: PropTypes.bool,
 };
 
 export default Modal;

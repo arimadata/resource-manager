@@ -44,6 +44,8 @@ const ResourceManager = ({
   onCopy,
   onCreateFolder,
   onCreateItem,
+  renderCustomEmptySelectToolbar,
+  renderCustomSelectToolbar,
   onCut,
   onDelete,
   onFavorite,
@@ -57,14 +59,14 @@ const ResourceManager = ({
   allowCreateItem = true,
   allowShareItem = true,
   allowCut = true,
-  allowCopy = true,
+  // allowCopy = true,
   allowFavorite = true,
   allowPaste = true,
   allowRename = true,
   allowDelete = true,
   initialPath = null,
-  customEmptySelecCtxItems = [],
-  customSelecCtxItems = [],
+  customEmptySelectCtxItems = [],
+  customSelectCtxItems = [],
   height = "auto",
   width = "100%",
   fontFamily = "Rubik, sans-serif",
@@ -111,12 +113,16 @@ const ResourceManager = ({
                 <SingleItemProvider
                   eventBroker={eventBroker}
                   resourceManagerCfg={resourceManagerCfg}
-                  customEmptySelecCtxItems={customEmptySelecCtxItems}
-                  customSelecCtxItems={customSelecCtxItems}
+                  customEmptySelectCtxItems={customEmptySelectCtxItems}
+                  customSelectCtxItems={customSelectCtxItems}
                 >
                   <Toolbar
                     resourceManagerCfg={resourceManagerCfg}
                     eventBroker={eventBroker}
+                    renderCustomEmptySelectToolbar={
+                      renderCustomEmptySelectToolbar
+                    }
+                    renderCustomSelectToolbar={renderCustomSelectToolbar}
                   />
                   <div className="folders-preview" style={{ width: "100%" }}>
                     <BreadCrumb eventBroker={eventBroker} />
@@ -151,7 +157,6 @@ const ResourceManager = ({
 };
 
 ResourceManager.displayName = "ResourceManager";
-
 ResourceManager.propTypes = {
   headers: PropTypes.arrayOf(
     PropTypes.shape({
@@ -210,7 +215,7 @@ ResourceManager.propTypes = {
   allowRename: PropTypes.bool,
   allowDelete: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
-  customEmptySelecCtxItems: PropTypes.arrayOf(
+  customEmptySelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -229,7 +234,7 @@ ResourceManager.propTypes = {
       ),
     })
   ),
-  customSelecCtxItems: PropTypes.arrayOf(
+  customSelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -248,6 +253,8 @@ ResourceManager.propTypes = {
       ),
     })
   ),
+  renderCustomEmptySelectToolbar: PropTypes.node,
+  renderCustomSelectToolbar: PropTypes.node,
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryColor: PropTypes.string,

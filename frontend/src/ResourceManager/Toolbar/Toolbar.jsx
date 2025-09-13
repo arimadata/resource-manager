@@ -11,9 +11,15 @@ import { FaRegPaste, FaArrowUpFromBracket } from "react-icons/fa6";
 import { useNavigation } from "../../contexts/NavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
+import PropTypes from "prop-types";
 import "./Toolbar.scss";
 
-const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
+const Toolbar = ({
+  resourceManagerCfg,
+  eventBroker,
+  renderCustomEmptySelectToolbar,
+  renderCustomSelectToolbar,
+}) => {
   const { currentFolder } = useNavigation();
   const { selectedItems } = useSelection();
   const { clipBoard } = useClipBoard();
@@ -117,6 +123,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
                 <span>Delete</span>
               </button>
             )}
+            {renderCustomSelectToolbar}
           </div>
           {/* Clear selection */}
           <button
@@ -153,6 +160,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
                 <span>{item.text}</span>
               </button>
             ))}
+          {renderCustomEmptySelectToolbar}
         </div>
         <div>
           {toolbarRightItems.map((item, index) => (
@@ -173,6 +181,35 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
       </div>
     </div>
   );
+};
+
+Toolbar.displayName = "Toolbar";
+Toolbar.propTypes = {
+  resourceManagerCfg: PropTypes.shape({
+    allowCreateItem: PropTypes.bool,
+    allowCreateFolder: PropTypes.bool,
+    allowShareItem: PropTypes.bool,
+    allowCut: PropTypes.bool,
+    allowCopy: PropTypes.bool,
+    allowPaste: PropTypes.bool,
+    allowRename: PropTypes.bool,
+    createItemLabel: PropTypes.string,
+    allowDelete: PropTypes.bool,
+    allowFavorite: PropTypes.bool,
+  }).isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  renderCustomEmptySelectToolbar: PropTypes.node,
+  renderCustomSelectToolbar: PropTypes.node,
 };
 
 export default Toolbar;

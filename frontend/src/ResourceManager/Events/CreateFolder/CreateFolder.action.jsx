@@ -4,8 +4,8 @@ import { duplicateNameHandler } from "../../../utils/duplicateNameHandler";
 import NameInput from "../../../components/NameInput/NameInput";
 import ErrorTooltip from "../../../components/ErrorTooltip/ErrorTooltip";
 import { useNavigation } from "../../../contexts/NavigationContext";
-
-const maxNameLength = 220;
+import { dateStringValidator } from "../../../validators/propValidators";
+import PropTypes from "prop-types";
 
 const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
   const [folderName, setFolderName] = useState(item.displayName);
@@ -127,7 +127,6 @@ const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
     <>
       <NameInput
         nameInputRef={outsideClick.ref}
-        maxLength={maxNameLength}
         value={folderName}
         onChange={handleFolderNameChange}
         onKeyDown={handleValidateFolderName}
@@ -143,6 +142,42 @@ const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
       )}
     </>
   );
+};
+
+CreateFolderAction.propTypes = {
+  itemsViewRef: PropTypes.object.isRequired,
+  item: PropTypes.shape({
+    // Original structure fields
+    pk: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
+    itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+    iconName: PropTypes.string,
+    isFavorited: PropTypes.bool,
+    parentPk: PropTypes.string,
+    scope: PropTypes.string,
+    scopePk: PropTypes.string,
+    createdAt: dateStringValidator,
+    updatedAt: dateStringValidator,
+    resource: PropTypes.object,
+    resourcePk: PropTypes.string,
+    resourceType: PropTypes.string,
+
+    // Computed fields (added by ItemsContext)
+    isDirectory: PropTypes.bool,
+    path: PropTypes.string,
+    isEditing: PropTypes.bool,
+  }).isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };
 
 export default CreateFolderAction;

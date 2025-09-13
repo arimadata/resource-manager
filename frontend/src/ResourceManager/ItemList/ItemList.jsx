@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import Item from "./Item";
+import PropTypes from "prop-types";
 import { useNavigation } from "../../contexts/NavigationContext";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
@@ -16,8 +17,8 @@ const ItemList = ({ eventBroker, headers }) => {
   const gridTemplateColumns = `40px 32px ${headers.map(() => "1fr").join(" ")}`;
 
   const {
-    emptySelecCtxItems,
-    selecCtxItems,
+    emptySelectCtxItems,
+    selectCtxItems,
     handleContextMenu,
     visible,
     setVisible,
@@ -55,13 +56,13 @@ const ItemList = ({ eventBroker, headers }) => {
           ))}
         </>
       ) : (
-        <div className="empty-folder">This folder is empty.</div>
+        <div className="empty-folder">No items found.</div>
       )}
 
       <ContextMenu
         itemsViewRef={itemsViewRef}
         contextMenuRef={contextMenuRef.ref}
-        menuItems={isSelectionCtx ? selecCtxItems : emptySelecCtxItems}
+        menuItems={isSelectionCtx ? selectCtxItems : emptySelectCtxItems}
         visible={visible}
         setVisible={setVisible}
         clickPosition={clickPosition}
@@ -71,5 +72,27 @@ const ItemList = ({ eventBroker, headers }) => {
 };
 
 ItemList.displayName = "FileList";
+ItemList.propTypes = {
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attribute: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string.isRequired,
+      columnName: PropTypes.string,
+      transform: PropTypes.func,
+      sortAccessor: PropTypes.func,
+    })
+  ).isRequired,
+};
 
 export default ItemList;

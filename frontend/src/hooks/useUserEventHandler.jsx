@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSelection } from "../contexts/SelectionContext";
-import { useSingleItem } from "../contexts/SingleItemContext";
 
 export const useUserEventHandler = ({
   onCopy,
@@ -17,12 +16,11 @@ export const useUserEventHandler = ({
   onShare,
   eventBroker,
 }) => {
-  const { selectedItems, selectedItemIndexes } = useSelection();
-  const { rightClickedItem } = useSingleItem();
+  const { selectedItems } = useSelection();
   const userDefinedCleanupRef = useRef();
 
   const eventSubscriptions = {
-    createItemDone: [onCreateItem, null],
+    createItem: [onCreateItem],
     shareItems: [onShare, selectedItems.filter((item) => !item.isDirectory)],
     deleteItemsDone: [onDelete, selectedItems],
     createFolderDone: [onCreateFolder, null],
@@ -32,11 +30,11 @@ export const useUserEventHandler = ({
     renameItemDone: [onRename, null],
     toggleFavorite: [onFavorite, null],
     openItem: [onOpen, selectedItems[0]],
-    refresh: [onRefresh, null],
+    refresh: [onRefresh],
     selectItemsDone: [onSelect, selectedItems],
   };
 
-  const handleEvent = (userEventHandler, eventData) => {
+  const handleEvent = (userEventHandler, hasNoDataParam, eventData) => {
     if (!userEventHandler) return;
 
     // Release the event broker and call the user defined cleanup function
@@ -63,8 +61,13 @@ export const useUserEventHandler = ({
       try {
         // Execute user code - keep the UI locked until release() is called if this
         // is a blocking event.
-        userDefinedCleanupRef.current =
-          userEventHandler(eventData, release) ?? undefined;
+        if (hasNoDataParam) {
+          userDefinedCleanupRef.current =
+            userEventHandler(release) ?? undefined;
+        } else {
+          userDefinedCleanupRef.current =
+            userEventHandler(eventData, release) ?? undefined;
+        }
       } catch (err) {
         console.error("Error while running user defined event handler:", err);
       } finally {
@@ -80,7 +83,11 @@ export const useUserEventHandler = ({
     } else {
       // Regular user defined event handler with the option to lock the UI
       try {
-        userEventHandler(eventData, lock);
+        if (hasNoDataParam) {
+          userEventHandler(lock);
+        } else {
+          userEventHandler(eventData, lock);
+        }
       } catch (err) {
         console.error("Error while running user defined event handler:", err);
       }
@@ -96,7 +103,11 @@ export const useUserEventHandler = ({
         eventBroker.event
       );
       const [userEventHandler, defaultEventData] = subscription;
-      handleEvent(userEventHandler, eventBroker.data ?? defaultEventData);
+      const hasNoDataParam = subscription.length === 1;
+      const eventData = hasNoDataParam
+        ? undefined
+        : eventBroker.data ?? defaultEventData;
+      handleEvent(userEventHandler, hasNoDataParam, eventData);
     }
     // Call user defined cleanup function if it exists on cancel/reset events
     if (["cancel", "refresh", "release"].includes(eventBroker.event)) {

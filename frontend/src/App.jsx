@@ -23,19 +23,30 @@ const headers = [
     defaultValue: "None",
     columnName: "Model Name",
   },
+
+  {
+    attribute: "description",
+    defaultValue: "None",
+    columnName: "Description",
+  },
   {
     attribute: "updatedAt",
-    defaultValue: "1/1/2025, 10:48:37 AM",
-    columnName: "Modified Date",
-    transform: (v) => new Date(v).toLocaleString(),
+    defaultValue: "Unknown",
+    columnName: "Last Updated",
+    transform: (v) => new Date(v).toLocaleString("en-US"),
     sortAccessor: (v) => new Date(v).getTime(),
+  },
+  {
+    attribute: "userPk",
+    defaultValue: "None",
+    columnName: "Owner",
   },
 ];
 
 const initialItems = [
   {
     createdAt: "2025-09-09T09:35:17.634046Z",
-    displayName: "Report123",
+    displayName: "Test Report",
     iconName: "FaRegFileLines",
     isFavorited: false,
     itemType: "resource",
@@ -45,17 +56,17 @@ const initialItems = [
       companyPk: "alex_test_inc",
       createdAt: "2025-09-04T15:38:24.358281Z",
       updatedAt: "2025-09-04T15:38:24.358281Z",
-      description: "d23312312",
-      displayName: "Report123",
+      description: "Test Description",
+      displayName: "Test Report",
       pk: "6250780034072576",
-      userPk: "dmitry.oborsky@gmail.com",
+      userPk: "test@gmail.com",
       tabs: [],
     },
-    userPk: "dmitry.oborsky@gmail.com",
+    userPk: "test@gmail.com",
     resourcePk: "6250780034072576",
     resourceType: "report",
     scope: "user",
-    scopePk: "dmitry.oborsky@gmail.com",
+    scopePk: "test@gmail.com",
     updatedAt: "2025-09-09T09:35:17.634046Z",
   },
 ];
@@ -75,13 +86,14 @@ function App() {
   const isLoading = loadingCount > 0;
 
   ////////////////////////////////////////////////////
-  const onCreateItem = (data, release) => {
-    console.log("onCreateItem -> data:", data);
+  const onCreateItem = (release) => {
+    console.log("onCreateItem called");
     // 1. Setup modal handlers as needed with API calls if necessary
     // Make sure they call "release" when done
     const onConfirm = async (formData) => {
       // await createItemAPI(formData);
       // getItems();
+      console.log("onCreateItem -> formData:", formData);
       release();
     };
     const onCancel = () => {
@@ -92,7 +104,6 @@ function App() {
     setModal({
       open: true,
       Component: CreateModal,
-      data,
       onConfirm,
       onCancel,
     });
@@ -263,11 +274,11 @@ function App() {
       });
   };
 
-  const onRefresh = (data, lock) => {
+  const onRefresh = (lock) => {
     // // Optional: Lock the UI until the refresh is completed
     // const release = lock();
     // incrementLoadingCount();
-    console.log("onRefresh -> data:", data);
+    console.log("onRefresh called");
     getItems()
       .then(() => {
         console.log("Refresh completed");
@@ -313,53 +324,53 @@ function App() {
   ////////////////////////////////////////////////////
   // Context Menu
 
-  const customEmptySelecCtxItems = [];
-  const customSelecCtxItems = [];
+  const customEmptySelectCtxItems = [];
+  const customSelectCtxItems = [];
 
   /////////////////////////////////////////////////////////////////
   // Uncomment below to see how to add custom context menu items //
   /////////////////////////////////////////////////////////////////
 
-  // const customEmptySelecCtxItems = [
+  // const customEmptySelectCtxItems = [
   //   {
   //     title: "custom Item 1",
-  //     icon: "FaChurch",
+  //     icon: "Bs1CircleFill",
   //     children: [
   //       {
   //         title: "custom sub Item 1",
-  //         icon: "FaBaby",
+  //         icon: "BsBandaid",
   //         onClick: (allItems) => console.log("custom sub Item 1", allItems),
   //       },
   //       {
-  //         title: "sub Item 2",
-  //         icon: "FaBaby",
+  //         title: "custom sub Item 2",
+  //         icon: "BsArrowThroughHeart",
   //         onClick: (allItems) => console.log("custom sub Item 2", allItems),
   //       },
   //     ],
   //   },
   //   {
-  //     title: "custom sub Item 1",
-  //     icon: "FaBaby",
+  //     title: "custom Item 2",
+  //     icon: "Bs2CircleFill",
   //     onClick: (allItems) => console.log("custom Item 2", allItems),
   //     divider: true,
   //   },
   // ];
-  // const customSelecCtxItems = [
+  // const customSelectCtxItems = [
   //   {
   //     title: "Dev Tools",
-  //     icon: "FaBaby",
+  //     icon: "BsTools",
   //     divider: false,
   //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
   //     children: [
   //       {
   //         title: "Make Dev Copy",
-  //         icon: "FaChurch",
+  //         icon: "BsBasket",
   //         onClick: (item) => console.log("Make Dev Copy", item),
   //         hidden: false,
   //       },
   //       {
   //         title: "Favorited Only",
-  //         icon: "FaCaretDown",
+  //         icon: "BsBullseye",
   //         onClick: (item) => console.log("Favorited Item", item),
   //         hidden: (item) => !item?.isFavorited, // Action can be performed on non-favorited items
   //       },
@@ -367,12 +378,30 @@ function App() {
   //   },
   //   {
   //     title: "Build MMM",
-  //     icon: "FaAccessibleIcon",
+  //     icon: "BsBuilding",
   //     onClick: (item) => console.log("Build MMM", item),
   //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
   //     divider: true,
   //   },
   // ];
+
+  ////////////////////////////////////////////////////
+  // Custom Toolbar
+
+  const customEmptySelectToolbar = null;
+
+  // const customEmptySelectToolbar = (
+  //   <>
+  //     <input type="text" placeholder="Type to search..." />
+  //     <button onClick={() => console.log("Searching...")}>Search</button>
+  //   </>
+  // );
+
+  const customSelectToolbar = null;
+
+  // const customSelectToolbar = (
+  //   <button onClick={() => console.log("Selecting...")}>Select All</button>
+  // );
 
   return (
     <div className="app">
@@ -386,6 +415,8 @@ function App() {
           onCreateItem={onCreateItem}
           onCut={onCut}
           onDelete={onDelete}
+          renderCustomEmptySelectToolbar={customEmptySelectToolbar}
+          renderCustomSelectToolbar={customSelectToolbar}
           onFavorite={onFavorite}
           onOpen={onOpen}
           onPaste={onPaste}
@@ -394,8 +425,8 @@ function App() {
           onSelect={onSelect}
           onShare={onShare}
           initialPath={null}
-          customEmptySelecCtxItems={customEmptySelecCtxItems}
-          customSelecCtxItems={customSelecCtxItems}
+          customEmptySelectCtxItems={customEmptySelectCtxItems}
+          customSelectCtxItems={customSelectCtxItems}
           height="100%"
           width="100%"
           fontFamily="Rubik, sans-serif"

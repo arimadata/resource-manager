@@ -5,8 +5,8 @@ import { useItems } from "../../contexts/ItemsContext";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import { useClipBoard } from "../../contexts/ClipboardContext";
 import PropTypes from "prop-types";
-import "./BreadCrumb.scss";
 import Tooltip from "../../components/Tooltip/Tooltip";
+import "./BreadCrumb.scss";
 
 const BreadCrumb = ({ eventBroker }) => {
   const [folders, setFolders] = useState([]);
@@ -235,9 +235,18 @@ const BreadCrumb = ({ eventBroker }) => {
   );
 };
 
+BreadCrumb.displayName = "BreadCrumb";
 BreadCrumb.propTypes = {
   eventBroker: PropTypes.shape({
-    publish: PropTypes.func.isRequired,
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
   }).isRequired,
 };
 

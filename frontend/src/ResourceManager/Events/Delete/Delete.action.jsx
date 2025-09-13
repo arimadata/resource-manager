@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button/Button";
 import { useSelection } from "../../../contexts/SelectionContext";
 import "./Delete.action.scss";
+import PropTypes from "prop-types";
 
 const DeleteAction = ({ eventBroker }) => {
   const { selectedItems } = useSelection();
@@ -30,6 +30,20 @@ const DeleteAction = ({ eventBroker }) => {
       </div>
     </div>
   );
+};
+
+DeleteAction.propTypes = {
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };
 
 export default DeleteAction;

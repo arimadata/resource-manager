@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const SubMenu = ({ subMenuRef, list, position = "right" }) => {
   return (
     <ul ref={subMenuRef} className={`sub-menu ${position}`}>
@@ -11,6 +13,13 @@ const SubMenu = ({ subMenuRef, list, position = "right" }) => {
         ))}
     </ul>
   );
+};
+
+SubMenu.displayName = "SubMenu";
+SubMenu.propTypes = {
+  subMenuRef: PropTypes.object.isRequired,
+  list: PropTypes.array.isRequired,
+  position: PropTypes.string,
 };
 
 export default SubMenu;

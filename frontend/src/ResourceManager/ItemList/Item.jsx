@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { BsStarFill, BsStar, BsThreeDots } from "react-icons/bs";
-
 import { useIcon } from "../../hooks/useIcons";
 import CreateFolderAction from "../Events/CreateFolder/CreateFolder.action";
 import RenameAction from "../Events/Rename/Rename.action";
@@ -10,8 +9,10 @@ import { useClipBoard } from "../../contexts/ClipboardContext";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { arraysEqual } from "../../utils/arraysEqual";
 import Tooltip from "../../components/Tooltip/Tooltip";
-
-const dragIconSize = 50;
+import { dateStringValidator } from "../../validators/propValidators";
+import { ICON_SIZE } from "../../constants/iconSize";
+import { DRAG_ICON_SIZE } from "../../constants/dragIconSize";
+import PropTypes from "prop-types";
 
 const Item = ({
   index,
@@ -30,13 +31,11 @@ const Item = ({
   const [dropZoneClass, setDropZoneClass] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [hoverPosition, setHoverPosition] = useState(null);
-
-  const iconSize = 20;
-  const getIcon = useIcon();
   const { currentPathItems } = useNavigation();
   const { setSelectedItems, setHoveredItem } = useSelection();
   const { clipBoard, setClipBoard } = useClipBoard();
   const dragIconRef = useRef(null);
+  const getIcon = useIcon();
 
   const getHeaderValue = (header) => {
     let value =
@@ -60,20 +59,20 @@ const Item = ({
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
 
-  const getItemIcon = (size = iconSize) => {
+  const getItemIcon = (size = ICON_SIZE) => {
     if (item.itemType === "folder") {
-      return getIcon("BsFolderFill", size);
+      return getIcon("BsFolderFill", size, { color: "#B5CCFF" });
     }
 
     switch (item.resourceType) {
       case "report":
-        return getIcon("BsFileEarmarkFill", size);
+        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
       case "mmm":
-        return getIcon("BsFileEarmarkFill", size);
+        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
       case "audience":
-        return getIcon("BsPeopleFill", size);
+        return getIcon("BsPeopleFill", size, { color: "#B5CCFF" });
       default:
-        return getIcon("BsFileEarmarkFill", size);
+        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
     }
   };
 
@@ -199,7 +198,7 @@ const Item = ({
 
   const handleDragStart = (e) => {
     if (!canSelectItems) return;
-    e.dataTransfer.setDragImage(dragIconRef.current, 30, 50);
+    e.dataTransfer.setDragImage(dragIconRef.current, 30, DRAG_ICON_SIZE);
     e.dataTransfer.effectAllowed = "copy";
     eventBroker.publish("cutItems");
   };
@@ -420,7 +419,7 @@ const Item = ({
               title="More options"
               onClick={handleItemContextMenu}
             >
-              <BsThreeDots size={iconSize} />
+              <BsThreeDots size={ICON_SIZE} />
             </button>
           </div>
         </div>
@@ -432,11 +431,58 @@ const Item = ({
       )}
 
       <div ref={dragIconRef} className="drag-icon">
-        {getItemIcon(dragIconSize)}
+        {getItemIcon(DRAG_ICON_SIZE)}
       </div>
       {/* Drag Icon & Tooltip Setup */}
     </div>
   );
+};
+
+Item.displayName = "Item";
+Item.propTypes = {
+  index: PropTypes.number.isRequired,
+  item: PropTypes.shape({
+    pk: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
+    itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+    iconName: PropTypes.string,
+    isFavorited: PropTypes.bool,
+    parentPk: PropTypes.string,
+    scope: PropTypes.string,
+    scopePk: PropTypes.string,
+    createdAt: dateStringValidator,
+    updatedAt: dateStringValidator,
+    resource: PropTypes.object,
+    resourcePk: PropTypes.string,
+    resourceType: PropTypes.string,
+    isDirectory: PropTypes.bool,
+    path: PropTypes.string,
+    isEditing: PropTypes.bool,
+  }).isRequired,
+  itemsViewRef: PropTypes.object.isRequired,
+  selectedItemIndexes: PropTypes.array.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  handleContextMenu: PropTypes.func.isRequired,
+  setRightClickedItem: PropTypes.func.isRequired,
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attribute: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string.isRequired,
+      columnName: PropTypes.string,
+      transform: PropTypes.func,
+      sortAccessor: PropTypes.func,
+    })
+  ).isRequired,
 };
 
 export default Item;

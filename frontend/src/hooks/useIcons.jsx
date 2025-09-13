@@ -23,7 +23,7 @@ export const useIcon = () => {
     }
 
     // Return the icon component with size and additional props
-    return <IconComponent size={size} color="#B5CCFF" {...props} />;
+    return <IconComponent size={size} {...props} />;
   };
 
   return getIcon;

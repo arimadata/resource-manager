@@ -16,6 +16,7 @@ import { useNavigation } from "./NavigationContext";
 import { duplicateNameHandler } from "../utils/duplicateNameHandler";
 import { useItems } from "./ItemsContext";
 import { useIcon } from "../hooks/useIcons";
+import PropTypes from "prop-types";
 
 const SingleItemContext = createContext();
 
@@ -23,8 +24,8 @@ export const SingleItemProvider = ({
   children,
   eventBroker,
   resourceManagerCfg,
-  customEmptySelecCtxItems = [],
-  customSelecCtxItems = [],
+  customEmptySelectCtxItems = [],
+  customSelectCtxItems = [],
 }) => {
   const [visible, setVisible] = useState(false);
   const [isSelectionCtx, setIsSelectionCtx] = useState(false);
@@ -106,7 +107,7 @@ export const SingleItemProvider = ({
   };
 
   // Handler for toggling favorite
-  const toggleFavorite = (item) => {
+  const toggleFavorite = () => {
     setCurrentPathItems((prev) => [...prev]); // Trigger re-render
   };
 
@@ -220,7 +221,7 @@ export const SingleItemProvider = ({
   };
 
   // Context Menu - General: when selecting empty space //
-  const defaultEmptySelecCtxItems = [
+  const defaultEmptySelectCtxItems = [
     {
       title: "Refresh",
       icon: <FiRefreshCw size={18} />,
@@ -247,16 +248,16 @@ export const SingleItemProvider = ({
 
   // Merge custom items with default items
   const processedCustomEmptyItems = processCustomMenuItems(
-    customEmptySelecCtxItems,
+    customEmptySelectCtxItems,
     "empty"
   );
-  const emptySelecCtxItems = [
+  const emptySelectCtxItems = [
     ...processedCustomEmptyItems,
-    ...defaultEmptySelecCtxItems,
+    ...defaultEmptySelectCtxItems,
   ];
 
   // Context Menu - Selected Items: when selecting an item //
-  const defaultSelecCtxItems = [
+  const defaultSelectCtxItems = [
     resourceManagerCfg.allowShareItem &&
       !rightClickedItem?.isDirectory && {
         title: "Share",
@@ -306,11 +307,14 @@ export const SingleItemProvider = ({
   ].filter(Boolean); // remove undefined/falsy items
 
   // Merge custom items with default items
-  const processedCustomSelecItems = processCustomMenuItems(
-    customSelecCtxItems,
+  const processedCustomSelectItems = processCustomMenuItems(
+    customSelectCtxItems,
     "selected"
   );
-  const selecCtxItems = [...processedCustomSelecItems, ...defaultSelecCtxItems];
+  const selectCtxItems = [
+    ...processedCustomSelectItems,
+    ...defaultSelectCtxItems,
+  ];
 
   const handleFolderCreating = () => {
     eventBroker.publish("createFolder");
@@ -343,8 +347,8 @@ export const SingleItemProvider = ({
         deleteItems,
         addOrReplaceItem,
         toggleFavorite,
-        emptySelecCtxItems,
-        selecCtxItems,
+        emptySelectCtxItems,
+        selectCtxItems,
         handleContextMenu,
         handleItemRenaming,
         handleFolderCreating,
@@ -358,6 +362,35 @@ export const SingleItemProvider = ({
       {children}
     </SingleItemContext.Provider>
   );
+};
+
+SingleItemProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  resourceManagerCfg: PropTypes.shape({
+    allowCreateItem: PropTypes.bool,
+    allowCreateFolder: PropTypes.bool,
+    allowShareItem: PropTypes.bool,
+    allowCut: PropTypes.bool,
+    allowCopy: PropTypes.bool,
+    allowPaste: PropTypes.bool,
+    allowRename: PropTypes.bool,
+    createItemLabel: PropTypes.string,
+    allowDelete: PropTypes.bool,
+    allowFavorite: PropTypes.bool,
+  }).isRequired,
+  customEmptySelectCtxItems: PropTypes.array,
+  customSelectCtxItems: PropTypes.array,
 };
 
 export const useSingleItem = () => useContext(SingleItemContext);

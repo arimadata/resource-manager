@@ -1,9 +1,6 @@
 import { useKeyPress } from "./useKeyPress";
 import { shortcuts } from "../utils/shortcuts";
-import { useClipBoard } from "../contexts/ClipboardContext";
 import { useNavigation } from "../contexts/NavigationContext";
-import { useSelection } from "../contexts/SelectionContext";
-import { useSingleItem } from "../contexts/SingleItemContext";
 
 export const useKeyboardEventPublisher = ({
   eventBroker,

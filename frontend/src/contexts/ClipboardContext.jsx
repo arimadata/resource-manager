@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useSelection } from "./SelectionContext";
 import { useItems } from "./ItemsContext";
+import PropTypes from "prop-types";
 
 const ClipBoardContext = createContext();
 
@@ -24,14 +25,14 @@ export const ClipBoardProvider = ({ children, eventBroker }) => {
     console.warn("Copying items is currently not supported");
     eventBroker.publish("release");
     return;
-    if (selectedItems.length === 0) {
-      return;
-    }
-    setClipBoard({
-      items: selectedItems,
-      isMoving: false,
-    });
-    eventBroker.publish("copyItemsDone", selectedItems);
+    // if (selectedItems.length === 0) {
+    //   return;
+    // }
+    // setClipBoard({
+    //   items: selectedItems,
+    //   isMoving: false,
+    // });
+    // eventBroker.publish("copyItemsDone", selectedItems);
   };
 
   // TODO: Show error if destination folder already has file(s) with the same name
@@ -82,6 +83,21 @@ export const ClipBoardProvider = ({ children, eventBroker }) => {
       {children}
     </ClipBoardContext.Provider>
   );
+};
+
+ClipBoardProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };
 
 export const useClipBoard = () => useContext(ClipBoardContext);

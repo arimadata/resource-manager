@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import PropTypes from "prop-types";
 import { SORT_DIRECTIONS } from "../constants/sortDirections";
+import PropTypes from "prop-types";
 
 const SortingContext = createContext();
 

@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { useItems } from "./ItemsContext";
 import { sortItems } from "../utils/sortItems";
 import { arraysEqual } from "../utils/arraysEqual";
 import { useSorting } from "./SortingContext";
+import PropTypes from "prop-types";
 
 const NavigationContext = createContext();
 
@@ -30,27 +30,30 @@ export const NavigationProvider = ({ children, initialPath, headers }) => {
   // Context handlers
 
   useEffect(() => {
-    if (Array.isArray(items) && items.length > 0) {
-      const currPathItems = items.filter((item) =>
-        arraysEqual(item.path.slice(0, -1), currentPath)
-      );
+    if (Array.isArray(items)) {
+      if (items.length > 0) {
+        const currPathItems = items.filter((item) =>
+          arraysEqual(item.path.slice(0, -1), currentPath)
+        );
 
-      const sortedItems = sortItems({
-        items: currPathItems,
-        sortColumn,
-        sortDirection,
-        headers,
-      });
+        const sortedItems = sortItems({
+          items: currPathItems,
+          sortColumn,
+          sortDirection,
+          headers,
+        });
 
-      setCurrentPathItems(sortedItems);
+        setCurrentPathItems(sortedItems);
 
-      setCurrentFolder(() => {
-        if (currentPath.length === 0) return null; // Root directory
-        const currentFolderPk = currentPath[currentPath.length - 1];
-        return items.find((item) => item.pk === currentFolderPk) ?? null;
-      });
-    } else {
-      setCurrentPathItems([]);
+        setCurrentFolder(() => {
+          if (currentPath.length === 0) return null;
+          const currentFolderPk = currentPath[currentPath.length - 1];
+          return items.find((item) => item.pk === currentFolderPk) ?? null;
+        });
+      } else {
+        setCurrentPathItems([]);
+        setCurrentFolder(null);
+      }
     }
   }, [items, currentPath, sortColumn, sortDirection, headers]);
 
@@ -80,7 +83,7 @@ export const NavigationProvider = ({ children, initialPath, headers }) => {
 
 NavigationProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  initialPath: PropTypes.arrayOf(PropTypes.string),
+  initialPath: PropTypes.arrayOf(PropTypes.string).isRequired,
   headers: PropTypes.arrayOf(
     PropTypes.shape({
       attribute: PropTypes.string.isRequired,
@@ -89,7 +92,7 @@ NavigationProvider.propTypes = {
       transform: PropTypes.func,
       sortAccessor: PropTypes.func,
     })
-  ),
+  ).isRequired,
 };
 
 export const useNavigation = () => useContext(NavigationContext);

@@ -8,6 +8,7 @@ import { useSelection } from "../../contexts/SelectionContext";
 import { useSingleItem } from "../../contexts/SingleItemContext";
 import { useItems } from "../../contexts/ItemsContext";
 import Modal from "../../components/Modal/Modal";
+import PropTypes from "prop-types";
 
 export const EventSubscribers = ({
   resourceManagerCfg,
@@ -25,23 +26,10 @@ export const EventSubscribers = ({
   onShare,
   eventBroker,
 }) => {
-  const { items, itemMap, setItems } = useItems();
-  const {
-    currentPath,
-    setCurrentPath,
-    currentFolder,
-    switchPath,
-    setCurrentFolder,
-    currentPathItems,
-    setCurrentPathItems,
-  } = useNavigation();
+  const { items, setItems } = useItems();
+  const { currentFolder, switchPath, setCurrentPathItems } = useNavigation();
   const {
     selectedItems,
-    selectedItemIndexes,
-    setSelectedItemIndexes,
-    setSelectedItems,
-    hoveredItem,
-    setHoveredItem,
     selectItems,
     selectFirst,
     selectLast,
@@ -52,8 +40,7 @@ export const EventSubscribers = ({
     navigateUp,
     navigateDown,
   } = useSelection();
-  const { clipBoard, setClipBoard, cutItems, copyItems, pasteItems } =
-    useClipBoard();
+  const { setClipBoard, cutItems, copyItems, pasteItems } = useClipBoard();
   const {
     openItem,
     renameItem,
@@ -61,16 +48,6 @@ export const EventSubscribers = ({
     addOrReplaceItem,
     toggleFavorite,
     deleteItems,
-    emptySelecCtxItems,
-    selecCtxItems,
-    handleContextMenu,
-    handleItemRenaming,
-    handleFolderCreating,
-    visible, // Context Menu Visibility
-    setVisible,
-    setRightClickedItem,
-    clickPosition,
-    isSelectionCtx,
   } = useSingleItem();
 
   // Register keyboard shortcut publishers
@@ -197,4 +174,43 @@ export const EventSubscribers = ({
       {internalModalEventHandler?.component}
     </Modal>
   ) : null;
+};
+
+EventSubscribers.displayName = "EventSubscribers";
+EventSubscribers.propTypes = {
+  resourceManagerCfg: PropTypes.shape({
+    allowCreateItem: PropTypes.bool,
+    allowCreateFolder: PropTypes.bool,
+    allowShareItem: PropTypes.bool,
+    allowCut: PropTypes.bool,
+    allowCopy: PropTypes.bool,
+    allowPaste: PropTypes.bool,
+    allowRename: PropTypes.bool,
+    createItemLabel: PropTypes.string,
+    allowDelete: PropTypes.bool,
+    allowFavorite: PropTypes.bool,
+  }).isRequired,
+  onCopy: PropTypes.func.isRequired,
+  onCreateFolder: PropTypes.func.isRequired,
+  onCreateItem: PropTypes.func.isRequired,
+  onCut: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onFavorite: PropTypes.func.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onPaste: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  onRename: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };
