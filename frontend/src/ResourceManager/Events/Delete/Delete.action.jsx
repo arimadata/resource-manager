@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 const DeleteAction = ({ eventBroker }) => {
   const { selectedItems } = useSelection();
 
-  const deleteMessage = () => {
+  const getDeleteMessage = () => {
     if (selectedItems.length === 1) {
       return `Are you sure you want to delete "${selectedItems[0].displayName}"?`;
     } else if (selectedItems.length > 1) {
@@ -15,9 +15,11 @@ const DeleteAction = ({ eventBroker }) => {
   };
 
   return (
-    <div className="file-delete-confirm">
-      <p className="file-delete-confirm-text">{deleteMessage()}</p>
-      <div className="file-delete-confirm-actions">
+    <div className="delete-confirmation-content">
+      <div className="delete-modal-message">
+        <p>{getDeleteMessage()}</p>
+      </div>
+      <div className="delete-modal-actions">
         <Button type="secondary" onClick={() => eventBroker.publish("release")}>
           Cancel
         </Button>

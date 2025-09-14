@@ -33,7 +33,7 @@ const Modal = ({
     <dialog
       ref={modalRef}
       className={`fm-modal dialog`}
-      style={{ width: dialogWidth }}
+      style={{ width: dialogWidth, borderRadius: "16px" }}
       onKeyDown={handleKeyDown}
     >
       <div className="fm-modal-header">
