@@ -41,7 +41,6 @@ export const useUserEventHandler = ({
     const release = () => {
       try {
         const fn = userDefinedCleanupRef.current;
-        console.log("release ->", fn);
         userDefinedCleanupRef.current = undefined;
         if (fn) fn();
       } catch (err) {
@@ -98,10 +97,6 @@ export const useUserEventHandler = ({
     // Are we subscribed to this event?
     const subscription = eventSubscriptions[eventBroker.event];
     if (subscription) {
-      console.log(
-        `( external ) [${eventBroker.eventCounter}] useUserEventHandler processing ->`,
-        eventBroker.event
-      );
       const [userEventHandler, defaultEventData] = subscription;
       const hasNoDataParam = subscription.length === 1;
       const eventData = hasNoDataParam

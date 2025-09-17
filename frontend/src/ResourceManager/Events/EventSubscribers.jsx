@@ -125,13 +125,8 @@ export const EventSubscribers = ({
   };
   useEffect(() => {
     // Are we subscribed to this event?
-    console.log("eventBroker?.eventCounter", eventBroker?.eventCounter);
     const subscriptionHandler = eventSubscriptions[eventBroker.event];
     if (subscriptionHandler) {
-      console.log(
-        `( internal ) [${eventBroker.eventCounter}] EventSubscribers processing ->`,
-        eventBroker.event
-      );
       subscriptionHandler();
     }
   }, [eventBroker?.eventCounter]);
