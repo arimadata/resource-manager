@@ -38,13 +38,13 @@
       }
 
       &.fm-button-danger {
-        background: #d32f2f;
+        background: $danger-color;
         color: white;
-        border: 1px solid #d32f2f;
+        border: 1px solid $danger-color;
 
         &:hover {
-          background: #b71c1c;
-          border-color: #b71c1c;
+          background: $danger-color-hover;
+          border-color: $danger-color-hover;
         }
       }
     }

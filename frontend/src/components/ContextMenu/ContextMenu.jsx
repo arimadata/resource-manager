@@ -82,10 +82,7 @@ const ContextMenu = ({ contextMenuRef, menuItems, visible, clickPosition }) => {
             {menuItems
               .filter((item) => !item.hidden)
               .map((item, index) => {
-                const hasChildren = Object.prototype.hasOwnProperty.call(
-                  item,
-                  "children"
-                );
+                const hasChildren = "children" in item;
                 const activeSubMenu =
                   activeSubMenuIndex === index && hasChildren;
                 return (

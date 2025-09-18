@@ -289,8 +289,4 @@ The example backend uses MongoDB for persistence. See `backend/.env.example` for
 
 - **Folder Deletion Behavior**: When deleting a folder, all child items become root-level items, which can lead to duplicate file names. Functionally okay, but may not be intended behavior.
 
-- **Customizable Header**: Change header to show details about the resource it manages and allow users to pick which attributes they want to display from the resource data.
-
 - **Browser Navigation**: Allow users to go "back" using browser back button or mouse back button for better navigation experience.
-
-- **Sorting and Filtering**: Allow users to search items, filter and sort by columns.

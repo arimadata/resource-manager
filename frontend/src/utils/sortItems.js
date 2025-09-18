@@ -31,14 +31,8 @@ export const sortItems = ({ items, sortColumn, sortDirection, headers }) => {
 
     // Only apply transform if it exists, otherwise use the current value
     if (header.sortAccessor) {
-      const transformedValue1 = header.transform
-        ? header.transform(value1)
-        : value1;
-      const transformedValue2 = header.transform
-        ? header.transform(value2)
-        : value2;
-      value1 = header.sortAccessor(transformedValue1) ?? header.defaultValue;
-      value2 = header.sortAccessor(transformedValue2) ?? header.defaultValue;
+      value1 = header.sortAccessor(value1) ?? header.defaultValue;
+      value2 = header.sortAccessor(value2) ?? header.defaultValue;
     }
 
     // Handle different data types for comparison

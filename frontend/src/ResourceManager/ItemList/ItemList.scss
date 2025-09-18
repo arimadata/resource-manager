@@ -47,14 +47,14 @@
         gap: 8px;
 
         &:hover {
-          background-color: #f9fafb;
+          background-color: $action-hover-color;
         }
 
         &.share-btn {
-          background-color: #1f2937;
+          background-color: $share-btn-color;
 
           &:hover {
-            background-color: #374151;
+            background-color: $share-btn-hover-color;
           }
         }
 
@@ -68,7 +68,7 @@
           padding: 0;
 
           &:hover {
-            background: rgba(0, 0, 0, 0.08);
+            background: $contrast-color;
             transform: none;
             box-shadow: none;
           }
@@ -78,7 +78,7 @@
   }
 
   .item-container.item-drop-zone {
-    background-color: rgb(0, 0, 0, 0.08) !important;
+    background-color: $contrast-color !important;
   }
 
   .item {
@@ -95,7 +95,7 @@
     border-radius: 5px;
 
     &:hover {
-      background-color: $item-hover-color;
+      background-color: $contrast-color;
     }
 
     .selection-checkbox {
@@ -174,7 +174,7 @@
       padding: 12px 8px;
       position: sticky;
       top: 0;
-      background-color: #f8f9fa;
+      background-color: $cell-color;
       z-index: 1;
       color: #374151;
     }
@@ -196,7 +196,7 @@
       transition: all 0.15s ease;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+        background-color: $contrast-color;
         color: #111827;
       }
 
@@ -237,11 +237,11 @@
     position: relative;
 
     &.item-selected {
-      background-color: #e8f4fd;
+      background-color: $selected-cell-color;
     }
 
     &.item-drop-zone {
-      background-color: rgba(0, 0, 0, 0.08);
+      background-color: $contrast-color;
     }
 
     &.item-moving {
@@ -258,7 +258,7 @@
       .item-icon-cell,
       .item-name-cell,
       .item-standard-cell {
-        background-color: #f8f9fa;
+        background-color: $cell-color;
       }
 
       &.item-selected {
@@ -266,7 +266,7 @@
         .item-icon-cell,
         .item-name-cell,
         .item-standard-cell {
-          background-color: #e8f4fd;
+          background-color: $selected-cell-color;
         }
       }
     }
@@ -344,7 +344,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: background-color box-shadow 0.15s ease;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 2px $contrast-color;
       height: 32px;
       font-size: 14px;
       display: flex;
@@ -353,24 +353,22 @@
       gap: 8px;
 
       &:hover {
-        background-color: #f9fafb;
+        background-color: $action-hover-color;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       &.share-btn {
-        background-color: #1f2937;
+        background-color: $share-btn-color;
         color: white;
-        border: 1px solid #1f2937;
+        border: 1px solid $share-btn-color;
 
         &:hover {
-          background-color: #374151;
+          background-color: $share-btn-hover-color;
         }
       }
 
       &.more-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include flex-center;
         width: 40px;
         height: 40px;
         border: none;
@@ -383,7 +381,7 @@
         &:hover {
           background: radial-gradient(
             circle,
-            rgba(0, 0, 0, 0.05) 0,
+            $contrast-color 0,
             16px,
             rgba(0, 0, 0, 0) 16px
           );
@@ -410,10 +408,8 @@
   justify-content: center;
 
   .item-icon-wrapper {
-    display: flex;
-    align-items: center;
+    @include flex-center;
     width: 20px;
-    justify-content: center;
   }
 }
 
@@ -470,7 +466,7 @@
 
   .cell-text {
     font-size: 14px;
-    color: #6b7280;
+    color: $cell-text-color;
     font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
@@ -484,27 +480,23 @@
     width: 100%;
 
     .cell-text {
-      color: #6b7280;
+      color: $cell-text-color;
     }
   }
 }
 
 .items.list .empty-folder {
+  @include flex-center;
   grid-column: 1 / -1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   height: 200px;
   font-size: 14px;
-  color: #6b7280;
+  color: $cell-text-color;
   font-weight: 400;
 }
 
 .empty-folder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-center;
   width: 100%;
   height: 100%;
 }

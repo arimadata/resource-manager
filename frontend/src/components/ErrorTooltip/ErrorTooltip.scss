@@ -1,3 +1,5 @@
+@use "../../styles/variables" as *;
+
 .error-tooltip {
   position: absolute;
   z-index: 1;
@@ -6,7 +8,7 @@
   padding: 8px;
   width: 292px;
   border-radius: 5px;
-  background-color: #e2e2e2;
+  background-color: $tooltip-color;
   text-align: left;
   margin: 0;
   font-size: 0.9em;
@@ -16,8 +18,8 @@
     position: absolute;
     top: -20%;
     rotate: -45deg;
-    border: 15px solid #e2e2e2;
-    border-color: transparent #e2e2e2 transparent transparent;
+    border: 15px solid $tooltip-color;
+    border-color: transparent $tooltip-color transparent transparent;
   }
 }
 
@@ -52,8 +54,8 @@
     bottom: -20%;
     left: 11%;
     rotate: -45deg;
-    border: 15px solid #e2e2e2;
-    border-color: transparent transparent #e2e2e2 transparent;
+    border: 15px solid $tooltip-color;
+    border-color: transparent transparent $tooltip-color transparent;
   }
 }
 

@@ -1,8 +1,23 @@
+// App Specific Colors
+$button-primary-bg-color: rgba(0, 0, 0, 0.2);
+$button-secondary-bg-color: rgba(0, 0, 0, 0.1);
+
+$tooltip-color: #e2e2e2;
+
+$share-btn-color: #1f2937;
+$share-btn-hover-color: #374151;
+$action-border-color: rgba(0, 0, 0, 0.5);
+$action-hover-color: #f9fafb;
+
+$cell-color: #f8f9fa;
+$cell-text-color: #6b7280;
+$selected-cell-color: #e8f4fd;
+
 // App Colors
-$action-button-border-color: rgba(0, 0, 0, 0.5);
+$contrast-color: rgb(0, 0, 0, 0.05);
+$danger-color: #d32f2f;
+$danger-color-hover: #b71c1c;
 $border-color: #cfcfcf;
-$item-hover-color: rgb(0, 0, 0, 0.05);
-//
 
 // Reusable Styles
 @mixin flex-center {
