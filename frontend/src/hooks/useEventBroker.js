@@ -145,6 +145,7 @@ export const useEventBroker = (resourceManagerCfg) => {
     "cutItemsDone",
     "pasteItems",
     "pasteItemsDone",
+    "duplicateItems",
     "toggleFavorite",
     // Selection events
     "selectItems",
@@ -180,6 +181,7 @@ export const useEventBroker = (resourceManagerCfg) => {
         createItem: resourceManagerCfg.allowCreateItem,
         shareItems: resourceManagerCfg.allowShareItem,
         deleteItems: resourceManagerCfg.allowDelete,
+        duplicateItems: resourceManagerCfg.allowDuplicate,
         createFolder: resourceManagerCfg.allowCreateFolder,
         createFolderDone: resourceManagerCfg.allowCreateFolder,
         cutItems: resourceManagerCfg.allowCut,

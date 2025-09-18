@@ -8,6 +8,7 @@ import { createItemAPI } from "./api/createItemAPI";
 import { favoriteAPI } from "./api/favoriteAPI";
 import "./App.scss";
 import { CreateModal } from "./exampleModals/CreateModal";
+import { ShareModal } from "./exampleModals/ShareModal";
 
 const closedModal = {
   open: false,
@@ -58,6 +59,31 @@ const initialItems = [
       updatedAt: "2025-09-04T15:38:24.358281Z",
       description: "Test Description",
       displayName: "Test Report",
+      pk: "6250780034072576",
+      userPk: "test@gmail.com",
+      tabs: [],
+    },
+    userPk: "test@gmail.com",
+    resourcePk: "6250780034072576",
+    resourceType: "report",
+    scope: "user",
+    scopePk: "test@gmail.com",
+    updatedAt: "2025-09-09T09:35:17.634046Z",
+  },
+  {
+    createdAt: "2025-09-09T09:35:17.634046Z",
+    displayName: "Test Report 1",
+    iconName: "FaRegFileLines",
+    isFavorited: false,
+    itemType: "resource",
+    pk: "39bd6815-cb66-462b-b0f8-450bc9eda418",
+    resource: {
+      audienceIdsPk: "sp2023q3_us",
+      companyPk: "alex_test_inc",
+      createdAt: "2025-09-04T15:39:24.358281Z",
+      updatedAt: "2025-09-04T15:38:24.358281Z",
+      description: "Test Description",
+      displayName: "Test Report 2",
       pk: "6250780034072576",
       userPk: "test@gmail.com",
       tabs: [],
@@ -120,6 +146,7 @@ function App() {
     // 1. Setup modal handlers as needed with API calls if necessary
     // Make sure they call "release" when done
     const onConfirm = async (values) => {
+      console.log(`onShare -> release:`, values);
       release();
     };
     const onCancel = () => {
@@ -129,7 +156,7 @@ function App() {
     // 2. Open the dialog
     setModal({
       open: true,
-      Component: CreateModal,
+      Component: ShareModal,
       data,
       onConfirm,
       onCancel,
@@ -222,6 +249,10 @@ function App() {
 
   const onCut = (data, release) => {
     console.log("onCut -> data:", data);
+  };
+
+  const onDuplicate = (data, release) => {
+    console.log("onDuplicate -> data:", data);
   };
 
   const onFavorite = (data, lock) => {
@@ -388,19 +419,13 @@ function App() {
   ////////////////////////////////////////////////////
   // Custom Toolbar
 
-  const customEmptySelectToolbar = null;
+  const customToolbar = null;
 
-  // const customEmptySelectToolbar = (
+  // const customToolbar = (
   //   <>
   //     <input type="text" placeholder="Type to search..." />
   //     <button onClick={() => console.log("Searching...")}>Search</button>
   //   </>
-  // );
-
-  const customSelectToolbar = null;
-
-  // const customSelectToolbar = (
-  //   <button onClick={() => console.log("Selecting...")}>Select All</button>
   // );
 
   return (
@@ -415,8 +440,8 @@ function App() {
           onCreateItem={onCreateItem}
           onCut={onCut}
           onDelete={onDelete}
-          renderCustomEmptySelectToolbar={customEmptySelectToolbar}
-          renderCustomSelectToolbar={customSelectToolbar}
+          onDuplicate={onDuplicate}
+          renderCustomToolbar={customToolbar}
           onFavorite={onFavorite}
           onOpen={onOpen}
           onPaste={onPaste}
@@ -431,6 +456,7 @@ function App() {
           width="100%"
           fontFamily="Rubik, sans-serif"
           primaryColor="#6155b4"
+          allowDuplicate={true}
         />
       </div>
       {modal.open && (

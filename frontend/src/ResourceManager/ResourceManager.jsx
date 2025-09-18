@@ -44,10 +44,10 @@ const ResourceManager = ({
   onCopy,
   onCreateFolder,
   onCreateItem,
-  renderCustomEmptySelectToolbar,
-  renderCustomSelectToolbar,
+  renderCustomToolbar,
   onCut,
   onDelete,
+  onDuplicate,
   onFavorite,
   onOpen,
   onPaste,
@@ -64,6 +64,7 @@ const ResourceManager = ({
   allowPaste = true,
   allowRename = true,
   allowDelete = true,
+  allowDuplicate = false,
   initialPath = null,
   customEmptySelectCtxItems = [],
   customSelectCtxItems = [],
@@ -91,6 +92,7 @@ const ResourceManager = ({
     allowPaste,
     allowRename,
     allowFavorite,
+    allowDuplicate,
     createItemLabel: "New item",
   };
 
@@ -119,10 +121,7 @@ const ResourceManager = ({
                   <Toolbar
                     resourceManagerCfg={resourceManagerCfg}
                     eventBroker={eventBroker}
-                    renderCustomEmptySelectToolbar={
-                      renderCustomEmptySelectToolbar
-                    }
-                    renderCustomSelectToolbar={renderCustomSelectToolbar}
+                    renderCustomToolbar={renderCustomToolbar}
                   />
                   <div className="folders-preview" style={{ width: "100%" }}>
                     <BreadCrumb eventBroker={eventBroker} />
@@ -137,6 +136,7 @@ const ResourceManager = ({
                     onCreateItem={onCreateItem}
                     onCut={onCut}
                     onDelete={onDelete}
+                    onDuplicate={onDuplicate}
                     onFavorite={onFavorite}
                     onOpen={onOpen}
                     onPaste={onPaste}
@@ -196,6 +196,7 @@ ResourceManager.propTypes = {
   onCreate: PropTypes.func,
   onRename: PropTypes.func,
   onDelete: PropTypes.func,
+  onDuplicate: PropTypes.func,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
@@ -214,6 +215,7 @@ ResourceManager.propTypes = {
   allowPaste: PropTypes.bool,
   allowRename: PropTypes.bool,
   allowDelete: PropTypes.bool,
+  allowDuplicate: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
   customEmptySelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
@@ -253,8 +255,7 @@ ResourceManager.propTypes = {
       ),
     })
   ),
-  renderCustomEmptySelectToolbar: PropTypes.node,
-  renderCustomSelectToolbar: PropTypes.node,
+  renderCustomToolbar: PropTypes.node,
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryColor: PropTypes.string,

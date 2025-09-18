@@ -5,6 +5,7 @@ import {
   BsFolderPlus,
   BsScissors,
   BsFileEarmarkPlus,
+  BsFiles,
 } from "react-icons/bs";
 import { FaRegFile, FaRegPaste, FaArrowUpFromBracket } from "react-icons/fa6";
 import { FiRefreshCw } from "react-icons/fi";
@@ -97,6 +98,10 @@ export const SingleItemProvider = ({
     unselectAll();
   };
 
+  const duplicateItems = () => {
+    unselectAll();
+  };
+
   const addOrReplaceItem = (item) => {
     if (item?.pk) {
       const newItems = items.filter((i) => i.pk !== item.pk).concat(item);
@@ -145,6 +150,11 @@ export const SingleItemProvider = ({
 
   const handleDelete = () => {
     eventBroker.publish("deleteItems");
+    setVisible(false);
+  };
+
+  const handleDuplicate = () => {
+    eventBroker.publish("duplicateItems");
     setVisible(false);
   };
 
@@ -279,6 +289,12 @@ export const SingleItemProvider = ({
       icon: <BsScissors size={19} />,
       onClick: () => handleMoveOrCopyItems(true),
     },
+    resourceManagerCfg.allowDuplicate &&
+      rightClickedItem?.itemType === "resource" && {
+        title: "Duplicate",
+        icon: <BsFiles size={18} />,
+        onClick: handleDuplicate,
+      },
     resourceManagerCfg.allowCopy && {
       title: "Copy",
       icon: <BsCopy strokeWidth={0.1} size={17} />,
@@ -345,6 +361,7 @@ export const SingleItemProvider = ({
         renameItem,
         createFolder,
         deleteItems,
+        duplicateItems,
         addOrReplaceItem,
         toggleFavorite,
         emptySelectCtxItems,
@@ -388,6 +405,7 @@ SingleItemProvider.propTypes = {
     createItemLabel: PropTypes.string,
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
+    allowDuplicate: PropTypes.bool,
   }).isRequired,
   customEmptySelectCtxItems: PropTypes.array,
   customSelectCtxItems: PropTypes.array,

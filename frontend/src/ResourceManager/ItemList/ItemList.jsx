@@ -60,7 +60,6 @@ const ItemList = ({ eventBroker, headers }) => {
       )}
 
       <ContextMenu
-        itemsViewRef={itemsViewRef}
         contextMenuRef={contextMenuRef.ref}
         menuItems={isSelectionCtx ? selectCtxItems : emptySelectCtxItems}
         visible={visible}

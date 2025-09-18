@@ -3,6 +3,7 @@ import {
   BsFolderPlus,
   BsScissors,
   BsFileEarmarkPlus,
+  BsFiles,
 } from "react-icons/bs";
 import { FiRefreshCw } from "react-icons/fi";
 import { MdClear, MdOutlineDelete } from "react-icons/md";
@@ -14,12 +15,7 @@ import { useClipBoard } from "../../contexts/ClipboardContext";
 import PropTypes from "prop-types";
 import "./Toolbar.scss";
 
-const Toolbar = ({
-  resourceManagerCfg,
-  eventBroker,
-  renderCustomEmptySelectToolbar,
-  renderCustomSelectToolbar,
-}) => {
+const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
   const { currentFolder } = useNavigation();
   const { selectedItems } = useSelection();
   const { clipBoard } = useClipBoard();
@@ -81,6 +77,17 @@ const Toolbar = ({
                 <span>Cut</span>
               </button>
             )}
+            {/* Duplicate selected items - must have >= 1 item selected */}
+            {resourceManagerCfg.allowDuplicate &&
+              selectedItems.every((file) => file.itemType === "resource") && (
+                <button
+                  className="item-action f-action"
+                  onClick={() => eventBroker.publish("duplicateItems")}
+                >
+                  <BsFiles size={18} />
+                  <span>Duplicate</span>
+                </button>
+              )}
             {/* Copy selected items - must have >= 1 item selected */}
             {resourceManagerCfg.allowCopy && (
               <button
@@ -102,6 +109,7 @@ const Toolbar = ({
                 <span>Paste</span>
               </button>
             )}
+
             {/* Rename selected item - must have == 1 item selected */}
             {resourceManagerCfg.allowRename && (
               <button
@@ -123,7 +131,6 @@ const Toolbar = ({
                 <span>Delete</span>
               </button>
             )}
-            {renderCustomSelectToolbar}
           </div>
           {/* Clear selection */}
           <button
@@ -160,7 +167,7 @@ const Toolbar = ({
                 <span>{item.text}</span>
               </button>
             ))}
-          {renderCustomEmptySelectToolbar}
+          {renderCustomToolbar}
         </div>
         <div>
           {toolbarRightItems.map((item, index) => (
@@ -196,6 +203,7 @@ Toolbar.propTypes = {
     createItemLabel: PropTypes.string,
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
+    allowDuplicate: PropTypes.bool,
   }).isRequired,
   eventBroker: PropTypes.shape({
     publish: PropTypes.func,
@@ -208,8 +216,7 @@ Toolbar.propTypes = {
     data: PropTypes.object,
     eventCounter: PropTypes.number,
   }).isRequired,
-  renderCustomEmptySelectToolbar: PropTypes.node,
-  renderCustomSelectToolbar: PropTypes.node,
+  renderCustomToolbar: PropTypes.node,
 };
 
 export default Toolbar;

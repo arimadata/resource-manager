@@ -36,7 +36,7 @@ export interface ResourceManagerPasteData {
 export interface ContextMenuItem {
   title: string;
   icon: string;
-  onClick?: () => void;
+  onClick?: (items: ResourceManagerItem) => void;
   divider?: boolean;
   hidden?: boolean | ((item: ResourceManagerItem) => boolean);
   className?: string;
@@ -51,6 +51,7 @@ export interface ResourceManagerProps {
   onCreateItem?: (release: () => void) => void;
   onRename?: (data: ResourceManagerItem, lock: () => () => void) => void;
   onDelete?: (data: ResourceManagerItem[], lock: () => () => void) => void;
+  onDuplicate?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onCut?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onCopy?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onPaste?: (data: ResourceManagerPasteData, lock: () => () => void) => void;
@@ -69,11 +70,11 @@ export interface ResourceManagerProps {
   allowPaste?: boolean;
   allowRename?: boolean;
   allowDelete?: boolean;
+  allowDuplicate?: boolean;
   initialPath?: string | null;
-  customEmptySelecCtxItems?: ContextMenuItem[];
-  customSelecCtxItems?: ContextMenuItem[];
-  renderCustomEmptySelectToolbar?: ReactNode;
-  renderCustomSelectToolbar?: ReactNode;
+  customEmptySelectCtxItems?: ContextMenuItem[];
+  customSelectCtxItems?: ContextMenuItem[];
+  renderCustomToolbar?: ReactNode;
   height?: string | number;
   width?: string | number;
   primaryColor?: string;

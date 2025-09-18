@@ -4,13 +4,7 @@ import SubMenu from "./SubMenu";
 import PropTypes from "prop-types";
 import "./ContextMenu.scss";
 
-const ContextMenu = ({
-  itemsViewRef,
-  contextMenuRef,
-  menuItems,
-  visible,
-  clickPosition,
-}) => {
+const ContextMenu = ({ contextMenuRef, menuItems, visible, clickPosition }) => {
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [activeSubMenuIndex, setActiveSubMenuIndex] = useState(null);
@@ -21,38 +15,34 @@ const ContextMenu = ({
   const contextMenuPosition = () => {
     const { clickX, clickY } = clickPosition;
 
-    const container = itemsViewRef.current;
-    const containerRect = container.getBoundingClientRect();
-    const scrollBarWidth = container.offsetWidth - container.clientWidth;
-
     // Context menu size
     const contextMenuContainer = contextMenuRef.current.getBoundingClientRect();
     const menuWidth = contextMenuContainer.width;
     const menuHeight = contextMenuContainer.height;
 
     // Check if there is enough space at the right for the context menu
-    const leftToCursor = clickX - containerRect.left;
-    const right =
-      containerRect.width - (leftToCursor + scrollBarWidth) > menuWidth;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const right = viewportWidth - clickX > menuWidth;
     const left = !right;
 
-    const topToCursor = clickY - containerRect.top;
-    const top = containerRect.height - topToCursor > menuHeight;
+    const top = viewportHeight - clickY > menuHeight;
     const bottom = !top;
 
     if (right) {
-      setLeft(`${leftToCursor}px`);
+      setLeft(`${clickX}px`);
       setSubMenuPosition("right");
     } else if (left) {
       // Location: -width of the context menu from cursor's position i.e. left side
-      setLeft(`${leftToCursor - menuWidth}px`);
+      setLeft(`${clickX - menuWidth}px`);
       setSubMenuPosition("left");
     }
 
     if (top) {
-      setTop(`${topToCursor + container.scrollTop}px`);
+      setTop(`${clickY}px`);
     } else if (bottom) {
-      setTop(`${topToCursor + container.scrollTop - menuHeight}px`);
+      setTop(`${clickY - menuHeight}px`);
     }
   };
 
@@ -138,7 +128,6 @@ const ContextMenu = ({
 
 ContextMenu.displayName = "ContextMenu";
 ContextMenu.propTypes = {
-  itemsViewRef: PropTypes.object.isRequired,
   contextMenuRef: PropTypes.object.isRequired,
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({

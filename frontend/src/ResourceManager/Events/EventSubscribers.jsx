@@ -17,6 +17,7 @@ export const EventSubscribers = ({
   onCreateItem,
   onCut,
   onDelete,
+  onDuplicate,
   onFavorite,
   onOpen,
   onPaste,
@@ -48,6 +49,7 @@ export const EventSubscribers = ({
     addOrReplaceItem,
     toggleFavorite,
     deleteItems,
+    duplicateItems,
   } = useSingleItem();
 
   // Register keyboard shortcut publishers
@@ -60,6 +62,7 @@ export const EventSubscribers = ({
     onCreateItem,
     onCut,
     onDelete,
+    onDuplicate,
     onFavorite,
     onOpen,
     onPaste,
@@ -97,6 +100,7 @@ export const EventSubscribers = ({
     renameItem: renameItem,
     renameItemDone: () => addOrReplaceItem(eventBroker?.data),
     deleteItemsDone: deleteItems,
+    duplicateItems: duplicateItems,
     toggleFavorite: () => toggleFavorite(eventBroker?.data),
     openItem: () => openItem(eventBroker?.data || selectedItems[0]),
     // Resetting events
@@ -184,12 +188,14 @@ EventSubscribers.propTypes = {
     createItemLabel: PropTypes.string,
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
+    allowDuplicate: PropTypes.bool,
   }).isRequired,
   onCopy: PropTypes.func.isRequired,
   onCreateFolder: PropTypes.func.isRequired,
   onCreateItem: PropTypes.func.isRequired,
   onCut: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onDuplicate: PropTypes.func.isRequired,
   onFavorite: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
   onPaste: PropTypes.func.isRequired,
