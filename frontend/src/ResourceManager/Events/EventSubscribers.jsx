@@ -99,6 +99,11 @@ export const EventSubscribers = ({
     createFolderDone: () => addOrReplaceItem(eventBroker?.data),
     renameItem: renameItem,
     renameItemDone: () => addOrReplaceItem(eventBroker?.data),
+    deleteItems: () => {
+      if (!selectedItems.length) {
+        eventBroker.publish("release");
+      }
+    },
     deleteItemsDone: deleteItems,
     duplicateItems: duplicateItems,
     toggleFavorite: () => toggleFavorite(eventBroker?.data),
@@ -155,11 +160,16 @@ export const EventSubscribers = ({
     //   ),
     //   width: "35%",
     // },
-    deleteItems: {
-      title: "Delete",
-      component: <DeleteAction eventBroker={eventBroker} onDelete={onDelete} />,
-      width: "25%",
-    },
+    // Only show delete modal if there are selected items
+    ...(selectedItems.length > 0 && {
+      deleteItems: {
+        title: "Delete",
+        component: (
+          <DeleteAction eventBroker={eventBroker} onDelete={onDelete} />
+        ),
+        width: "25%",
+      },
+    }),
   };
   const internalModalEventHandler =
     internalModalEventHandlers[eventBroker.event];

@@ -164,7 +164,7 @@ CreateFolderAction.propTypes = {
 
     // Computed fields (added by ItemsContext)
     isDirectory: PropTypes.bool,
-    path: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.string),
     isEditing: PropTypes.bool,
   }).isRequired,
   eventBroker: PropTypes.shape({

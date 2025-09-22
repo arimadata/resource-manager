@@ -7,6 +7,7 @@ import { useClipBoard } from "../../contexts/ClipboardContext";
 import PropTypes from "prop-types";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import "./BreadCrumb.scss";
+import { arraysEqual } from "../../utils/arraysEqual";
 
 const BreadCrumb = ({ eventBroker }) => {
   const [folders, setFolders] = useState([]);
@@ -85,12 +86,9 @@ const BreadCrumb = ({ eventBroker }) => {
         : null;
 
     if (clipBoard?.items && clipBoard.isMoving) {
-      const destinationPk = destinationFolder?.pk || null;
-      const allItemsInSameDirectory = clipBoard.items.every(
-        (item) => item.parentPk === destinationPk
-      );
+      const isCurrentPath = arraysEqual(folder.path, currentPath);
 
-      if (allItemsInSameDirectory) {
+      if (isCurrentPath) {
         setDragOverFolder(null);
         setTooltipPosition(null);
         return;

@@ -495,6 +495,13 @@
   font-weight: 400;
 }
 
+.items.list .items-loading-container {
+  @include flex-center;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 200px;
+}
+
 .empty-folder {
   @include flex-center;
   width: 100%;

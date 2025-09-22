@@ -3,16 +3,37 @@
 .loader-container {
   @include flex-center;
   position: absolute;
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
-  background-color: $contrast-color;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(2px);
   z-index: 1000;
+  border-radius: 8px;
+}
+
+.loader-content {
+  @include flex-center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .spinner {
-  font-size: 3rem;
-  color: white;
+  font-size: 24px;
+  color: var(--file-manager-primary-color);
   animation: spin 1s linear infinite;
+}
+
+.loader-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 @keyframes spin {
@@ -29,10 +50,43 @@
   position: relative;
   display: block;
   background-color: transparent;
+  backdrop-filter: none;
   z-index: 0;
 
+  .loader-content {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 8px;
+  }
+
   .spinner {
-    font-size: 0.9rem;
-    color: black;
+    font-size: 14px;
+    color: var(--file-manager-primary-color);
+  }
+}
+
+.items-loader {
+  position: relative;
+  background-color: transparent;
+  backdrop-filter: none;
+  border-radius: 0;
+
+  .loader-content {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 60px 32px;
+  }
+
+  .spinner {
+    font-size: 40px;
+    color: var(--file-manager-primary-color);
+  }
+
+  .loader-text {
+    font-size: 20px;
+    color: #6b7280;
+    font-weight: 400;
   }
 }

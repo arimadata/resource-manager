@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BsStarFill, BsStar, BsThreeDots } from "react-icons/bs";
 import { useIcon } from "../../hooks/useIcons";
 import CreateFolderAction from "../Events/CreateFolder/CreateFolder.action";
@@ -32,9 +32,10 @@ const Item = ({
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [hoverPosition, setHoverPosition] = useState(null);
   const { currentPathItems } = useNavigation();
-  const { setSelectedItems, setHoveredItem } = useSelection();
+  const { selectedItems, setSelectedItems, setHoveredItem } = useSelection();
   const { clipBoard, setClipBoard } = useClipBoard();
   const dragIconRef = useRef(null);
+  const hoveredElementRef = useRef(null);
   const getIcon = useIcon();
 
   const getHeaderValue = (header) => {
@@ -142,10 +143,28 @@ const Item = ({
     if (!itemSelected) {
       setSelectedItems([item]);
     }
-
     setRightClickedItem(item);
     handleContextMenu(e, true);
   };
+
+  const calculateHoverPosition = useCallback(
+    (targetElement) => {
+      const containerRect = itemsViewRef.current?.getBoundingClientRect();
+
+      if (containerRect && targetElement) {
+        const cellRect = targetElement.getBoundingClientRect();
+
+        return {
+          top: cellRect.top,
+          left: containerRect.right - 200,
+          width: 150,
+          height: cellRect.height,
+        };
+      }
+      return null;
+    },
+    [itemsViewRef]
+  );
 
   // Selection Checkbox Functions
   const handleMouseOver = (e) => {
@@ -153,22 +172,11 @@ const Item = ({
     setItemHovered(true);
     setCheckboxClassName("visible");
 
+    hoveredElementRef.current = e.currentTarget;
+
     // Calculate the row position for the toolbar
-    const containerRect = itemsViewRef.current?.getBoundingClientRect();
-    const currentCell = e.currentTarget;
-
-    if (containerRect && currentCell) {
-      const cellRect = currentCell.getBoundingClientRect();
-
-      const hoverPos = {
-        top: cellRect.top,
-        left: containerRect.right - 200,
-        width: 150,
-        height: cellRect.height,
-      };
-
-      setHoverPosition(hoverPos);
-    }
+    const hoverPos = calculateHoverPosition(e.currentTarget);
+    setHoverPosition(hoverPos);
   };
 
   const handleMouseLeave = () => {
@@ -176,6 +184,7 @@ const Item = ({
     setHoveredItem(null);
     setItemHovered(false);
     setHoverPosition(null);
+    hoveredElementRef.current = null;
   };
 
   const handleCheckboxChange = (e) => {
@@ -250,7 +259,15 @@ const Item = ({
     setCheckboxClassName(
       selectedItemIndexes.includes(index) ? "visible" : "hidden"
     );
-  }, [selectedItemIndexes]);
+  }, [selectedItemIndexes, index]);
+
+  // Recalculate hover position when selectedItems change (toolbar height may change)
+  useEffect(() => {
+    if (itemHovered && hoveredElementRef.current) {
+      const hoverPos = calculateHoverPosition(hoveredElementRef.current);
+      setHoverPosition(hoverPos);
+    }
+  }, [selectedItems.length, itemHovered, calculateHoverPosition]);
 
   return (
     <div
@@ -259,6 +276,7 @@ const Item = ({
       } ${isItemMoving ? "item-moving" : ""}`}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
+      onContextMenu={handleItemContextMenu}
     >
       {/* Selection Checkbox Cell */}
       <div
@@ -369,6 +387,8 @@ const Item = ({
             className={`item-standard-cell ${dropZoneClass} ${
               itemSelected || !!item.isEditing ? "item-selected" : ""
             } ${isItemMoving ? "item-moving" : ""}`}
+            onClick={handleItemSelection}
+            onContextMenu={handleItemContextMenu}
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseLeave}
           >
@@ -456,7 +476,7 @@ Item.propTypes = {
     resourcePk: PropTypes.string,
     resourceType: PropTypes.string,
     isDirectory: PropTypes.bool,
-    path: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.string),
     isEditing: PropTypes.bool,
   }).isRequired,
   itemsViewRef: PropTypes.object.isRequired,

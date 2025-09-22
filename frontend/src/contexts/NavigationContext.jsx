@@ -7,7 +7,12 @@ import PropTypes from "prop-types";
 
 const NavigationContext = createContext();
 
-export const NavigationProvider = ({ children, initialPath, headers }) => {
+export const NavigationProvider = ({
+  children,
+  initialPath,
+  headers,
+  onPathChange,
+}) => {
   const { sortColumn, sortDirection } = useSorting();
   const { items } = useItems();
   const isMountRef = useRef(false);
@@ -64,6 +69,12 @@ export const NavigationProvider = ({ children, initialPath, headers }) => {
     }
   }, [initialPath, items]);
 
+  useEffect(() => {
+    if (onPathChange) {
+      onPathChange(currentPath);
+    }
+  }, [currentPath, onPathChange]);
+
   return (
     <NavigationContext.Provider
       value={{
@@ -83,7 +94,7 @@ export const NavigationProvider = ({ children, initialPath, headers }) => {
 
 NavigationProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  initialPath: PropTypes.arrayOf(PropTypes.string).isRequired,
+  initialPath: PropTypes.arrayOf(PropTypes.string),
   headers: PropTypes.arrayOf(
     PropTypes.shape({
       attribute: PropTypes.string.isRequired,
@@ -93,6 +104,7 @@ NavigationProvider.propTypes = {
       sortAccessor: PropTypes.func,
     })
   ).isRequired,
+  onPathChange: PropTypes.func,
 };
 
 export const useNavigation = () => useContext(NavigationContext);

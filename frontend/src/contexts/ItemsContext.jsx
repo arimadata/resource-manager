@@ -45,7 +45,7 @@ export const ItemsProvider = ({ children, itemsData }) => {
     const transformedItems = transformItems(newItems, newItemMap);
     setItemMapState(newItemMap);
     setItemsState(transformedItems);
-    // Make sure we have atleast one folder to use as template
+    // Make sure we have at least one folder to use as template
     const defaultValues = {
       pk: null,
       parentPk: null,

@@ -168,6 +168,11 @@ function App() {
       setModal(closedModal);
     };
   };
+
+  const onPathChange = (newPath) => {
+    console.log("Path changed to:", newPath);
+  };
+
   ////////////////////////////////////////////////////
 
   const getItems = async () => {
@@ -182,9 +187,17 @@ function App() {
   useEffect(() => {
     if (isMountRef.current) return;
     isMountRef.current = true;
-    incrementLoadingCount();
-    getItems();
-    decrementLoadingCount();
+
+    const loadInitialData = async () => {
+      incrementLoadingCount();
+      try {
+        await getItems();
+      } finally {
+        decrementLoadingCount();
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   const onDelete = (data, lock) => {
@@ -306,9 +319,8 @@ function App() {
   };
 
   const onRefresh = (lock) => {
-    // // Optional: Lock the UI until the refresh is completed
-    // const release = lock();
-    // incrementLoadingCount();
+    const release = lock();
+    incrementLoadingCount();
     console.log("onRefresh called");
     getItems()
       .then(() => {
@@ -318,9 +330,8 @@ function App() {
         console.error("Error refreshing items:", error);
       })
       .finally(() => {
-        // // Optional: Unlock the UI if locked
-        // decrementLoadingCount();
-        // release();
+        decrementLoadingCount();
+        release();
       });
   };
 
@@ -449,6 +460,7 @@ function App() {
           onRename={onRename}
           onSelect={onSelect}
           onShare={onShare}
+          onPathChange={onPathChange}
           initialPath={null}
           customEmptySelectCtxItems={customEmptySelectCtxItems}
           customSelectCtxItems={customSelectCtxItems}

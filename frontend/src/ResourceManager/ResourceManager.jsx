@@ -1,4 +1,3 @@
-import Loader from "../components/Loader/Loader";
 import Toolbar from "./Toolbar/Toolbar";
 import BreadCrumb from "./BreadCrumb/BreadCrumb";
 import ItemList from "./ItemList/ItemList";
@@ -55,6 +54,7 @@ const ResourceManager = ({
   onRename,
   onSelect,
   onShare,
+  onPathChange,
   allowCreateFolder = true,
   allowCreateItem = true,
   allowShareItem = true,
@@ -104,10 +104,13 @@ const ResourceManager = ({
       onContextMenu={(e) => e.preventDefault()}
       style={customStyles}
     >
-      <Loader loading={isLoading} />
       <SortingProvider>
         <ItemsProvider itemsData={items}>
-          <NavigationProvider initialPath={initialPath || []} headers={headers}>
+          <NavigationProvider
+            initialPath={initialPath || []}
+            headers={headers}
+            onPathChange={onPathChange}
+          >
             <SelectionProvider eventBroker={eventBroker}>
               <ClipBoardProvider eventBroker={eventBroker}>
                 {/* Toolbar with "New Folder", "Upload", "Refresh" */}
@@ -126,7 +129,11 @@ const ResourceManager = ({
                   <div className="folders-preview" style={{ width: "100%" }}>
                     <BreadCrumb eventBroker={eventBroker} />
                     {/* Main section with files and folders */}
-                    <ItemList eventBroker={eventBroker} headers={headers} />
+                    <ItemList
+                      eventBroker={eventBroker}
+                      headers={headers}
+                      isLoading={isLoading}
+                    />
                   </div>
                   {/* Event subscriber section such as "Delete" modal */}
                   <EventSubscribers
@@ -186,7 +193,7 @@ ResourceManager.propTypes = {
 
       // Computed fields (added by ItemsContext)
       isDirectory: PropTypes.bool,
-      path: PropTypes.string,
+      path: PropTypes.arrayOf(PropTypes.string),
       isEditing: PropTypes.bool,
     })
   ).isRequired,
@@ -205,6 +212,7 @@ ResourceManager.propTypes = {
   onOpen: PropTypes.func,
   onRefresh: PropTypes.func,
   onSelect: PropTypes.func,
+  onPathChange: PropTypes.func,
   allowCreateFolder: PropTypes.bool,
   allowCreateItem: PropTypes.bool,
   allowShareItem: PropTypes.bool,

@@ -57,6 +57,7 @@ export interface ResourceManagerProps {
   onPaste?: (data: ResourceManagerPasteData, lock: () => () => void) => void;
   onShare?: (data: ResourceManagerItem[], release: () => void) => void;
   onFavorite?: (data: ResourceManagerItem, lock: () => () => void) => void;
+  onPathChange?: (path: string[]) => void;
   onRefresh?: (lock: () => () => void) => void;
   onSelect?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onOpen?: (data: ResourceManagerItem, lock: () => () => void) => void;

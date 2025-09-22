@@ -37,10 +37,21 @@ export const ClipBoardProvider = ({ children, eventBroker }) => {
 
   // TODO: Show error if destination folder already has file(s) with the same name
   const pasteItems = (destinationFolder) => {
-    if (destinationFolder && !destinationFolder.isDirectory) return;
-
     const copiedItems = clipBoard.items;
     const operationType = clipBoard.isMoving ? "move" : "copy";
+
+    const isCurrentFolder = copiedItems.every(
+      (item) =>
+        (!item.parentPk && destinationFolder === null) ||
+        item.parentPk === destinationFolder?.pk
+    );
+
+    if (isCurrentFolder) {
+      setClipBoard(null);
+      unselectAll();
+      eventBroker.publish("release");
+      return;
+    }
 
     const pasteData = {
       copiedItems,

@@ -7,9 +7,10 @@ import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import { useSingleItem } from "../../contexts/SingleItemContext";
 import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
+import Loader from "../../components/Loader/Loader";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker, headers }) => {
+const ItemList = ({ eventBroker, headers, isLoading }) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
@@ -38,7 +39,15 @@ const ItemList = ({ eventBroker, headers }) => {
       onClick={() => eventBroker.publish("unselectAll")}
     >
       <ItemsHeader eventBroker={eventBroker} headers={headers} />
-      {currentPathItems?.length > 0 ? (
+      {isLoading ? (
+        <div className="items-loading-container">
+          <Loader
+            loading={true}
+            text="Loading resources..."
+            className="items-loader"
+          />
+        </div>
+      ) : currentPathItems?.length > 0 ? (
         <>
           {currentPathItems.map((item, index) => (
             <Item
@@ -92,6 +101,7 @@ ItemList.propTypes = {
       sortAccessor: PropTypes.func,
     })
   ).isRequired,
+  isLoading: PropTypes.bool,
 };
 
 export default ItemList;

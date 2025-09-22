@@ -20,7 +20,7 @@
   animation: expand 0.4s forwards;
 
   &::backdrop {
-    background: $contrast-color;
+    background: rgba(0, 0, 0, 0.5);
   }
 }
 

@@ -155,7 +155,7 @@ RenameAction.propTypes = {
     resourcePk: PropTypes.string,
     resourceType: PropTypes.string,
     isDirectory: PropTypes.bool,
-    path: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.string),
     isEditing: PropTypes.bool,
   }).isRequired,
   eventBroker: PropTypes.shape({
