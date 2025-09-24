@@ -209,7 +209,7 @@
 
         &.active {
           opacity: 1;
-          color: var(--file-manager-primary-color);
+          color: black;
 
           &.rotate-up {
             transform: rotate(180deg);
