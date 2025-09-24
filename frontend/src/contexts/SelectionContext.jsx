@@ -143,12 +143,6 @@ export const SelectionProvider = ({ eventBroker, children }) => {
     }
   };
 
-  // const resetAllIsEditing = () => {
-  //   setCurrentPathItems((prev) =>
-  //     prev.map((item) => ({ ...item, isEditing: false }))
-  //   );
-  // };
-
   ////////////////////////////////////////////////////////////
   // Context handlers
 

@@ -157,7 +157,6 @@
 
 .items.list {
   display: grid;
-  grid-template-columns: 40px 32px 1fr;
   gap: 0;
   padding: 0;
   background-color: white;
@@ -181,18 +180,15 @@
 
     .item-select-all {
       justify-content: center;
-      padding-left: 12px;
-    }
-
-    .item-icon-space {
-      justify-content: center;
+      padding-left: 0;
     }
 
     .sortable-header {
       cursor: pointer;
       user-select: none;
-      gap: 4px;
+      gap: 12px;
       min-height: 20px;
+      align-items: center;
       transition: all 0.15s ease;
 
       &:hover {
@@ -224,8 +220,6 @@
   }
 
   // Grid cell styles - all cells share common properties
-  .item-select-cell,
-  .item-icon-cell,
   .item-name-cell,
   .item-standard-cell {
     display: flex;
@@ -254,16 +248,12 @@
     display: contents;
 
     &:hover {
-      .item-select-cell,
-      .item-icon-cell,
       .item-name-cell,
       .item-standard-cell {
         background-color: $cell-color;
       }
 
       &.item-selected {
-        .item-select-cell,
-        .item-icon-cell,
         .item-name-cell,
         .item-standard-cell {
           background-color: $selected-cell-color;
@@ -275,17 +265,6 @@
   // Position hover actions in the name cell but make them span the full row
   .item-name-cell {
     position: relative;
-
-    .drag-icon {
-      position: absolute !important;
-      top: -1000px;
-      left: -1000px;
-      z-index: -1;
-      border-radius: 4px;
-      color: white;
-      background-color: var(--file-manager-primary-color);
-      padding: 3px 8px;
-    }
   }
 
   .item-container .item-hover-actions {
@@ -395,35 +374,30 @@
   background: linear-gradient(90deg, rgba(232, 244, 253, 0) 0%, #e8f4fd 40px);
 }
 
-.item-select-cell {
-  justify-content: center;
+.item-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding-left: 12px;
 
   .selection-checkbox {
-    position: static;
+    flex-shrink: 0;
   }
-}
-
-.item-icon-cell {
-  justify-content: center;
 
   .item-icon-wrapper {
     @include flex-center;
     width: 20px;
+    flex-shrink: 0;
   }
-}
-
-.item-name-cell {
-  justify-content: space-between;
-  padding-left: 12px;
 
   .item-name-text {
     font-size: 14px;
-    color: #111827;
+    color: $cell-text-color;
     font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
   }
 
   .rename-item-container.list {

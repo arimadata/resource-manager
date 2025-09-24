@@ -49,29 +49,28 @@ const ItemsHeader = ({ eventBroker, headers }) => {
       onMouseOver={() => setShowSelectAll(true)}
       onMouseLeave={() => setShowSelectAll(false)}
     >
-      <div className="item-select-all">
-        {(showSelectAll || allItemsSelected) && (
-          <Checkbox
-            checked={allItemsSelected}
-            onChange={handleSelectAll}
-            title="Select all"
-            disabled={currentPathItems.length === 0}
-          />
-        )}
-      </div>
-      <div className="item-icon-space"></div>
-      {headers.map((header, i) => (
+      {headers.map((header) => (
         <div
-          key={header.attribute}
+          key={header.columnName.toLowerCase().replace(" ", "-")}
           className={`sortable-header ${
-            i === 0 ? "item-name-header" : "item-standard-header"
+            header.isNameColumn ? "item-name-header" : "item-standard-header"
           }`}
-          onClick={() => handleSort(header.attribute)}
+          onClick={() => handleSort(header.columnName)}
         >
-          <span className="header-text">
-            {header.columnName || header.attribute}
-          </span>
-          {renderSortIcon(header.attribute)}
+          {header.isNameColumn && (
+            <div className="item-select-all">
+              {(showSelectAll || allItemsSelected) && (
+                <Checkbox
+                  checked={allItemsSelected}
+                  onChange={handleSelectAll}
+                  title="Select all"
+                  disabled={currentPathItems.length === 0}
+                />
+              )}
+            </div>
+          )}
+          <span className="header-text">{header.columnName}</span>
+          {renderSortIcon(header.columnName)}
         </div>
       ))}
     </div>
@@ -84,11 +83,10 @@ ItemsHeader.propTypes = {
   }).isRequired,
   headers: PropTypes.arrayOf(
     PropTypes.shape({
-      attribute: PropTypes.string.isRequired,
-      defaultValue: PropTypes.string.isRequired,
-      columnName: PropTypes.string,
-      transform: PropTypes.func,
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
     })
   ).isRequired,
 };

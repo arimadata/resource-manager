@@ -23,6 +23,7 @@ const Item = ({
   handleContextMenu,
   setRightClickedItem,
   headers,
+  primaryColor,
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
   const [itemHovered, setItemHovered] = useState(false);
@@ -38,20 +39,6 @@ const Item = ({
   const hoveredElementRef = useRef(null);
   const getIcon = useIcon();
 
-  const getHeaderValue = (header) => {
-    let value =
-      item.itemType === "folder"
-        ? item[header.attribute]
-        : item.resource[header.attribute];
-
-    if (!value) return item.itemType === "folder" ? "--" : header.defaultValue;
-
-    if (header.transform) {
-      value = header.transform(value) ?? header.defaultValue;
-    }
-    return value;
-  };
-
   const isItemMoving =
     clipBoard?.isMoving &&
     clipBoard.items.find(
@@ -59,23 +46,6 @@ const Item = ({
         i.displayName === item.displayName && arraysEqual(i.path, item.path)
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
-
-  const getItemIcon = (size = ICON_SIZE) => {
-    if (item.itemType === "folder") {
-      return getIcon("BsFolderFill", size, { color: "#B5CCFF" });
-    }
-
-    switch (item.resourceType) {
-      case "report":
-        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
-      case "mmm":
-        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
-      case "audience":
-        return getIcon("BsPeopleFill", size, { color: "#B5CCFF" });
-      default:
-        return getIcon("BsFileEarmarkFill", size, { color: "#B5CCFF" });
-    }
-  };
 
   const handleItemAccess = (item) => {
     eventBroker.publish("openItem", item);
@@ -203,7 +173,6 @@ const Item = ({
 
     setItemSelected(e.target.checked);
   };
-  //
 
   const handleDragStart = (e) => {
     if (!canSelectItems) return;
@@ -278,123 +247,88 @@ const Item = ({
       onMouseLeave={handleMouseLeave}
       onContextMenu={handleItemContextMenu}
     >
-      {/* Selection Checkbox Cell */}
-      <div
-        className={`item-select-cell ${dropZoneClass} ${
-          itemSelected || !!item.isEditing ? "item-selected" : ""
-        } ${isItemMoving ? "item-moving" : ""}`}
-        onClick={handleItemSelection}
-        onContextMenu={handleItemContextMenu}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        draggable={itemSelected}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnterOver}
-        onDragOver={handleDragEnterOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {!item.isEditing && (
-          <Checkbox
-            name={item.displayName}
-            id={item.displayName}
-            checked={itemSelected}
-            className={`selection-checkbox ${checkboxClassName}`}
-            onChange={handleCheckboxChange}
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
-      </div>
+      {/* Dynamic Header Cells */}
+      {headers.map((header) => {
+        const isNameColumn = header.isNameColumn;
 
-      {/* Icon Cell */}
-      <div
-        className={`item-icon-cell ${dropZoneClass} ${
-          itemSelected || !!item.isEditing ? "item-selected" : ""
-        } ${isItemMoving ? "item-moving" : ""}`}
-        onClick={handleItemSelection}
-        onContextMenu={handleItemContextMenu}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        draggable={itemSelected}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnterOver}
-        onDragOver={handleDragEnterOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <div className="item-icon-wrapper">{getItemIcon()}</div>
-      </div>
-
-      {/* Name Cell */}
-      <div
-        className={`item-name-cell ${dropZoneClass} ${
-          itemSelected || !!item.isEditing ? "item-selected" : ""
-        } ${isItemMoving ? "item-moving" : ""}`}
-        title={item.displayName}
-        onClick={handleItemSelection}
-        onContextMenu={handleItemContextMenu}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        draggable={itemSelected}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnterOver}
-        onDragOver={handleDragEnterOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {item.isEditing ? (
-          <div className={`rename-item-container list`}>
-            {eventBroker.event === "createFolder" ? (
-              <CreateFolderAction
-                itemsViewRef={itemsViewRef}
-                item={item}
-                eventBroker={eventBroker}
-              />
-            ) : eventBroker.event === "renameItem" ? (
-              <RenameAction
-                itemsViewRef={itemsViewRef}
-                item={item}
-                eventBroker={eventBroker}
-              />
-            ) : null}
-          </div>
-        ) : (
-          <>
-            <span className="item-name-text">{getHeaderValue(headers[0])}</span>
-            <span
-              onClick={handleFavorite}
-              title={item.isFavorited ? "Unfavorite" : "Favorite"}
-              className="favorite-icon-inline"
-            >
-              {item.isFavorited ? (
-                <BsStarFill size={20} color="#fbbf24" />
-              ) : (
-                <BsStar size={20} style={{ color: "#d1d5db" }} />
-              )}
-            </span>
-          </>
-        )}
-      </div>
-
-      {/* Dynamic Header Value Cells */}
-      {headers &&
-        headers.slice(1).map((header) => (
+        return (
           <div
-            key={header.attribute}
-            className={`item-standard-cell ${dropZoneClass} ${
+            key={header.columnName.toLowerCase().replace(" ", "-")}
+            className={`${
+              isNameColumn ? "item-name-cell" : "item-standard-cell"
+            } ${dropZoneClass} ${
               itemSelected || !!item.isEditing ? "item-selected" : ""
             } ${isItemMoving ? "item-moving" : ""}`}
+            title={isNameColumn ? item.displayName : undefined}
             onClick={handleItemSelection}
             onContextMenu={handleItemContextMenu}
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseLeave}
+            draggable={itemSelected}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragEnter={handleDragEnterOver}
+            onDragOver={handleDragEnterOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            {getHeaderValue(header)}
+            {isNameColumn && item.isEditing ? (
+              <div className={`rename-item-container list`}>
+                {eventBroker.event === "createFolder" ? (
+                  <CreateFolderAction
+                    itemsViewRef={itemsViewRef}
+                    item={item}
+                    eventBroker={eventBroker}
+                  />
+                ) : eventBroker.event === "renameItem" ? (
+                  <RenameAction
+                    itemsViewRef={itemsViewRef}
+                    item={item}
+                    eventBroker={eventBroker}
+                  />
+                ) : null}
+              </div>
+            ) : isNameColumn ? (
+              <>
+                {/* Selection Checkbox Cell */}
+                {!item.isEditing && (
+                  <Checkbox
+                    name={item.displayName}
+                    id={item.displayName}
+                    checked={itemSelected}
+                    className={`selection-checkbox ${checkboxClassName}`}
+                    onChange={handleCheckboxChange}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
+
+                {/* Icon Cell */}
+                <div className="item-icon-wrapper">
+                  {getIcon(item.iconName, ICON_SIZE, { color: primaryColor })}
+                </div>
+
+                {/* Name Cell */}
+                <span className="item-name-text">{header.getValue(item)}</span>
+
+                {/* Favorite Icon Cell */}
+                <span
+                  onClick={handleFavorite}
+                  title={item.isFavorited ? "Unfavorite" : "Favorite"}
+                  className="favorite-icon-inline"
+                >
+                  {item.isFavorited ? (
+                    <BsStarFill size={20} color="#fbbf24" />
+                  ) : (
+                    <BsStar size={20} style={{ color: "#d1d5db" }} />
+                  )}
+                </span>
+              </>
+            ) : (
+              header.getValue(item)
+            )}
           </div>
-        ))}
+        );
+      })}
 
       {/* Hover Actions Overlay */}
       {itemHovered && hoverPosition && (
@@ -451,7 +385,7 @@ const Item = ({
       )}
 
       <div ref={dragIconRef} className="drag-icon">
-        {getItemIcon(DRAG_ICON_SIZE)}
+        {getIcon(item.iconName, DRAG_ICON_SIZE, { color: primaryColor })}
       </div>
       {/* Drag Icon & Tooltip Setup */}
     </div>
@@ -496,13 +430,13 @@ Item.propTypes = {
   setRightClickedItem: PropTypes.func.isRequired,
   headers: PropTypes.arrayOf(
     PropTypes.shape({
-      attribute: PropTypes.string.isRequired,
-      defaultValue: PropTypes.string.isRequired,
-      columnName: PropTypes.string,
-      transform: PropTypes.func,
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
     })
   ).isRequired,
+  primaryColor: PropTypes.string,
 };
 
 export default Item;

@@ -1,11 +1,10 @@
 import type { FC, ReactNode } from "react";
 
 export interface ResourceManagerHeader {
-  attribute: string;
-  defaultValue: string;
-  columnName?: string;
-  transform?: (value: any) => any;
+  columnName: string;
+  getValue: (item: ResourceManagerItem) => any;
   sortAccessor?: (value: any) => any;
+  isNameColumn?: boolean;
 }
 
 export interface ResourceManagerItem {
@@ -48,7 +47,7 @@ export interface ResourceManagerProps {
   items: ResourceManagerItem[];
   isLoading?: boolean;
   onCreateFolder?: (data: ResourceManagerItem, lock: () => () => void) => void;
-  onCreateItem?: (release: () => void) => void;
+  onCreateItem?: (data: null, release: () => void) => void;
   onRename?: (data: ResourceManagerItem, lock: () => () => void) => void;
   onDelete?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onDuplicate?: (data: ResourceManagerItem[], lock: () => () => void) => void;
@@ -58,7 +57,7 @@ export interface ResourceManagerProps {
   onShare?: (data: ResourceManagerItem[], release: () => void) => void;
   onFavorite?: (data: ResourceManagerItem, lock: () => () => void) => void;
   onPathChange?: (path: string[]) => void;
-  onRefresh?: (lock: () => () => void) => void;
+  onRefresh?: (data: null, lock: () => () => void) => void;
   onSelect?: (data: ResourceManagerItem[], lock: () => () => void) => void;
   onOpen?: (data: ResourceManagerItem, lock: () => () => void) => void;
   allowCreateFolder?: boolean;

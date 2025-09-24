@@ -10,12 +10,12 @@ import { useSelection } from "../../contexts/SelectionContext";
 import Loader from "../../components/Loader/Loader";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker, headers, isLoading }) => {
+const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
 
-  const gridTemplateColumns = `40px 32px ${headers.map(() => "1fr").join(" ")}`;
+  const gridTemplateColumns = headers.map(() => "1fr").join(" ");
 
   const {
     emptySelectCtxItems,
@@ -61,6 +61,7 @@ const ItemList = ({ eventBroker, headers, isLoading }) => {
               setVisible={setVisible}
               setRightClickedItem={setRightClickedItem}
               headers={headers}
+              primaryColor={primaryColor}
             />
           ))}
         </>
@@ -94,14 +95,14 @@ ItemList.propTypes = {
   }).isRequired,
   headers: PropTypes.arrayOf(
     PropTypes.shape({
-      attribute: PropTypes.string.isRequired,
-      defaultValue: PropTypes.string.isRequired,
-      columnName: PropTypes.string,
-      transform: PropTypes.func,
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
     })
   ).isRequired,
   isLoading: PropTypes.bool,
+  primaryColor: PropTypes.string,
 };
 
 export default ItemList;

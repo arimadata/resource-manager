@@ -97,11 +97,10 @@ NavigationProvider.propTypes = {
   initialPath: PropTypes.arrayOf(PropTypes.string),
   headers: PropTypes.arrayOf(
     PropTypes.shape({
-      attribute: PropTypes.string.isRequired,
-      defaultValue: PropTypes.string.isRequired,
-      columnName: PropTypes.string,
-      transform: PropTypes.func,
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
     })
   ).isRequired,
   onPathChange: PropTypes.func,
