@@ -72,6 +72,10 @@ export const useKeyboardEventPublisher = ({
     eventBroker.publish("navigateDown");
   };
 
+  const triggerDuplicateItems = () => {
+    eventBroker.publish("duplicateItems");
+  };
+
   // Keypress detection will be disabled when an event is locked or
   // not allowed by the resource manager cfg.
   useKeyPress(
@@ -102,4 +106,9 @@ export const useKeyboardEventPublisher = ({
   useKeyPress(shortcuts.selectArrowDown, triggerSelectArrowDown);
   useKeyPress(shortcuts.navigateUp, triggerNavigateUp);
   useKeyPress(shortcuts.navigateDown, triggerNavigateDown);
+  useKeyPress(
+    shortcuts.duplicate,
+    triggerDuplicateItems,
+    !resourceManagerCfg.allowDuplicate
+  );
 };

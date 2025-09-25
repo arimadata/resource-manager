@@ -20,41 +20,57 @@ const closedModal = {
 
 const headers = [
   {
-    attribute: "displayName",
-    defaultValue: "None",
     columnName: "Model Name",
+    getValue: (item) => item.displayName || "None",
+    isNameColumn: true,
   },
 
   {
-    attribute: "description",
-    defaultValue: "None",
     columnName: "Description",
+    getValue: (item) => {
+      const description =
+        item.itemType === "folder" ? "--" : item.resource?.description;
+      return description || "None";
+    },
   },
   {
-    attribute: "updatedAt",
-    defaultValue: "Unknown",
-    columnName: "Last Updated",
-    transform: (v) => new Date(v).toLocaleString("en-US"),
+    columnName: "Last Modified",
+    getValue: (item) => {
+      const updatedAt =
+        item.itemType === "folder"
+          ? new Date(item.updatedAt).toLocaleString("en-US")
+          : new Date(item.resource?.updatedAt).toLocaleString("en-US");
+      return updatedAt || "Unknown";
+    },
     sortAccessor: (v) => new Date(v).getTime(),
   },
   {
-    attribute: "userPk",
-    defaultValue: "None",
     columnName: "Owner",
+    getValue: (item) => {
+      const pk =
+        item.itemType === "folder" ? item.scopePk : item.resource?.userPk;
+      return pk || "None";
+    },
   },
 ];
 
 const initialItems = [
   {
+    pk: "1",
+    displayName: "Documents",
+    itemType: "folder",
+    iconName: "BsFolderFill",
+    parentPk: null,
+    updatedAt: "2025-09-04T15:38:24.358281Z",
+  },
+  {
     createdAt: "2025-09-09T09:35:17.634046Z",
     displayName: "Test Report",
-    iconName: "FaRegFileLines",
+    iconName: "BsFileEarmarkFill",
     isFavorited: false,
     itemType: "resource",
-    pk: "39bd6815-cb66-462b-b0f8-450bc9eda417",
+    pk: "2",
     resource: {
-      audienceIdsPk: "sp2023q3_us",
-      companyPk: "alex_test_inc",
       createdAt: "2025-09-04T15:38:24.358281Z",
       updatedAt: "2025-09-04T15:38:24.358281Z",
       description: "Test Description",
@@ -73,13 +89,11 @@ const initialItems = [
   {
     createdAt: "2025-09-09T09:35:17.634046Z",
     displayName: "Test Report 1",
-    iconName: "FaRegFileLines",
+    iconName: "BsFileEarmarkFill",
     isFavorited: false,
     itemType: "resource",
-    pk: "39bd6815-cb66-462b-b0f8-450bc9eda418",
+    pk: "3",
     resource: {
-      audienceIdsPk: "sp2023q3_us",
-      companyPk: "alex_test_inc",
       createdAt: "2025-09-04T15:39:24.358281Z",
       updatedAt: "2025-09-04T15:38:24.358281Z",
       description: "Test Description",
@@ -242,7 +256,7 @@ function App() {
           setItems((prev) => {
             // Remove the UI generated skeleton item and add the new item
             const items = prev.filter((item) => item.pk !== data.pk);
-            return [...items, response.data];
+            return [...items, { ...response.data, iconName: "BsFolderFill" }];
           });
           // Option 2: Refresh the items list
           // getItems();
