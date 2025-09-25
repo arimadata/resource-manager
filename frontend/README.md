@@ -433,6 +433,8 @@ The example backend uses MongoDB for persistence. See `backend/.env.example` for
 
 ### Known Issues & Improvements
 
+- **Implement virtualized list lib to optimize large amounts of items**: For better optimization of large datasets recommended to use virtualized list libs e.g. `react-window`, `react-virtualized`
+
 - **Folder Deletion Behavior**: When deleting a folder, all child items become root-level items, which can lead to duplicate file names. Functionally okay, but may not be intended behavior.
 
 - **Browser Navigation**: Allow users to go "back" using browser back button or mouse back button for better navigation experience.
