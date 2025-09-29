@@ -1,9 +1,9 @@
-import { useState } from "react";
 import {
   BsCopy,
   BsFolderPlus,
   BsScissors,
   BsFileEarmarkPlus,
+  BsFiles,
 } from "react-icons/bs";
 import { FiRefreshCw } from "react-icons/fi";
 import { MdClear, MdOutlineDelete } from "react-icons/md";
@@ -12,9 +12,10 @@ import { FaRegPaste, FaArrowUpFromBracket } from "react-icons/fa6";
 import { useNavigation } from "../../contexts/NavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
+import PropTypes from "prop-types";
 import "./Toolbar.scss";
 
-const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
+const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
   const { currentFolder } = useNavigation();
   const { selectedItems } = useSelection();
   const { clipBoard } = useClipBoard();
@@ -37,7 +38,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
       text: "Paste",
       show: !!resourceManagerCfg.allowPaste,
       disabled: !clipBoard?.items?.length,
-      onClick: () => eventBroker.publish("pasteItems"),
+      onClick: () => eventBroker.publish("pasteItems", currentFolder),
     },
   ];
 
@@ -58,7 +59,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
             {/* Share selected items - must have >= 1 non-directory item selected */}
             {resourceManagerCfg.allowShareItem && (
               <button
-                className="item-action f-action"
+                className="item-action f-action primary-action"
                 onClick={() => eventBroker.publish("shareItems")}
                 disabled={selectedItems.every((file) => file.isDirectory)}
               >
@@ -76,6 +77,17 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
                 <span>Cut</span>
               </button>
             )}
+            {/* Duplicate selected items - must have >= 1 item selected */}
+            {resourceManagerCfg.allowDuplicate &&
+              selectedItems.every((file) => file.itemType === "resource") && (
+                <button
+                  className="item-action f-action"
+                  onClick={() => eventBroker.publish("duplicateItems")}
+                >
+                  <BsFiles size={18} />
+                  <span>Duplicate</span>
+                </button>
+              )}
             {/* Copy selected items - must have >= 1 item selected */}
             {resourceManagerCfg.allowCopy && (
               <button
@@ -97,6 +109,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
                 <span>Paste</span>
               </button>
             )}
+
             {/* Rename selected item - must have == 1 item selected */}
             {resourceManagerCfg.allowRename && (
               <button
@@ -154,10 +167,11 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
                 <span>{item.text}</span>
               </button>
             ))}
+          {renderCustomToolbar}
         </div>
         <div>
           {toolbarRightItems.map((item, index) => (
-            <div key={index} className="toolbar-left-items">
+            <div key={index} className="toolbar-right-items">
               <button
                 className="item-action icon-only"
                 title={item.title}
@@ -174,6 +188,35 @@ const Toolbar = ({ resourceManagerCfg, eventBroker }) => {
       </div>
     </div>
   );
+};
+
+Toolbar.displayName = "Toolbar";
+Toolbar.propTypes = {
+  resourceManagerCfg: PropTypes.shape({
+    allowCreateItem: PropTypes.bool,
+    allowCreateFolder: PropTypes.bool,
+    allowShareItem: PropTypes.bool,
+    allowCut: PropTypes.bool,
+    allowCopy: PropTypes.bool,
+    allowPaste: PropTypes.bool,
+    allowRename: PropTypes.bool,
+    createItemLabel: PropTypes.string,
+    allowDelete: PropTypes.bool,
+    allowFavorite: PropTypes.bool,
+    allowDuplicate: PropTypes.bool,
+  }).isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  renderCustomToolbar: PropTypes.node,
 };
 
 export default Toolbar;

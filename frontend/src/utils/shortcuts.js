@@ -3,6 +3,7 @@ export const shortcuts = {
   cut: ["Control", "X"],
   copy: ["Control", "C"],
   paste: ["Control", "V"],
+  duplicate: ["Control", "D"],
   rename: ["F2"],
   delete: ["Delete"],
   open: ["Enter"],

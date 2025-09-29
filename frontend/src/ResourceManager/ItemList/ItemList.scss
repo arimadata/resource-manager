@@ -13,23 +13,6 @@
   padding: 8px;
   padding-right: 4px;
 
-  .drag-move-tooltip {
-    background-color: white;
-    font-size: 0.78em;
-    position: fixed;
-    text-wrap: nowrap;
-    border: 1px dashed black;
-    padding: 1px 5px 2px 24px;
-    border-radius: 3px;
-    font-weight: bold;
-    color: var(--file-manager-primary-color);
-    z-index: 2;
-
-    .drop-zone-item-name {
-      color: rgb(48, 48, 48);
-    }
-  }
-
   .item-container {
     border-radius: 5px;
     margin: 5px 0;
@@ -48,59 +31,46 @@
     }
 
     .item-hover-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      width: auto;
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-
       .action-btn {
-        margin-right: 8px;
-        background-color: #fff;
-        border: 1px solid #5e5e5e;
-        border-radius: 6px;
-        padding: 4px 12px;
-        font-weight: 700;
+        background-color: white;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        padding: 0px 16px;
+        font-weight: 500;
+        height: 42px;
+        font-size: 14px;
         cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        height: 28px;
+        transition: background-color 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
 
         &:hover {
-          background-color: color.adjust(#fff, $lightness: -5%);
+          background-color: $action-hover-color;
         }
 
         &.share-btn {
-          background-color: #1e1e1e;
-          color: white;
-          border: 1px solid #1e1e1e;
+          background-color: $share-btn-color;
 
           &:hover {
-            background-color: color.adjust(#1e1e1e, $lightness: -5%);
+            background-color: $share-btn-hover-color;
           }
         }
 
         &.more-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
+          width: 32px;
+          height: 32px;
           border: none;
           box-shadow: none;
           background-color: transparent;
           border-radius: 50%;
+          padding: 0;
 
           &:hover {
-            background: radial-gradient(
-              circle,
-              rgba(0, 0, 0, 0.05) 0,
-              16px,
-              rgba(0, 0, 0, 0) 16px
-            );
+            background: $contrast-color;
+            transform: none;
+            box-shadow: none;
           }
         }
       }
@@ -108,7 +78,7 @@
   }
 
   .item-container.item-drop-zone {
-    background-color: rgb(0, 0, 0, 0.08) !important;
+    background-color: $contrast-color !important;
   }
 
   .item {
@@ -125,7 +95,7 @@
     border-radius: 5px;
 
     &:hover {
-      background-color: $item-hover-color;
+      background-color: $contrast-color;
     }
 
     .selection-checkbox {
@@ -186,122 +156,328 @@
 }
 
 .items.list {
-  flex-direction: column;
-  flex-wrap: nowrap;
+  display: grid;
   gap: 0;
-  padding-left: 0px;
-  padding-top: 0px;
-  // height: 100%;
+  padding: 0;
+  background-color: white;
 
   .items-header {
-    font-size: 0.83em;
-    font-weight: 600;
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 1px solid #dddddd;
-    padding: 4px 0 4px 5px;
-    position: sticky;
-    top: 0;
-    background-color: #f5f5f5;
-    z-index: 1;
+    display: contents;
 
-    .item-select-all {
-      width: 25px;
-      height: 0.83em;
-    }
-
-    .item-icon {
-      width: 20px;
-      height: 0.83em;
-    }
-
-    .item-name {
-      width: calc(65% - 35px);
-      padding-left: 0px;
-    }
-
-    .item-standard {
-      text-align: center;
-      width: 20%;
-    }
-  }
-
-  .item-container {
-    display: flex;
-    width: 100%;
-    margin: 0;
-    border-radius: 0;
-
-    &:hover {
-      background-color: var(--file-manager-hover-bg-color);
-    }
-
-    .item-hover-actions {
-      background: linear-gradient(
-        90deg,
-        rgb(229, 229, 229, 0) 0,
-        var(--file-manager-hover-bg-color) 35px
-      );
-      padding-left: 40px;
-    }
-  }
-
-  .item-container.item-selected {
-    .item-hover-actions {
-      background: linear-gradient(
-        90deg,
-        rgb(229, 229, 229, 0) 0,
-        var(--file-manager-selected-bg-color) 35px
-      );
-      padding-left: 40px;
-    }
-
-    &:hover {
-      background-color: var(--file-manager-selected-bg-color) !important;
-    }
-  }
-
-  .item {
-    flex-direction: row;
-    height: 13px;
-    justify-content: unset;
-    padding: 15px;
-    padding-left: 33px;
-    margin: 0;
-    width: calc(70% - 30px);
-
-    &:hover {
-      background-color: unset;
-    }
-
-    .selection-checkbox {
-      top: 12px;
-    }
-
-    .favorite-icon {
-      cursor: pointer;
+    > * {
+      font-size: 13px;
+      font-weight: 500;
       display: flex;
       align-items: center;
+      border-bottom: 1px solid $border-color;
+      padding: 12px 8px;
+      position: sticky;
+      top: 0;
+      background-color: $cell-color;
+      z-index: 1;
+      color: #374151;
     }
 
-    .item-name {
-      max-width: 285px;
+    .item-select-all {
+      justify-content: center;
+      padding-left: 0;
+    }
+
+    .sortable-header {
+      cursor: pointer;
+      user-select: none;
+      gap: 12px;
+      min-height: 20px;
+      align-items: center;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background-color: $contrast-color;
+        color: #111827;
+      }
+
+      .header-text {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+      }
+
+      .sort-icon {
+        font-size: 10px;
+        transition: transform 0.15s ease;
+        margin-left: 2px;
+
+        &.active {
+          opacity: 1;
+          color: black;
+
+          &.rotate-up {
+            transform: rotate(180deg);
+          }
+        }
+      }
     }
   }
 
-  .item-standard {
+  // Grid cell styles - all cells share common properties
+  .item-name-cell,
+  .item-standard-cell {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
-    width: calc(20%);
+    border-bottom: 1px solid #f1f3f4;
+    min-height: 50px;
+    padding: 8px;
+    transition: background-color 0.1s ease;
+    position: relative;
+
+    &.item-selected {
+      background-color: $selected-cell-color;
+    }
+
+    &.item-drop-zone {
+      background-color: $contrast-color;
+    }
+
+    &.item-moving {
+      opacity: 0.5;
+    }
+  }
+
+  // Make item-container a positioned grid row
+  .item-container {
+    display: contents;
+
+    &:hover {
+      .item-name-cell,
+      .item-standard-cell {
+        background-color: $cell-color;
+      }
+
+      &.item-selected {
+        .item-name-cell,
+        .item-standard-cell {
+          background-color: $selected-cell-color;
+        }
+      }
+    }
+  }
+
+  // Position hover actions in the name cell but make them span the full row
+  .item-name-cell {
+    position: relative;
+  }
+
+  .item-container .item-hover-actions {
+    position: absolute;
+    top: 0;
+    left: -280px;
+    right: -200px;
+    height: 32px;
+    background: linear-gradient(90deg, rgba(248, 249, 250, 0) 0%, #f8f9fa 40px);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 16px;
+    padding-left: 40px;
+
+    &.fixed-position {
+      position: fixed;
+      z-index: 100;
+      justify-content: center;
+      padding-right: 12px;
+      padding-left: 12px;
+      pointer-events: none;
+
+      &.default-background {
+        background: linear-gradient(
+          90deg,
+          rgba(248, 249, 250, 0) 0%,
+          rgba(248, 249, 250, 0.95) 40%,
+          #f8f9fa 100%
+        );
+      }
+
+      &.selected-background {
+        background: linear-gradient(
+          90deg,
+          rgba(232, 244, 253, 0) 0%,
+          rgba(232, 244, 253, 0.95) 40%,
+          #e8f4fd 100%
+        );
+      }
+
+      .actions-container {
+        display: flex;
+        pointer-events: auto;
+        align-items: center;
+      }
+    }
+
+    .action-btn {
+      margin-right: 8px;
+      background-color: white;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px $contrast-color;
+      height: 32px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &:hover {
+        background-color: $action-hover-color;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      &.share-btn {
+        background-color: $share-btn-color;
+        color: white;
+        border: 1px solid $share-btn-color;
+
+        &:hover {
+          background-color: $share-btn-hover-color;
+        }
+      }
+
+      &.more-btn {
+        @include flex-center;
+        width: 40px;
+        height: 40px;
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+        border-radius: 50%;
+        margin-right: 0;
+        padding: 12px;
+
+        &:hover {
+          background: radial-gradient(
+            circle,
+            $contrast-color 0,
+            16px,
+            rgba(0, 0, 0, 0) 16px
+          );
+        }
+      }
+    }
   }
 }
 
-.empty-folder {
+.item-container.item-selected .item-hover-actions {
+  background: linear-gradient(90deg, rgba(232, 244, 253, 0) 0%, #e8f4fd 40px);
+}
+
+.item-name-cell {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 12px;
+  padding-left: 12px;
+
+  .selection-checkbox {
+    flex-shrink: 0;
+  }
+
+  .item-icon-wrapper {
+    @include flex-center;
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  .item-name-text {
+    font-size: 14px;
+    color: $cell-text-color;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
+
+  .rename-item-container.list {
+    width: 100%;
+
+    .rename-item {
+      text-align: left;
+      border-radius: 3px;
+      border: 1px solid $border-color;
+      padding: 4px 8px;
+      font-size: 14px;
+
+      &:focus {
+        outline: 2px solid var(--file-manager-primary-color);
+        border-color: var(--file-manager-primary-color);
+      }
+    }
+
+    .folder-name-error.right {
+      left: 0px;
+      bottom: -72px;
+    }
+  }
+
+  .favorite-icon-inline {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform 0.1s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.item-standard-cell {
+  padding-left: 12px;
+
+  .cell-text {
+    font-size: 14px;
+    color: $cell-text-color;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .description-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+
+    .cell-text {
+      color: $cell-text-color;
+    }
+  }
+}
+
+.items.list .empty-folder {
+  @include flex-center;
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 200px;
+  font-size: 14px;
+  color: $cell-text-color;
+  font-weight: 400;
+}
+
+.items.list .items-loading-container {
+  @include flex-center;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 200px;
+}
+
+.empty-folder {
+  @include flex-center;
   width: 100%;
   height: 100%;
 }

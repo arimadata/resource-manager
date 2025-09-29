@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import Button from "../../../components/Button/Button";
-import { IoWarningOutline } from "react-icons/io5";
+import { useEffect, useRef, useState } from "react";
 import { useDetectOutsideClick } from "../../../hooks/useDetectOutsideClick";
-import Modal from "../../../components/Modal/Modal";
 import NameInput from "../../../components/NameInput/NameInput";
 import ErrorTooltip from "../../../components/ErrorTooltip/ErrorTooltip";
 import { useNavigation } from "../../../contexts/NavigationContext";
-
-const maxNameLength = 220;
+import PropTypes from "prop-types";
+import { dateStringValidator } from "../../../validators/propValidators";
 
 const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
   const [renameItem, setRenameItem] = useState(item?.displayName);
@@ -16,7 +13,7 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
   const [renameErrorMessage, setRenameErrorMessage] = useState("");
   const [errorXPlacement, setErrorXPlacement] = useState("right");
   const [errorYPlacement, setErrorYPlacement] = useState("bottom");
-  const { currentPathItems, setCurrentPathItems } = useNavigation();
+  const { currentPathItems } = useNavigation();
 
   const warningModalRef = useRef(null);
   const outsideClick = useDetectOutsideClick((e) => {
@@ -121,7 +118,6 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
     <>
       <NameInput
         nameInputRef={outsideClick.ref}
-        maxLength={maxNameLength}
         value={renameItem}
         onChange={(e) => {
           setRenameItem(e.target.value);
@@ -140,6 +136,39 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
       )}
     </>
   );
+};
+
+RenameAction.propTypes = {
+  itemsViewRef: PropTypes.object.isRequired,
+  item: PropTypes.shape({
+    pk: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
+    itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+    iconName: PropTypes.string,
+    isFavorited: PropTypes.bool,
+    parentPk: PropTypes.string,
+    scope: PropTypes.string,
+    scopePk: PropTypes.string,
+    createdAt: dateStringValidator,
+    updatedAt: dateStringValidator,
+    resource: PropTypes.object,
+    resourcePk: PropTypes.string,
+    resourceType: PropTypes.string,
+    isDirectory: PropTypes.bool,
+    path: PropTypes.arrayOf(PropTypes.string),
+    isEditing: PropTypes.bool,
+  }).isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };
 
 export default RenameAction;

@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { arraysEqual } from "../utils/arraysEqual";
+import { dateStringValidator } from "../validators/propValidators";
+import PropTypes from "prop-types";
 
 const ItemsContext = createContext();
 
@@ -43,7 +45,7 @@ export const ItemsProvider = ({ children, itemsData }) => {
     const transformedItems = transformItems(newItems, newItemMap);
     setItemMapState(newItemMap);
     setItemsState(transformedItems);
-    // Make sure we have atleast one folder to use as template
+    // Make sure we have at least one folder to use as template
     const defaultValues = {
       pk: null,
       parentPk: null,
@@ -65,22 +67,11 @@ export const ItemsProvider = ({ children, itemsData }) => {
           break;
         }
       }
-      // If no folder was found, use an item as template
-      if (!defaultFolderTemplate) {
-        setDefaultFolderTemplate({
-          ...newItems[0],
-          ...defaultValues,
-          iconName: "FaRegFolderOpen",
-          itemType: "folder",
-          resourcePk: null,
-          isDirectory: true,
-        });
-      }
     }
   };
 
   useEffect(() => {
-    if (Array.isArray(itemsData) && itemsData.length > 0) {
+    if (Array.isArray(itemsData)) {
       setItems(itemsData);
     }
   }, [itemsData]);
@@ -106,6 +97,30 @@ export const ItemsProvider = ({ children, itemsData }) => {
       {children}
     </ItemsContext.Provider>
   );
+};
+
+ItemsProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+  itemsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      pk: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired,
+      itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+      iconName: PropTypes.string,
+      isFavorited: PropTypes.bool,
+      parentPk: PropTypes.string,
+      scope: PropTypes.string,
+      scopePk: PropTypes.string,
+      createdAt: dateStringValidator,
+      updatedAt: dateStringValidator,
+      resource: PropTypes.object,
+      resourcePk: PropTypes.string,
+      resourceType: PropTypes.string,
+      isDirectory: PropTypes.bool,
+      path: PropTypes.string,
+      isEditing: PropTypes.bool,
+    })
+  ).isRequired,
 };
 
 export const useItems = () => useContext(ItemsContext);

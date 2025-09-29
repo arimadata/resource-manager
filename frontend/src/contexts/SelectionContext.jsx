@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigation } from "./NavigationContext";
 import { arraysEqual } from "../utils/arraysEqual";
+import PropTypes from "prop-types";
 
 const SelectionContext = createContext();
 
 export const SelectionProvider = ({ eventBroker, children }) => {
-  const { currentPathItems, setCurrentPathItems } = useNavigation();
+  const { currentPathItems } = useNavigation();
   const [selectedItems, _setSelectedItems] = useState([]);
   const [selectedItemIndexes, _setSelectedItemIndexes] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -142,12 +143,6 @@ export const SelectionProvider = ({ eventBroker, children }) => {
     }
   };
 
-  const resetAllIsEditing = () => {
-    setCurrentPathItems((prev) =>
-      prev.map((item) => ({ ...item, isEditing: false }))
-    );
-  };
-
   ////////////////////////////////////////////////////////////
   // Context handlers
 
@@ -179,6 +174,21 @@ export const SelectionProvider = ({ eventBroker, children }) => {
       {children}
     </SelectionContext.Provider>
   );
+};
+
+SelectionProvider.propTypes = {
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export const useSelection = () => useContext(SelectionContext);

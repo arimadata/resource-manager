@@ -1,18 +1,52 @@
-.file-delete-confirm {
-    .file-delete-confirm-text {
-        border-bottom: 1px solid #dddddd;
-        padding: 15px;
-        margin-top: 0;
-        margin-bottom: .7rem;
-        word-wrap: break-word;
-        font-weight: 500;
-    }
+@use "../../../styles/variables" as *;
 
-    .file-delete-confirm-actions {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: flex-end;
-        margin-bottom: .7rem;
-        margin-right: 1rem;
+.delete-confirmation-content {
+  .delete-modal-message {
+    padding: 16px 24px 26px;
+    border-bottom: 1px solid $border-color;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 142%;
+      word-wrap: break-word;
     }
+  }
+
+  .delete-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 8px;
+
+    .fm-button {
+      min-width: 120px;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &.fm-button-secondary {
+        border: 1px solid $border-color;
+        background: white;
+
+        &:hover {
+          background: white;
+        }
+      }
+
+      &.fm-button-danger {
+        background: $danger-color;
+        color: white;
+        border: 1px solid $danger-color;
+
+        &:hover {
+          background: $danger-color-hover;
+          border-color: $danger-color-hover;
+        }
+      }
+    }
+  }
 }

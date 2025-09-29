@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import Loader from "../components/Loader/Loader";
 import Toolbar from "./Toolbar/Toolbar";
 import BreadCrumb from "./BreadCrumb/BreadCrumb";
 import ItemList from "./ItemList/ItemList";
@@ -10,6 +8,7 @@ import { SelectionProvider } from "../contexts/SelectionContext";
 import { ClipBoardProvider } from "../contexts/ClipboardContext";
 import { useEventBroker } from "../hooks/useEventBroker";
 import { SingleItemProvider } from "../contexts/SingleItemContext";
+import { SortingProvider } from "../contexts/SortingContext";
 import PropTypes from "prop-types";
 import { dateStringValidator } from "../validators/propValidators";
 import "./ResourceManager.scss";
@@ -38,13 +37,16 @@ import "./ResourceManager.scss";
  * };
  */
 const ResourceManager = ({
+  headers,
   items,
   isLoading,
   onCopy,
   onCreateFolder,
   onCreateItem,
+  renderCustomToolbar,
   onCut,
   onDelete,
+  onDuplicate,
   onFavorite,
   onOpen,
   onPaste,
@@ -52,21 +54,23 @@ const ResourceManager = ({
   onRename,
   onSelect,
   onShare,
+  onPathChange,
   allowCreateFolder = true,
   allowCreateItem = true,
   allowShareItem = true,
   allowCut = true,
-  allowCopy = true,
+  // allowCopy = true,
   allowFavorite = true,
   allowPaste = true,
   allowRename = true,
   allowDelete = true,
+  allowDuplicate = false,
   initialPath = null,
-  customEmptySelecCtxItems = [],
-  customSelecCtxItems = [],
-  height = "100%",
+  customEmptySelectCtxItems = [],
+  customSelectCtxItems = [],
+  height = "auto",
   width = "100%",
-  fontFamily = "Nunito Sans, sans-serif",
+  fontFamily = "Rubik, sans-serif",
   primaryColor = "#6155b4",
 }) => {
   const customStyles = {
@@ -88,6 +92,7 @@ const ResourceManager = ({
     allowPaste,
     allowRename,
     allowFavorite,
+    allowDuplicate,
     createItemLabel: "New item",
   };
 
@@ -99,57 +104,76 @@ const ResourceManager = ({
       onContextMenu={(e) => e.preventDefault()}
       style={customStyles}
     >
-      <Loader loading={isLoading} />
-      <ItemsProvider itemsData={items}>
-        <NavigationProvider initialPath={initialPath || []}>
-          <SelectionProvider eventBroker={eventBroker}>
-            <ClipBoardProvider eventBroker={eventBroker}>
-              {/* Toolbar with "New Folder", "Upload", "Refresh" */}
-              {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
-              <SingleItemProvider
-                eventBroker={eventBroker}
-                resourceManagerCfg={resourceManagerCfg}
-                customEmptySelecCtxItems={customEmptySelecCtxItems}
-                customSelecCtxItems={customSelecCtxItems}
-              >
-                <Toolbar
-                  resourceManagerCfg={resourceManagerCfg}
+      <SortingProvider>
+        <ItemsProvider itemsData={items}>
+          <NavigationProvider
+            initialPath={initialPath || []}
+            headers={headers}
+            onPathChange={onPathChange}
+          >
+            <SelectionProvider eventBroker={eventBroker}>
+              <ClipBoardProvider eventBroker={eventBroker}>
+                {/* Toolbar with "New Folder", "Upload", "Refresh" */}
+                {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
+                <SingleItemProvider
                   eventBroker={eventBroker}
-                />
-                <div className="folders-preview" style={{ width: "100%" }}>
-                  <BreadCrumb eventBroker={eventBroker} />
-                  {/* Main section with files and folders */}
-                  <ItemList eventBroker={eventBroker} />
-                </div>
-                {/* Event subscriber section such as "Delete" modal */}
-                <EventSubscribers
                   resourceManagerCfg={resourceManagerCfg}
-                  onCopy={onCopy}
-                  onCreateFolder={onCreateFolder}
-                  onCreateItem={onCreateItem}
-                  onCut={onCut}
-                  onDelete={onDelete}
-                  onFavorite={onFavorite}
-                  onOpen={onOpen}
-                  onPaste={onPaste}
-                  onRefresh={onRefresh}
-                  onRename={onRename}
-                  onSelect={onSelect}
-                  onShare={onShare}
-                  eventBroker={eventBroker}
-                />
-              </SingleItemProvider>
-            </ClipBoardProvider>
-          </SelectionProvider>
-        </NavigationProvider>
-      </ItemsProvider>
+                  customEmptySelectCtxItems={customEmptySelectCtxItems}
+                  customSelectCtxItems={customSelectCtxItems}
+                >
+                  <Toolbar
+                    resourceManagerCfg={resourceManagerCfg}
+                    eventBroker={eventBroker}
+                    renderCustomToolbar={renderCustomToolbar}
+                  />
+                  <div className="folders-preview" style={{ width: "100%" }}>
+                    <BreadCrumb eventBroker={eventBroker} />
+                    {/* Main section with files and folders */}
+                    <ItemList
+                      eventBroker={eventBroker}
+                      headers={headers}
+                      isLoading={isLoading}
+                      primaryColor={primaryColor}
+                    />
+                  </div>
+                  {/* Event subscriber section such as "Delete" modal */}
+                  <EventSubscribers
+                    resourceManagerCfg={resourceManagerCfg}
+                    onCopy={onCopy}
+                    onCreateFolder={onCreateFolder}
+                    onCreateItem={onCreateItem}
+                    onCut={onCut}
+                    onDelete={onDelete}
+                    onDuplicate={onDuplicate}
+                    onFavorite={onFavorite}
+                    onOpen={onOpen}
+                    onPaste={onPaste}
+                    onRefresh={onRefresh}
+                    onRename={onRename}
+                    onSelect={onSelect}
+                    onShare={onShare}
+                    eventBroker={eventBroker}
+                  />
+                </SingleItemProvider>
+              </ClipBoardProvider>
+            </SelectionProvider>
+          </NavigationProvider>
+        </ItemsProvider>
+      </SortingProvider>
     </main>
   );
 };
 
 ResourceManager.displayName = "ResourceManager";
-
 ResourceManager.propTypes = {
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
+      sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
+    })
+  ).isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       // Original structure fields
@@ -169,21 +193,26 @@ ResourceManager.propTypes = {
 
       // Computed fields (added by ItemsContext)
       isDirectory: PropTypes.bool,
-      path: PropTypes.string,
+      path: PropTypes.arrayOf(PropTypes.string),
       isEditing: PropTypes.bool,
     })
   ).isRequired,
   isLoading: PropTypes.bool,
+  onCreateFolder: PropTypes.func,
+  onCreateItem: PropTypes.func,
   onCreate: PropTypes.func,
   onRename: PropTypes.func,
   onDelete: PropTypes.func,
+  onDuplicate: PropTypes.func,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
   onShare: PropTypes.func,
   onFavorite: PropTypes.func,
+  onOpen: PropTypes.func,
   onRefresh: PropTypes.func,
   onSelect: PropTypes.func,
+  onPathChange: PropTypes.func,
   allowCreateFolder: PropTypes.bool,
   allowCreateItem: PropTypes.bool,
   allowShareItem: PropTypes.bool,
@@ -194,8 +223,9 @@ ResourceManager.propTypes = {
   allowPaste: PropTypes.bool,
   allowRename: PropTypes.bool,
   allowDelete: PropTypes.bool,
+  allowDuplicate: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
-  customEmptySelecCtxItems: PropTypes.arrayOf(
+  customEmptySelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -214,7 +244,7 @@ ResourceManager.propTypes = {
       ),
     })
   ),
-  customSelecCtxItems: PropTypes.arrayOf(
+  customSelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -233,6 +263,7 @@ ResourceManager.propTypes = {
       ),
     })
   ),
+  renderCustomToolbar: PropTypes.node,
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryColor: PropTypes.string,

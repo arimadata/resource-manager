@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import SubMenu from "./SubMenu";
+import PropTypes from "prop-types";
 import "./ContextMenu.scss";
 
-const ContextMenu = ({
-  itemsViewRef,
-  contextMenuRef,
-  menuItems,
-  visible,
-  clickPosition,
-}) => {
+const ContextMenu = ({ contextMenuRef, menuItems, visible, clickPosition }) => {
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [activeSubMenuIndex, setActiveSubMenuIndex] = useState(null);
@@ -20,38 +15,34 @@ const ContextMenu = ({
   const contextMenuPosition = () => {
     const { clickX, clickY } = clickPosition;
 
-    const container = itemsViewRef.current;
-    const containerRect = container.getBoundingClientRect();
-    const scrollBarWidth = container.offsetWidth - container.clientWidth;
-
     // Context menu size
     const contextMenuContainer = contextMenuRef.current.getBoundingClientRect();
     const menuWidth = contextMenuContainer.width;
     const menuHeight = contextMenuContainer.height;
 
     // Check if there is enough space at the right for the context menu
-    const leftToCursor = clickX - containerRect.left;
-    const right =
-      containerRect.width - (leftToCursor + scrollBarWidth) > menuWidth;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const right = viewportWidth - clickX > menuWidth;
     const left = !right;
 
-    const topToCursor = clickY - containerRect.top;
-    const top = containerRect.height - topToCursor > menuHeight;
+    const top = viewportHeight - clickY > menuHeight;
     const bottom = !top;
 
     if (right) {
-      setLeft(`${leftToCursor}px`);
+      setLeft(`${clickX}px`);
       setSubMenuPosition("right");
     } else if (left) {
       // Location: -width of the context menu from cursor's position i.e. left side
-      setLeft(`${leftToCursor - menuWidth}px`);
+      setLeft(`${clickX - menuWidth}px`);
       setSubMenuPosition("left");
     }
 
     if (top) {
-      setTop(`${topToCursor + container.scrollTop}px`);
+      setTop(`${clickY}px`);
     } else if (bottom) {
-      setTop(`${topToCursor + container.scrollTop - menuHeight}px`);
+      setTop(`${clickY - menuHeight}px`);
     }
   };
 
@@ -91,7 +82,7 @@ const ContextMenu = ({
             {menuItems
               .filter((item) => !item.hidden)
               .map((item, index) => {
-                const hasChildren = item.hasOwnProperty("children");
+                const hasChildren = "children" in item;
                 const activeSubMenu =
                   activeSubMenuIndex === index && hasChildren;
                 return (
@@ -130,6 +121,32 @@ const ContextMenu = ({
       </div>
     );
   }
+};
+
+ContextMenu.displayName = "ContextMenu";
+ContextMenu.propTypes = {
+  contextMenuRef: PropTypes.object.isRequired,
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      onClick: PropTypes.func,
+      divider: PropTypes.bool,
+      hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+      className: PropTypes.string,
+      children: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+          onClick: PropTypes.func,
+          hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+          className: PropTypes.string,
+        })
+      ),
+    })
+  ).isRequired,
+  visible: PropTypes.bool.isRequired,
+  clickPosition: PropTypes.object.isRequired,
 };
 
 export default ContextMenu;

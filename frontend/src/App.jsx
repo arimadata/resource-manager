@@ -8,6 +8,7 @@ import { createItemAPI } from "./api/createItemAPI";
 import { favoriteAPI } from "./api/favoriteAPI";
 import "./App.scss";
 import { CreateModal } from "./exampleModals/CreateModal";
+import { ShareModal } from "./exampleModals/ShareModal";
 
 const closedModal = {
   open: false,
@@ -17,9 +18,102 @@ const closedModal = {
   onCancel: null,
 };
 
+const headers = [
+  {
+    columnName: "Model Name",
+    getValue: (item) => item.displayName || "None",
+    isNameColumn: true,
+  },
+
+  {
+    columnName: "Description",
+    getValue: (item) => {
+      const description =
+        item.itemType === "folder" ? "--" : item.resource?.description;
+      return description || "None";
+    },
+  },
+  {
+    columnName: "Last Modified",
+    getValue: (item) => {
+      const updatedAt =
+        item.itemType === "folder"
+          ? new Date(item.updatedAt).toLocaleString("en-US")
+          : new Date(item.resource?.updatedAt).toLocaleString("en-US");
+      return updatedAt || "Unknown";
+    },
+    sortAccessor: (v) => new Date(v).getTime(),
+  },
+  {
+    columnName: "Owner",
+    getValue: (item) => {
+      const pk =
+        item.itemType === "folder" ? item.scopePk : item.resource?.userPk;
+      return pk || "None";
+    },
+  },
+];
+
+const initialItems = [
+  {
+    pk: "1",
+    displayName: "Documents",
+    itemType: "folder",
+    iconName: "BsFolderFill",
+    parentPk: null,
+    updatedAt: "2025-09-04T15:38:24.358281Z",
+  },
+  {
+    createdAt: "2025-09-09T09:35:17.634046Z",
+    displayName: "Test Report",
+    iconName: "BsFileEarmarkFill",
+    isFavorited: false,
+    itemType: "resource",
+    pk: "2",
+    resource: {
+      createdAt: "2025-09-04T15:38:24.358281Z",
+      updatedAt: "2025-09-04T15:38:24.358281Z",
+      description: "Test Description",
+      displayName: "Test Report",
+      pk: "6250780034072576",
+      userPk: "test@gmail.com",
+      tabs: [],
+    },
+    userPk: "test@gmail.com",
+    resourcePk: "6250780034072576",
+    resourceType: "report",
+    scope: "user",
+    scopePk: "test@gmail.com",
+    updatedAt: "2025-09-09T09:35:17.634046Z",
+  },
+  {
+    createdAt: "2025-09-09T09:35:17.634046Z",
+    displayName: "Test Report 1",
+    iconName: "BsFileEarmarkFill",
+    isFavorited: false,
+    itemType: "resource",
+    pk: "3",
+    resource: {
+      createdAt: "2025-09-04T15:39:24.358281Z",
+      updatedAt: "2025-09-04T15:38:24.358281Z",
+      description: "Test Description",
+      displayName: "Test Report 2",
+      pk: "6250780034072576",
+      userPk: "test@gmail.com",
+      tabs: [],
+    },
+    userPk: "test@gmail.com",
+    resourcePk: "6250780034072576",
+    resourceType: "report",
+    scope: "user",
+    scopePk: "test@gmail.com",
+    updatedAt: "2025-09-09T09:35:17.634046Z",
+  },
+];
+
 function App() {
   const [loadingCount, setLoadingCount] = useState(0);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(initialItems);
   const [modal, setModal] = useState(closedModal);
   const isMountRef = useRef(false);
 
@@ -32,13 +126,14 @@ function App() {
   const isLoading = loadingCount > 0;
 
   ////////////////////////////////////////////////////
-  const onCreateItem = (data, release) => {
-    console.log("onCreateItem -> data:", data);
+  const onCreateItem = (release) => {
+    console.log("onCreateItem called");
     // 1. Setup modal handlers as needed with API calls if necessary
     // Make sure they call "release" when done
     const onConfirm = async (formData) => {
       // await createItemAPI(formData);
       // getItems();
+      console.log("onCreateItem -> formData:", formData);
       release();
     };
     const onCancel = () => {
@@ -49,7 +144,6 @@ function App() {
     setModal({
       open: true,
       Component: CreateModal,
-      data,
       onConfirm,
       onCancel,
     });
@@ -66,6 +160,7 @@ function App() {
     // 1. Setup modal handlers as needed with API calls if necessary
     // Make sure they call "release" when done
     const onConfirm = async (values) => {
+      console.log(`onShare -> release:`, values);
       release();
     };
     const onCancel = () => {
@@ -75,7 +170,7 @@ function App() {
     // 2. Open the dialog
     setModal({
       open: true,
-      Component: CreateModal,
+      Component: ShareModal,
       data,
       onConfirm,
       onCancel,
@@ -87,6 +182,11 @@ function App() {
       setModal(closedModal);
     };
   };
+
+  const onPathChange = (newPath) => {
+    console.log("Path changed to:", newPath);
+  };
+
   ////////////////////////////////////////////////////
 
   const getItems = async () => {
@@ -101,9 +201,17 @@ function App() {
   useEffect(() => {
     if (isMountRef.current) return;
     isMountRef.current = true;
-    incrementLoadingCount();
-    getItems();
-    decrementLoadingCount();
+
+    const loadInitialData = async () => {
+      incrementLoadingCount();
+      try {
+        await getItems();
+      } finally {
+        decrementLoadingCount();
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   const onDelete = (data, lock) => {
@@ -148,7 +256,7 @@ function App() {
           setItems((prev) => {
             // Remove the UI generated skeleton item and add the new item
             const items = prev.filter((item) => item.pk !== data.pk);
-            return [...items, response.data];
+            return [...items, { ...response.data, iconName: "BsFolderFill" }];
           });
           // Option 2: Refresh the items list
           // getItems();
@@ -168,6 +276,10 @@ function App() {
 
   const onCut = (data, release) => {
     console.log("onCut -> data:", data);
+  };
+
+  const onDuplicate = (data, release) => {
+    console.log("onDuplicate -> data:", data);
   };
 
   const onFavorite = (data, lock) => {
@@ -220,11 +332,10 @@ function App() {
       });
   };
 
-  const onRefresh = (data, lock) => {
-    // // Optional: Lock the UI until the refresh is completed
-    // const release = lock();
-    // incrementLoadingCount();
-    console.log("onRefresh -> data:", data);
+  const onRefresh = (lock) => {
+    const release = lock();
+    incrementLoadingCount();
+    console.log("onRefresh called");
     getItems()
       .then(() => {
         console.log("Refresh completed");
@@ -233,9 +344,8 @@ function App() {
         console.error("Error refreshing items:", error);
       })
       .finally(() => {
-        // // Optional: Unlock the UI if locked
-        // decrementLoadingCount();
-        // release();
+        decrementLoadingCount();
+        release();
       });
   };
 
@@ -270,53 +380,53 @@ function App() {
   ////////////////////////////////////////////////////
   // Context Menu
 
-  const customEmptySelecCtxItems = [];
-  const customSelecCtxItems = [];
+  const customEmptySelectCtxItems = [];
+  const customSelectCtxItems = [];
 
   /////////////////////////////////////////////////////////////////
   // Uncomment below to see how to add custom context menu items //
   /////////////////////////////////////////////////////////////////
 
-  // const customEmptySelecCtxItems = [
+  // const customEmptySelectCtxItems = [
   //   {
   //     title: "custom Item 1",
-  //     icon: "FaChurch",
+  //     icon: "Bs1CircleFill",
   //     children: [
   //       {
   //         title: "custom sub Item 1",
-  //         icon: "FaBaby",
+  //         icon: "BsBandaid",
   //         onClick: (allItems) => console.log("custom sub Item 1", allItems),
   //       },
   //       {
-  //         title: "sub Item 2",
-  //         icon: "FaBaby",
+  //         title: "custom sub Item 2",
+  //         icon: "BsArrowThroughHeart",
   //         onClick: (allItems) => console.log("custom sub Item 2", allItems),
   //       },
   //     ],
   //   },
   //   {
-  //     title: "custom sub Item 1",
-  //     icon: "FaBaby",
+  //     title: "custom Item 2",
+  //     icon: "Bs2CircleFill",
   //     onClick: (allItems) => console.log("custom Item 2", allItems),
   //     divider: true,
   //   },
   // ];
-  // const customSelecCtxItems = [
+  // const customSelectCtxItems = [
   //   {
   //     title: "Dev Tools",
-  //     icon: "FaBaby",
+  //     icon: "BsTools",
   //     divider: false,
   //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
   //     children: [
   //       {
   //         title: "Make Dev Copy",
-  //         icon: "FaChurch",
+  //         icon: "BsBasket",
   //         onClick: (item) => console.log("Make Dev Copy", item),
   //         hidden: false,
   //       },
   //       {
   //         title: "Favorited Only",
-  //         icon: "FaCaretDown",
+  //         icon: "BsBullseye",
   //         onClick: (item) => console.log("Favorited Item", item),
   //         hidden: (item) => !item?.isFavorited, // Action can be performed on non-favorited items
   //       },
@@ -324,17 +434,30 @@ function App() {
   //   },
   //   {
   //     title: "Build MMM",
-  //     icon: "FaAccessibleIcon",
+  //     icon: "BsBuilding",
   //     onClick: (item) => console.log("Build MMM", item),
   //     hidden: (item) => item?.itemType === "folder", // Action is hidden on folders
   //     divider: true,
   //   },
   // ];
 
+  ////////////////////////////////////////////////////
+  // Custom Toolbar
+
+  const customToolbar = null;
+
+  // const customToolbar = (
+  //   <>
+  //     <input type="text" placeholder="Type to search..." />
+  //     <button onClick={() => console.log("Searching...")}>Search</button>
+  //   </>
+  // );
+
   return (
     <div className="app">
       <div className="file-manager-container">
         <ResourceManager
+          headers={headers}
           items={items}
           isLoading={isLoading}
           onCopy={onCopy}
@@ -342,6 +465,8 @@ function App() {
           onCreateItem={onCreateItem}
           onCut={onCut}
           onDelete={onDelete}
+          onDuplicate={onDuplicate}
+          renderCustomToolbar={customToolbar}
           onFavorite={onFavorite}
           onOpen={onOpen}
           onPaste={onPaste}
@@ -349,13 +474,15 @@ function App() {
           onRename={onRename}
           onSelect={onSelect}
           onShare={onShare}
+          onPathChange={onPathChange}
           initialPath={null}
-          customEmptySelecCtxItems={customEmptySelecCtxItems}
-          customSelecCtxItems={customSelecCtxItems}
+          customEmptySelectCtxItems={customEmptySelectCtxItems}
+          customSelectCtxItems={customSelectCtxItems}
           height="100%"
           width="100%"
-          fontFamily="Nunito Sans, sans-serif"
+          fontFamily="Rubik, sans-serif"
           primaryColor="#6155b4"
+          allowDuplicate={true}
         />
       </div>
       {modal.open && (

@@ -8,6 +8,7 @@ import { useSelection } from "../../contexts/SelectionContext";
 import { useSingleItem } from "../../contexts/SingleItemContext";
 import { useItems } from "../../contexts/ItemsContext";
 import Modal from "../../components/Modal/Modal";
+import PropTypes from "prop-types";
 
 export const EventSubscribers = ({
   resourceManagerCfg,
@@ -16,6 +17,7 @@ export const EventSubscribers = ({
   onCreateItem,
   onCut,
   onDelete,
+  onDuplicate,
   onFavorite,
   onOpen,
   onPaste,
@@ -25,23 +27,10 @@ export const EventSubscribers = ({
   onShare,
   eventBroker,
 }) => {
-  const { items, itemMap, setItems } = useItems();
-  const {
-    currentPath,
-    setCurrentPath,
-    currentFolder,
-    switchPath,
-    setCurrentFolder,
-    currentPathItems,
-    setCurrentPathItems,
-  } = useNavigation();
+  const { items, setItems } = useItems();
+  const { currentFolder, switchPath, setCurrentPathItems } = useNavigation();
   const {
     selectedItems,
-    selectedItemIndexes,
-    setSelectedItemIndexes,
-    setSelectedItems,
-    hoveredItem,
-    setHoveredItem,
     selectItems,
     selectFirst,
     selectLast,
@@ -52,8 +41,7 @@ export const EventSubscribers = ({
     navigateUp,
     navigateDown,
   } = useSelection();
-  const { clipBoard, setClipBoard, cutItems, copyItems, pasteItems } =
-    useClipBoard();
+  const { setClipBoard, cutItems, copyItems, pasteItems } = useClipBoard();
   const {
     openItem,
     renameItem,
@@ -61,16 +49,7 @@ export const EventSubscribers = ({
     addOrReplaceItem,
     toggleFavorite,
     deleteItems,
-    emptySelecCtxItems,
-    selecCtxItems,
-    handleContextMenu,
-    handleItemRenaming,
-    handleFolderCreating,
-    visible, // Context Menu Visibility
-    setVisible,
-    setRightClickedItem,
-    clickPosition,
-    isSelectionCtx,
+    duplicateItems,
   } = useSingleItem();
 
   // Register keyboard shortcut publishers
@@ -83,6 +62,7 @@ export const EventSubscribers = ({
     onCreateItem,
     onCut,
     onDelete,
+    onDuplicate,
     onFavorite,
     onOpen,
     onPaste,
@@ -110,13 +90,22 @@ export const EventSubscribers = ({
     // Clipboard events
     cutItems: cutItems,
     copyItems: copyItems,
-    pasteItems: () => pasteItems(eventBroker?.data || currentFolder),
+    pasteItems: () =>
+      pasteItems(
+        eventBroker?.data !== undefined ? eventBroker?.data : currentFolder
+      ),
     // Single item events
     createFolder: createFolder,
     createFolderDone: () => addOrReplaceItem(eventBroker?.data),
     renameItem: renameItem,
     renameItemDone: () => addOrReplaceItem(eventBroker?.data),
+    deleteItems: () => {
+      if (!selectedItems.length) {
+        eventBroker.publish("release");
+      }
+    },
     deleteItemsDone: deleteItems,
+    duplicateItems: duplicateItems,
     toggleFavorite: () => toggleFavorite(eventBroker?.data),
     openItem: () => openItem(eventBroker?.data || selectedItems[0]),
     // Resetting events
@@ -145,13 +134,8 @@ export const EventSubscribers = ({
   };
   useEffect(() => {
     // Are we subscribed to this event?
-    console.log("eventBroker?.eventCounter", eventBroker?.eventCounter);
     const subscriptionHandler = eventSubscriptions[eventBroker.event];
     if (subscriptionHandler) {
-      console.log(
-        `( internal ) [${eventBroker.eventCounter}] EventSubscribers processing ->`,
-        eventBroker.event
-      );
       subscriptionHandler();
     }
   }, [eventBroker?.eventCounter]);
@@ -176,11 +160,16 @@ export const EventSubscribers = ({
     //   ),
     //   width: "35%",
     // },
-    deleteItems: {
-      title: "Delete",
-      component: <DeleteAction eventBroker={eventBroker} onDelete={onDelete} />,
-      width: "25%",
-    },
+    // Only show delete modal if there are selected items
+    ...(selectedItems.length > 0 && {
+      deleteItems: {
+        title: "Delete",
+        component: (
+          <DeleteAction eventBroker={eventBroker} onDelete={onDelete} />
+        ),
+        width: "25%",
+      },
+    }),
   };
   const internalModalEventHandler =
     internalModalEventHandlers[eventBroker.event];
@@ -194,4 +183,45 @@ export const EventSubscribers = ({
       {internalModalEventHandler?.component}
     </Modal>
   ) : null;
+};
+
+EventSubscribers.displayName = "EventSubscribers";
+EventSubscribers.propTypes = {
+  resourceManagerCfg: PropTypes.shape({
+    allowCreateItem: PropTypes.bool,
+    allowCreateFolder: PropTypes.bool,
+    allowShareItem: PropTypes.bool,
+    allowCut: PropTypes.bool,
+    allowCopy: PropTypes.bool,
+    allowPaste: PropTypes.bool,
+    allowRename: PropTypes.bool,
+    createItemLabel: PropTypes.string,
+    allowDelete: PropTypes.bool,
+    allowFavorite: PropTypes.bool,
+    allowDuplicate: PropTypes.bool,
+  }).isRequired,
+  onCopy: PropTypes.func.isRequired,
+  onCreateFolder: PropTypes.func.isRequired,
+  onCreateItem: PropTypes.func.isRequired,
+  onCut: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onDuplicate: PropTypes.func.isRequired,
+  onFavorite: PropTypes.func.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onPaste: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  onRename: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
 };

@@ -1,22 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  FaRegFile,
-  FaRegFolderOpen,
-  FaStar,
-  FaRegStar,
-  FaEllipsis,
-} from "react-icons/fa6";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BsStarFill, BsStar, BsThreeDots } from "react-icons/bs";
 import { useIcon } from "../../hooks/useIcons";
 import CreateFolderAction from "../Events/CreateFolder/CreateFolder.action";
 import RenameAction from "../Events/Rename/Rename.action";
-import { formatDate } from "../../utils/formatDate";
 import { useNavigation } from "../../contexts/NavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { arraysEqual } from "../../utils/arraysEqual";
-
-const dragIconSize = 50;
+import Tooltip from "../../components/Tooltip/Tooltip";
+import { dateStringValidator } from "../../validators/propValidators";
+import { ICON_SIZE } from "../../constants/iconSize";
+import { DRAG_ICON_SIZE } from "../../constants/dragIconSize";
+import PropTypes from "prop-types";
 
 const Item = ({
   index,
@@ -26,6 +22,8 @@ const Item = ({
   eventBroker,
   handleContextMenu,
   setRightClickedItem,
+  headers,
+  primaryColor,
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
   const [itemHovered, setItemHovered] = useState(false);
@@ -33,13 +31,13 @@ const Item = ({
   const [checkboxClassName, setCheckboxClassName] = useState("hidden");
   const [dropZoneClass, setDropZoneClass] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState(null);
-
-  const iconSize = 20;
-  const getIcon = useIcon();
+  const [hoverPosition, setHoverPosition] = useState(null);
   const { currentPathItems } = useNavigation();
-  const { setSelectedItems, setHoveredItem } = useSelection();
+  const { selectedItems, setSelectedItems, setHoveredItem } = useSelection();
   const { clipBoard, setClipBoard } = useClipBoard();
   const dragIconRef = useRef(null);
+  const hoveredElementRef = useRef(null);
+  const getIcon = useIcon();
 
   const isItemMoving =
     clipBoard?.isMoving &&
@@ -48,21 +46,6 @@ const Item = ({
         i.displayName === item.displayName && arraysEqual(i.path, item.path)
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
-
-  // Get the appropriate icon for the item
-  const getItemIcon = (size = iconSize) => {
-    // If iconName is provided, use it
-    if (item.iconName) {
-      return getIcon(item.iconName, size);
-    }
-
-    // Fallback to default icons based on item type
-    if (item.isDirectory) {
-      return <FaRegFolderOpen size={size} />;
-    } else {
-      return <FaRegFile size={size} />;
-    }
-  };
 
   const handleItemAccess = (item) => {
     eventBroker.publish("openItem", item);
@@ -130,22 +113,48 @@ const Item = ({
     if (!itemSelected) {
       setSelectedItems([item]);
     }
-
     setRightClickedItem(item);
     handleContextMenu(e, true);
   };
 
+  const calculateHoverPosition = useCallback(
+    (targetElement) => {
+      const containerRect = itemsViewRef.current?.getBoundingClientRect();
+
+      if (containerRect && targetElement) {
+        const cellRect = targetElement.getBoundingClientRect();
+
+        return {
+          top: cellRect.top,
+          left: containerRect.right - 200,
+          width: 150,
+          height: cellRect.height,
+        };
+      }
+      return null;
+    },
+    [itemsViewRef]
+  );
+
   // Selection Checkbox Functions
-  const handleMouseOver = () => {
+  const handleMouseOver = (e) => {
     setHoveredItem(item);
     setItemHovered(true);
     setCheckboxClassName("visible");
+
+    hoveredElementRef.current = e.currentTarget;
+
+    // Calculate the row position for the toolbar
+    const hoverPos = calculateHoverPosition(e.currentTarget);
+    setHoverPosition(hoverPos);
   };
 
   const handleMouseLeave = () => {
     !itemSelected && setCheckboxClassName("hidden");
     setHoveredItem(null);
     setItemHovered(false);
+    setHoverPosition(null);
+    hoveredElementRef.current = null;
   };
 
   const handleCheckboxChange = (e) => {
@@ -164,11 +173,10 @@ const Item = ({
 
     setItemSelected(e.target.checked);
   };
-  //
 
   const handleDragStart = (e) => {
     if (!canSelectItems) return;
-    e.dataTransfer.setDragImage(dragIconRef.current, 30, 50);
+    e.dataTransfer.setDragImage(dragIconRef.current, 30, DRAG_ICON_SIZE);
     e.dataTransfer.effectAllowed = "copy";
     eventBroker.publish("cutItems");
   };
@@ -220,136 +228,215 @@ const Item = ({
     setCheckboxClassName(
       selectedItemIndexes.includes(index) ? "visible" : "hidden"
     );
-  }, [selectedItemIndexes]);
+  }, [selectedItemIndexes, index]);
+
+  // Recalculate hover position when selectedItems change (toolbar height may change)
+  useEffect(() => {
+    if (itemHovered && hoveredElementRef.current) {
+      const hoverPos = calculateHoverPosition(hoveredElementRef.current);
+      setHoverPosition(hoverPos);
+    }
+  }, [selectedItems.length, itemHovered, calculateHoverPosition]);
 
   return (
     <div
       className={`item-container ${dropZoneClass} ${
         itemSelected || !!item.isEditing ? "item-selected" : ""
       } ${isItemMoving ? "item-moving" : ""}`}
-      tabIndex={0}
-      title={item.displayName}
-      onClick={handleItemSelection}
-      onContextMenu={handleItemContextMenu}
-      onMouseOver={handleMouseOver}
+      onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
-      draggable={itemSelected}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragEnter={handleDragEnterOver}
-      onDragOver={handleDragEnterOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      onContextMenu={handleItemContextMenu}
     >
-      <div className="item">
-        {/* Selection Checkbox */}
-        {!item.isEditing && (
-          <Checkbox
-            name={item.displayName}
-            id={item.displayName}
-            checked={itemSelected}
-            className={`selection-checkbox ${checkboxClassName}`}
-            onChange={handleCheckboxChange}
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
-        {/* Star (Favorite) Icon */}
-        <span
-          onClick={handleFavorite}
-          title={item.isFavorited ? "Unfavorite" : "Favorite"}
-          className="favorite-icon"
-        >
-          {item.isFavorited ? (
-            <FaStar size={iconSize} />
-          ) : (
-            <FaRegStar size={iconSize} />
-          )}
-        </span>
+      {/* Dynamic Header Cells */}
+      {headers.map((header) => {
+        const isNameColumn = header.isNameColumn;
 
-        {/* Item Icon */}
-        {getItemIcon(iconSize)}
+        return (
+          <div
+            key={header.columnName.toLowerCase().replace(" ", "-")}
+            className={`${
+              isNameColumn ? "item-name-cell" : "item-standard-cell"
+            } ${dropZoneClass} ${
+              itemSelected || !!item.isEditing ? "item-selected" : ""
+            } ${isItemMoving ? "item-moving" : ""}`}
+            title={isNameColumn ? item.displayName : undefined}
+            onClick={handleItemSelection}
+            onContextMenu={handleItemContextMenu}
+            onMouseEnter={handleMouseOver}
+            onMouseLeave={handleMouseLeave}
+            draggable={itemSelected}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragEnter={handleDragEnterOver}
+            onDragOver={handleDragEnterOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            {isNameColumn && item.isEditing ? (
+              <div className={`rename-item-container list`}>
+                {eventBroker.event === "createFolder" ? (
+                  <CreateFolderAction
+                    itemsViewRef={itemsViewRef}
+                    item={item}
+                    eventBroker={eventBroker}
+                  />
+                ) : eventBroker.event === "renameItem" ? (
+                  <RenameAction
+                    itemsViewRef={itemsViewRef}
+                    item={item}
+                    eventBroker={eventBroker}
+                  />
+                ) : null}
+              </div>
+            ) : isNameColumn ? (
+              <>
+                {/* Selection Checkbox Cell */}
+                {!item.isEditing && (
+                  <Checkbox
+                    name={item.displayName}
+                    id={item.displayName}
+                    checked={itemSelected}
+                    className={`selection-checkbox ${checkboxClassName}`}
+                    onChange={handleCheckboxChange}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
 
-        {/* Item Name */}
-        {item.isEditing ? (
-          <div className={`rename-item-container list`}>
-            {eventBroker.event === "createFolder" ? (
-              <CreateFolderAction
-                itemsViewRef={itemsViewRef}
-                item={item}
-                eventBroker={eventBroker}
-              />
-            ) : eventBroker.event === "renameItem" ? (
-              <RenameAction
-                itemsViewRef={itemsViewRef}
-                item={item}
-                eventBroker={eventBroker}
-              />
-            ) : null}
+                {/* Icon Cell */}
+                <div className="item-icon-wrapper">
+                  {getIcon(item.iconName, ICON_SIZE, { color: primaryColor })}
+                </div>
+
+                {/* Name Cell */}
+                <span className="item-name-text">{header.getValue(item)}</span>
+
+                {/* Favorite Icon Cell */}
+                <span
+                  onClick={handleFavorite}
+                  title={item.isFavorited ? "Unfavorite" : "Favorite"}
+                  className="favorite-icon-inline"
+                >
+                  {item.isFavorited ? (
+                    <BsStarFill size={20} color="#fbbf24" />
+                  ) : (
+                    <BsStar size={20} style={{ color: "#d1d5db" }} />
+                  )}
+                </span>
+              </>
+            ) : (
+              header.getValue(item)
+            )}
           </div>
-        ) : (
-          <span className="text-truncate item-name">{item.displayName}</span>
-        )}
-      </div>
-
-      {/* Modified Date & File Size */}
-      <div className="item-standard">{formatDate(item.updatedAt)}</div>
-      <div className="item-standard">{item.pk}</div>
+        );
+      })}
 
       {/* Hover Actions Overlay */}
-      {itemHovered && (
-        <div className="item-hover-actions">
-          <button
-            className="action-btn"
-            title="Open"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleItemAccess(item);
-            }}
-          >
-            <span>Open</span>
-          </button>
-          {!item.isDirectory && (
+      {itemHovered && hoverPosition && (
+        <div
+          className={`item-hover-actions fixed-position ${
+            itemSelected ? "selected-background" : "default-background"
+          }`}
+          style={{
+            top: hoverPosition.top,
+            left: hoverPosition.left,
+            width: hoverPosition.width,
+            height: hoverPosition.height,
+          }}
+          onMouseEnter={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="actions-container">
             <button
-              className="action-btn share-btn"
-              title="Share"
+              className="action-btn"
+              title="Open"
               onClick={(e) => {
                 e.stopPropagation();
-                handleItemShare();
+                handleItemAccess(item);
               }}
             >
-              <span>Share</span>
+              <span>Open</span>
             </button>
-          )}
-          <button
-            className="action-btn more-btn"
-            title="More options"
-            onClick={handleItemContextMenu}
-          >
-            <FaEllipsis size={iconSize} />
-          </button>
+            {!item.isDirectory && (
+              <button
+                className="action-btn share-btn"
+                title="Share"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleItemShare();
+                }}
+              >
+                <span>Share</span>
+              </button>
+            )}
+            <button
+              className="action-btn more-btn"
+              title="More options"
+              onClick={handleItemContextMenu}
+            >
+              <BsThreeDots size={ICON_SIZE} />
+            </button>
+          </div>
         </div>
       )}
 
       {/* Drag Icon & Tooltip Setup */}
       {tooltipPosition && (
-        <div
-          style={{
-            top: `${tooltipPosition.y}px`,
-            left: `${tooltipPosition.x}px`,
-          }}
-          className="drag-move-tooltip"
-        >
-          Move to{" "}
-          <span className="drop-zone-item-name">{item.displayName}</span>
-        </div>
+        <Tooltip tooltipPosition={tooltipPosition} name={item.displayName} />
       )}
 
       <div ref={dragIconRef} className="drag-icon">
-        {getItemIcon(dragIconSize)}
+        {getIcon(item.iconName, DRAG_ICON_SIZE, { color: primaryColor })}
       </div>
       {/* Drag Icon & Tooltip Setup */}
     </div>
   );
+};
+
+Item.displayName = "Item";
+Item.propTypes = {
+  index: PropTypes.number.isRequired,
+  item: PropTypes.shape({
+    pk: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
+    itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+    iconName: PropTypes.string,
+    isFavorited: PropTypes.bool,
+    parentPk: PropTypes.string,
+    scope: PropTypes.string,
+    scopePk: PropTypes.string,
+    createdAt: dateStringValidator,
+    updatedAt: dateStringValidator,
+    resource: PropTypes.object,
+    resourcePk: PropTypes.string,
+    resourceType: PropTypes.string,
+    isDirectory: PropTypes.bool,
+    path: PropTypes.arrayOf(PropTypes.string),
+    isEditing: PropTypes.bool,
+  }).isRequired,
+  itemsViewRef: PropTypes.object.isRequired,
+  selectedItemIndexes: PropTypes.array.isRequired,
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  handleContextMenu: PropTypes.func.isRequired,
+  setRightClickedItem: PropTypes.func.isRequired,
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
+      sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
+    })
+  ).isRequired,
+  primaryColor: PropTypes.string,
 };
 
 export default Item;

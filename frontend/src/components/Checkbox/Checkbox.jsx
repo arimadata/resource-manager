@@ -1,6 +1,16 @@
+import PropTypes from "prop-types";
 import "./Checkbox.scss";
 
-const Checkbox = ({ name, id, checked, onClick, onChange, className = "", title, disabled = false }) => {
+const Checkbox = ({
+  name,
+  id,
+  checked,
+  onClick,
+  onChange,
+  className = "",
+  title,
+  disabled = false,
+}) => {
   return (
     <input
       className={`fm-checkbox ${className}`}
@@ -14,6 +24,18 @@ const Checkbox = ({ name, id, checked, onClick, onChange, className = "", title,
       disabled={disabled}
     />
   );
+};
+
+Checkbox.displayName = "Checkbox";
+Checkbox.propTypes = {
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  title: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default Checkbox;

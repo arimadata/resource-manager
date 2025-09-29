@@ -4,13 +4,11 @@
   position: relative;
 
   .breadcrumb {
-    height: 22px;
-    min-height: 22px;
-    max-height: 22px;
+    height: 32px;
     display: flex;
     gap: 0.5rem;
     border-bottom: 1px solid $border-color;
-    padding: 6px 0 6px 15px;
+    padding: 25px 0px;
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
@@ -24,13 +22,14 @@
     .folder-name {
       display: flex;
       align-items: center;
+      font-size: 16px;
       gap: 0.25rem;
       font-weight: 500;
       min-width: fit-content;
 
       &:hover {
         cursor: pointer;
-        color: var(--file-manager-primary-color);
+        color: rgba(0, 0, 0, 0.7);
       }
     }
 

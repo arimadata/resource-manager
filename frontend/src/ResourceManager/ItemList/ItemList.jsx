@@ -1,21 +1,25 @@
 import { useRef } from "react";
 import Item from "./Item";
+import PropTypes from "prop-types";
 import { useNavigation } from "../../contexts/NavigationContext";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import { useSingleItem } from "../../contexts/SingleItemContext";
 import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
+import Loader from "../../components/Loader/Loader";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker }) => {
+const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
 
+  const gridTemplateColumns = headers.map(() => "1fr").join(" ");
+
   const {
-    emptySelecCtxItems,
-    selecCtxItems,
+    emptySelectCtxItems,
+    selectCtxItems,
     handleContextMenu,
     visible,
     setVisible,
@@ -30,11 +34,20 @@ const ItemList = ({ eventBroker }) => {
     <div
       ref={itemsViewRef}
       className={`items list`}
+      style={{ gridTemplateColumns }}
       onContextMenu={handleContextMenu}
       onClick={() => eventBroker.publish("unselectAll")}
     >
-      <ItemsHeader eventBroker={eventBroker} />
-      {currentPathItems?.length > 0 ? (
+      <ItemsHeader eventBroker={eventBroker} headers={headers} />
+      {isLoading ? (
+        <div className="items-loading-container">
+          <Loader
+            loading={true}
+            text="Loading resources..."
+            className="items-loader"
+          />
+        </div>
+      ) : currentPathItems?.length > 0 ? (
         <>
           {currentPathItems.map((item, index) => (
             <Item
@@ -47,17 +60,18 @@ const ItemList = ({ eventBroker }) => {
               handleContextMenu={handleContextMenu}
               setVisible={setVisible}
               setRightClickedItem={setRightClickedItem}
+              headers={headers}
+              primaryColor={primaryColor}
             />
           ))}
         </>
       ) : (
-        <div className="empty-folder">This folder is empty.</div>
+        <div className="empty-folder">No items found.</div>
       )}
 
       <ContextMenu
-        itemsViewRef={itemsViewRef}
         contextMenuRef={contextMenuRef.ref}
-        menuItems={isSelectionCtx ? selecCtxItems : emptySelecCtxItems}
+        menuItems={isSelectionCtx ? selectCtxItems : emptySelectCtxItems}
         visible={visible}
         setVisible={setVisible}
         clickPosition={clickPosition}
@@ -67,5 +81,28 @@ const ItemList = ({ eventBroker }) => {
 };
 
 ItemList.displayName = "FileList";
+ItemList.propTypes = {
+  eventBroker: PropTypes.shape({
+    publish: PropTypes.func,
+    canTransition: PropTypes.func,
+    isInlineEditing: PropTypes.func,
+    isLocked: PropTypes.func,
+    isModalEvent: PropTypes.func,
+    state: PropTypes.string,
+    event: PropTypes.string,
+    data: PropTypes.object,
+    eventCounter: PropTypes.number,
+  }).isRequired,
+  headers: PropTypes.arrayOf(
+    PropTypes.shape({
+      columnName: PropTypes.string.isRequired,
+      getValue: PropTypes.func.isRequired,
+      sortAccessor: PropTypes.func,
+      isNameColumn: PropTypes.bool,
+    })
+  ).isRequired,
+  isLoading: PropTypes.bool,
+  primaryColor: PropTypes.string,
+};
 
 export default ItemList;

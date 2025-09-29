@@ -1,12 +1,12 @@
 @use "../../styles/variables" as *;
 
 .fm-context-menu {
-  position: absolute;
+  position: fixed;
   background-color: white;
-  border: 1px solid #c6c6c6;
+  border: 1px solid $border-color;
   border-radius: 6px;
   padding: 4px;
-  z-index: 1;
+  z-index: 1000;
   transition: opacity 0.1s linear;
 
   .file-context-menu-list {
@@ -30,12 +30,12 @@
 
         &:hover {
           cursor: pointer;
-          background-color: rgb(0, 0, 0, 0.07);
+          background-color: $contrast-color;
         }
       }
 
       li.active {
-        background-color: rgb(0, 0, 0, 0.07);
+        background-color: $contrast-color;
       }
 
       li.disable-paste {
@@ -49,7 +49,7 @@
     }
 
     .divider {
-      border-bottom: 1px solid #c6c6c6;
+      border-bottom: 1px solid $border-color;
       margin: 5px 0 3px 0;
     }
 
@@ -62,10 +62,10 @@
       position: absolute;
       top: 0;
       background-color: white;
-      border: 1px solid #c6c6c6;
+      border: 1px solid $border-color;
       border-radius: 6px;
       padding: 4px;
-      z-index: 1;
+      z-index: 1000;
 
       .item-selected {
         width: 13px;
@@ -77,7 +77,7 @@
         align-items: center;
         white-space: nowrap;
         &:hover {
-          background-color: rgb(0, 0, 0, 0.07) !important;
+          background-color: $contrast-color !important;
         }
       }
     }

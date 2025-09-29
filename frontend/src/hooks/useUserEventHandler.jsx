@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSelection } from "../contexts/SelectionContext";
-import { useSingleItem } from "../contexts/SingleItemContext";
 
 export const useUserEventHandler = ({
   onCopy,
@@ -8,6 +7,7 @@ export const useUserEventHandler = ({
   onCreateItem,
   onCut,
   onDelete,
+  onDuplicate,
   onFavorite,
   onOpen,
   onPaste,
@@ -17,14 +17,14 @@ export const useUserEventHandler = ({
   onShare,
   eventBroker,
 }) => {
-  const { selectedItems, selectedItemIndexes } = useSelection();
-  const { rightClickedItem } = useSingleItem();
+  const { selectedItems } = useSelection();
   const userDefinedCleanupRef = useRef();
 
   const eventSubscriptions = {
-    createItemDone: [onCreateItem, null],
+    createItem: [onCreateItem, null],
     shareItems: [onShare, selectedItems.filter((item) => !item.isDirectory)],
     deleteItemsDone: [onDelete, selectedItems],
+    duplicateItems: [onDuplicate, selectedItems],
     createFolderDone: [onCreateFolder, null],
     cutItemsDone: [onCut, null],
     copyItemsDone: [onCopy, null],
@@ -43,7 +43,6 @@ export const useUserEventHandler = ({
     const release = () => {
       try {
         const fn = userDefinedCleanupRef.current;
-        console.log("release ->", fn);
         userDefinedCleanupRef.current = undefined;
         if (fn) fn();
       } catch (err) {
@@ -91,10 +90,6 @@ export const useUserEventHandler = ({
     // Are we subscribed to this event?
     const subscription = eventSubscriptions[eventBroker.event];
     if (subscription) {
-      console.log(
-        `( external ) [${eventBroker.eventCounter}] useUserEventHandler processing ->`,
-        eventBroker.event
-      );
       const [userEventHandler, defaultEventData] = subscription;
       handleEvent(userEventHandler, eventBroker.data ?? defaultEventData);
     }
