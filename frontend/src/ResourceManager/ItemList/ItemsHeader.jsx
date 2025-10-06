@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FaArrowDown } from "react-icons/fa6";
 import PropTypes from "prop-types";
 import Checkbox from "../../components/Checkbox/Checkbox";
@@ -8,8 +8,6 @@ import { SORT_DIRECTIONS } from "../../constants/sortDirections";
 import { useSorting } from "../../contexts/SortingContext";
 
 const ItemsHeader = ({ eventBroker, headers }) => {
-  const [showSelectAll, setShowSelectAll] = useState(false);
-
   const { selectedItems } = useSelection();
   const { currentPathItems } = useNavigation();
   const { sortColumn, sortDirection, handleSort } = useSorting();
@@ -23,7 +21,6 @@ const ItemsHeader = ({ eventBroker, headers }) => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setShowSelectAll(true);
       eventBroker.publish("selectAll");
     } else {
       eventBroker.publish("unselectAll");
@@ -44,11 +41,7 @@ const ItemsHeader = ({ eventBroker, headers }) => {
   };
 
   return (
-    <div
-      className="items-header"
-      onMouseOver={() => setShowSelectAll(true)}
-      onMouseLeave={() => setShowSelectAll(false)}
-    >
+    <div className="items-header">
       {headers.map((header) => (
         <div
           key={header.columnName.toLowerCase().replace(" ", "-")}
@@ -59,14 +52,12 @@ const ItemsHeader = ({ eventBroker, headers }) => {
         >
           {header.isNameColumn && (
             <div className="item-select-all">
-              {(showSelectAll || allItemsSelected) && (
-                <Checkbox
-                  checked={allItemsSelected}
-                  onChange={handleSelectAll}
-                  title="Select all"
-                  disabled={currentPathItems.length === 0}
-                />
-              )}
+              <Checkbox
+                checked={allItemsSelected}
+                onChange={handleSelectAll}
+                title="Select all"
+                disabled={currentPathItems.length === 0}
+              />
             </div>
           )}
           <span className="header-text">{header.columnName}</span>

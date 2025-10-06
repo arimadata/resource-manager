@@ -61,6 +61,7 @@ const ResourceManager = ({
   allowCut = true,
   // allowCopy = true,
   allowFavorite = true,
+  allowRefresh = true,
   allowPaste = true,
   allowRename = true,
   allowDelete = true,
@@ -87,6 +88,7 @@ const ResourceManager = ({
     allowShareItem,
     allowDelete,
     allowCreateFolder,
+    allowRefresh,
     allowCut,
     allowCopy: false, // TODO: Implement copy. Currently not supported.
     allowPaste,
@@ -211,6 +213,7 @@ ResourceManager.propTypes = {
   onFavorite: PropTypes.func,
   onOpen: PropTypes.func,
   onRefresh: PropTypes.func,
+  allowRefresh: PropTypes.bool,
   onSelect: PropTypes.func,
   onPathChange: PropTypes.func,
   allowCreateFolder: PropTypes.bool,

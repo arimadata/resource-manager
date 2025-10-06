@@ -199,6 +199,7 @@ EventSubscribers.propTypes = {
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
     allowDuplicate: PropTypes.bool,
+    allowRefresh: PropTypes.bool,
   }).isRequired,
   onCopy: PropTypes.func.isRequired,
   onCreateFolder: PropTypes.func.isRequired,

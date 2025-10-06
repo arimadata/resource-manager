@@ -232,7 +232,7 @@ export const SingleItemProvider = ({
 
   // Context Menu - General: when selecting empty space //
   const defaultEmptySelectCtxItems = [
-    {
+    resourceManagerCfg.allowRefresh && {
       title: "Refresh",
       icon: <FiRefreshCw size={18} />,
       onClick: handleRefresh,
@@ -403,6 +403,7 @@ SingleItemProvider.propTypes = {
     allowPaste: PropTypes.bool,
     allowRename: PropTypes.bool,
     createItemLabel: PropTypes.string,
+    allowRefresh: PropTypes.bool,
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
     allowDuplicate: PropTypes.bool,

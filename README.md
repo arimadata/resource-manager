@@ -274,6 +274,7 @@ const onCreateItem = (data, release) => {
 | `allowCreateFolder` | `boolean`                 | Enable folder creation (default: `true`)           |
 | `allowCreateItem`   | `boolean`                 | Enable custom item creation (default: `true`)      |
 | `allowDelete`       | `boolean`                 | Enable deletion (default: `true`)                  |
+| `allowRefresh`      | `boolean`                 | Enable refresh (default: `true`)                   |
 | `allowDuplicate`    | `boolean`                 | Enable duplicate (default: `false`)                |
 | `allowRename`       | `boolean`                 | Enable renaming (default: `true`)                  |
 | `allowCopy`         | `boolean`                 | Enable copying (default: `true`)                   |
