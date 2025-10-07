@@ -62,6 +62,7 @@ export interface ResourceManagerProps {
   onOpen?: (data: ResourceManagerItem, lock: () => () => void) => void;
   allowCreateFolder?: boolean;
   allowCreateItem?: boolean;
+  allowRefresh?: boolean;
   allowShareItem?: boolean;
   allowCut?: boolean;
   allowCopy?: boolean;

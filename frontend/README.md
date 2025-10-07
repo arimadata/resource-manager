@@ -275,6 +275,7 @@ const onCreateItem = (data, release) => {
 | `allowCreateItem`   | `boolean`                 | Enable custom item creation (default: `true`)      |
 | `allowDelete`       | `boolean`                 | Enable deletion (default: `true`)                  |
 | `allowDuplicate`    | `boolean`                 | Enable duplicate (default: `false`)                |
+| `allowRefresh`      | `boolean`                 | Enable refresh (default: `true`)                   |
 | `allowRename`       | `boolean`                 | Enable renaming (default: `true`)                  |
 | `allowCopy`         | `boolean`                 | Enable copying (default: `true`)                   |
 | `allowCut`          | `boolean`                 | Enable cutting (default: `true`)                   |

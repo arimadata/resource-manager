@@ -45,6 +45,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
   const toolbarRightItems = [
     {
       icon: <FiRefreshCw size={16} />,
+      show: !!resourceManagerCfg.allowRefresh,
       title: "Refresh",
       onClick: () => eventBroker.publish("refresh"),
     },
@@ -61,7 +62,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
               <button
                 className="item-action f-action primary-action"
                 onClick={() => eventBroker.publish("shareItems")}
-                disabled={selectedItems.every((file) => file.isDirectory)}
+                disabled={selectedItems.some((file) => file.isDirectory)}
               >
                 <FaArrowUpFromBracket size={16} />
                 <span>Share</span>
@@ -170,20 +171,22 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
           {renderCustomToolbar}
         </div>
         <div>
-          {toolbarRightItems.map((item, index) => (
-            <div key={index} className="toolbar-right-items">
-              <button
-                className="item-action icon-only"
-                title={item.title}
-                onClick={item.onClick}
-              >
-                {item.icon}
-              </button>
-              {index !== toolbarRightItems.length - 1 && (
-                <div className="item-separator"></div>
-              )}
-            </div>
-          ))}
+          {toolbarRightItems
+            .filter((item) => item.show)
+            .map((item, index) => (
+              <div key={index} className="toolbar-right-items">
+                <button
+                  className="item-action icon-only"
+                  title={item.title}
+                  onClick={item.onClick}
+                >
+                  {item.icon}
+                </button>
+                {index !== toolbarRightItems.length - 1 && (
+                  <div className="item-separator"></div>
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </div>
@@ -204,6 +207,7 @@ Toolbar.propTypes = {
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
     allowDuplicate: PropTypes.bool,
+    allowRefresh: PropTypes.bool,
   }).isRequired,
   eventBroker: PropTypes.shape({
     publish: PropTypes.func,
