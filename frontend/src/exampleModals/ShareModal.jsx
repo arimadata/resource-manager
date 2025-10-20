@@ -17,7 +17,7 @@ export function ShareModal({ onConfirm, onCancel, data }) {
       }}
     >
       <div style={{ background: "#fff", padding: 24, minWidth: 300 }}>
-        <h2>Share item - {data.map((item) => item.displayName).join(", ")}</h2>
+        <h2>Share item - {data.map((item) => item.name).join(", ")}</h2>
         <input
           style={{ width: "100%" }}
           value={email}
@@ -47,7 +47,7 @@ ShareModal.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       pk: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
       itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
       iconName: PropTypes.string,
       isFavorited: PropTypes.bool,

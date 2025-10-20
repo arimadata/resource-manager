@@ -1,15 +1,15 @@
-import type { FC, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export interface ResourceManagerHeader {
+export interface ResourceManagerHeader<T extends object> {
   columnName: string;
-  getValue: (item: ResourceManagerItem) => any;
+  getValue: (item: ResourceManagerItem<T>) => any;
   sortAccessor?: (value: any) => any;
   isNameColumn?: boolean;
 }
 
-export interface ResourceManagerItem {
+export interface ResourceManagerItem<T extends object = object> {
   pk: string;
-  displayName: string;
+  name: string;
   itemType: "folder" | "resource";
   iconName: string;
   isFavorited: boolean;
@@ -17,49 +17,56 @@ export interface ResourceManagerItem {
   scopePk: string;
   createdAt: string;
   updatedAt: string;
-  resource: Record<string, any> | null;
-  resourcePk: string;
+  resource?: T;
+  resourcePk?: string;
   resourceType: "mmm" | "report" | "audience";
   parentPk?: string | null;
   path?: string[];
   isEditing?: boolean;
   isTemporary?: boolean;
+  isDirectory?: boolean;
 }
 
-export interface ResourceManagerPasteData {
-  copiedItems: ResourceManagerItem[];
+export interface ResourceManagerPasteData<T extends object = object> {
+  copiedItems: ResourceManagerItem<T>[];
   destinationFolder: ResourceManagerItem;
   operationType: "move" | "copy";
 }
 
-export interface ContextMenuItem {
+export interface ContextMenuItem<T extends object> {
   title: string;
   icon: string;
-  onClick?: (items: ResourceManagerItem) => void;
+  onClick?: (items: ResourceManagerItem<T>) => void;
   divider?: boolean;
-  hidden?: boolean | ((item: ResourceManagerItem) => boolean);
+  hidden?: boolean | ((item: ResourceManagerItem<T>) => boolean);
   className?: string;
-  children?: Omit<ContextMenuItem, "children">[];
+  children?: Omit<ContextMenuItem<T>, "children">[];
 }
 
-export interface ResourceManagerProps {
-  headers: ResourceManagerHeader[];
-  items: ResourceManagerItem[];
+export interface ResourceManagerProps<T extends object> {
+  headers: ResourceManagerHeader<T>[];
+  items: ResourceManagerItem<T>[];
   isLoading?: boolean;
-  onCreateFolder?: (data: ResourceManagerItem, lock: () => () => void) => void;
+  onCreateFolder?: (
+    data: ResourceManagerItem<T>,
+    lock: () => () => void
+  ) => void;
   onCreateItem?: (data: null, release: () => void) => void;
-  onRename?: (data: ResourceManagerItem, lock: () => () => void) => void;
-  onDelete?: (data: ResourceManagerItem[], lock: () => () => void) => void;
-  onDuplicate?: (data: ResourceManagerItem[], lock: () => () => void) => void;
-  onCut?: (data: ResourceManagerItem[], lock: () => () => void) => void;
-  onCopy?: (data: ResourceManagerItem[], lock: () => () => void) => void;
-  onPaste?: (data: ResourceManagerPasteData, lock: () => () => void) => void;
-  onShare?: (data: ResourceManagerItem[], release: () => void) => void;
-  onFavorite?: (data: ResourceManagerItem, lock: () => () => void) => void;
+  onRename?: (data: ResourceManagerItem<T>, lock: () => () => void) => void;
+  onDelete?: (data: ResourceManagerItem<T>[], lock: () => () => void) => void;
+  onDuplicate?: (
+    data: ResourceManagerItem<T>[],
+    lock: () => () => void
+  ) => void;
+  onCut?: (data: ResourceManagerItem<T>[], lock: () => () => void) => void;
+  onCopy?: (data: ResourceManagerItem<T>[], lock: () => () => void) => void;
+  onPaste?: (data: ResourceManagerPasteData<T>, lock: () => () => void) => void;
+  onShare?: (data: ResourceManagerItem<T>[], release: () => void) => void;
+  onFavorite?: (data: ResourceManagerItem<T>, lock: () => () => void) => void;
   onPathChange?: (path: string[]) => void;
   onRefresh?: (data: null, lock: () => () => void) => void;
-  onSelect?: (data: ResourceManagerItem[], lock: () => () => void) => void;
-  onOpen?: (data: ResourceManagerItem, lock: () => () => void) => void;
+  onSelect?: (data: ResourceManagerItem<T>[], lock: () => () => void) => void;
+  onOpen?: (data: ResourceManagerItem<T>, lock: () => () => void) => void;
   allowCreateFolder?: boolean;
   allowCreateItem?: boolean;
   allowRefresh?: boolean;
@@ -73,8 +80,8 @@ export interface ResourceManagerProps {
   allowDelete?: boolean;
   allowDuplicate?: boolean;
   initialPath?: string | null;
-  customEmptySelectCtxItems?: ContextMenuItem[];
-  customSelectCtxItems?: ContextMenuItem[];
+  customEmptySelectCtxItems?: ContextMenuItem<T>[];
+  customSelectCtxItems?: ContextMenuItem<T>[];
   renderCustomToolbar?: ReactNode;
   height?: string | number;
   width?: string | number;
@@ -82,4 +89,6 @@ export interface ResourceManagerProps {
   fontFamily?: string;
 }
 
-export declare const ResourceManager: FC<ResourceManagerProps>;
+export declare const ResourceManager: <T extends object>(
+  props: ResourceManagerProps<T>
+) => ReactElement;

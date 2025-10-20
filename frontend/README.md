@@ -32,7 +32,7 @@ import { ResourceManager } from "@arimadata/resource-manager";
 const headers = [
   {
     columnName: 'Model Name',
-    getValue: (item) => item.displayName || 'None',
+    getValue: (item) => item.name || 'None',
     isNameColumn: true,
   },
 
@@ -70,7 +70,7 @@ function App() {
   const [items, setItems] = useState([
     {
       pk: "1",
-      displayName: "Documents",
+      name: "Documents",
       itemType: "folder",
       iconName: "BsFolderFill",
       parentPk: null,
@@ -78,7 +78,7 @@ function App() {
     },
     {
       pk: "2",
-      displayName: "Main Report",
+      name: "Main Report",
       itemType: "resource",
       iconName: "BsFileEarmarkFill"
       scopePk: 'test@gmail.com'
@@ -89,7 +89,7 @@ function App() {
         createdAt: "2025-09-04T15:39:24.358281Z",
         updatedAt: "2025-09-04T15:38:24.358281Z",
         description: "Test Description",
-        displayName: "Main Report",
+        name: "Main Report",
         pk: "6250780034072576",
         userPk: "test@gmail.com",
         tabs: [],
@@ -135,9 +135,9 @@ const handleCreateFolder = (data, lock) => {
 - Each item in the `items` array follows this structure:
 
 ```typescript
-interface ResourceManagerItem {
+interface ResourceManagerItem<T extends object = object> {
   pk: string; // Primary key
-  displayName: string; // Display name
+  name: string; // Display name
   itemType: "folder" | "resource"; // Type
   iconName: string; // Icon name
   isFavorited?: boolean; // Favorite status
@@ -145,8 +145,8 @@ interface ResourceManagerItem {
   scopePk: string; // External resource reference
   createdAt: string; // ISO 8601 timestamp
   updatedAt: string; // ISO 8601 timestamp
-  resource: Record<string, any> | null; // External resource reference
-  resourcePk: string; // External resource reference
+  resource?: T; // External resource reference
+  resourcePk?: string; // External resource reference
   resourceType: "mmm" | "report" | "audience"; // Type of resource
   parentPk?: string; // Parent item key (null for root)
 
@@ -154,15 +154,16 @@ interface ResourceManagerItem {
   isDirectory: boolean; // Computed from itemType
   path: string[]; // Computed path array
   isEditing: boolean; // Edit state
+  isTemporary: boolean; // Temporary state
 }
 ```
 
 - Each header in the `headers` array follows this structure:
 
 ```typescript
-interface ResourceManagerHeader {
+interface ResourceManagerHeader<T extends object> {
   columnName: string; // Column name
-  getValue: (item: ResourceManagerItem) => any; // Getter function to extract the value for this column from a resource/folder item
+  getValue: (item: ResourceManagerItem<T>) => any; // Getter function to extract the value for this column from a resource/folder item
   sortAccessor?: (value: any) => any; // Accessor for sorting purposes
   isNameColumn?: boolean; // Mark this column as name column. Used for favorite button, icons and select checkbox placement
 }
@@ -266,27 +267,27 @@ const onCreateItem = (data, release) => {
 
 ## 🎨 Props
 
-| Prop                | Type                      | Description                                        |
-| ------------------- | ------------------------- | -------------------------------------------------- |
-| `items`             | `ResourceManagerItem[]`   | Array of items to display                          |
-| `headers`           | `ResourceManagerHeader[]` | Array of headers to use                            |
-| `isLoading`         | `boolean`                 | Loading state indicator                            |
-| `allowCreateFolder` | `boolean`                 | Enable folder creation (default: `true`)           |
-| `allowCreateItem`   | `boolean`                 | Enable custom item creation (default: `true`)      |
-| `allowDelete`       | `boolean`                 | Enable deletion (default: `true`)                  |
-| `allowDuplicate`    | `boolean`                 | Enable duplicate (default: `false`)                |
-| `allowRefresh`      | `boolean`                 | Enable refresh (default: `true`)                   |
-| `allowRename`       | `boolean`                 | Enable renaming (default: `true`)                  |
-| `allowCopy`         | `boolean`                 | Enable copying (default: `true`)                   |
-| `allowCut`          | `boolean`                 | Enable cutting (default: `true`)                   |
-| `allowPaste`        | `boolean`                 | Enable pasting (default: `true`)                   |
-| `allowFavorite`     | `boolean`                 | Enable favorites (default: `true`)                 |
-| `allowShareItem`    | `boolean`                 | Enable sharing (default: `true`)                   |
-| `initialPath`       | `string[]`                | Initial navigation path                            |
-| `height`            | `string \| number`        | Component height (default: `"100%"`)               |
-| `width`             | `string \| number`        | Component width (default: `"100%"`)                |
-| `primaryColor`      | `string`                  | Primary theme color (default: `"#6155b4"`)         |
-| `fontFamily`        | `string`                  | Font family (default: `"Nunito Sans, sans-serif"`) |
+| Prop                | Type                         | Description                                        |
+| ------------------- | ---------------------------- | -------------------------------------------------- |
+| `items`             | `ResourceManagerItem<T>[]`   | Array of items to display                          |
+| `headers`           | `ResourceManagerHeader<T>[]` | Array of headers to use                            |
+| `isLoading`         | `boolean`                    | Loading state indicator                            |
+| `allowCreateFolder` | `boolean`                    | Enable folder creation (default: `true`)           |
+| `allowCreateItem`   | `boolean`                    | Enable custom item creation (default: `true`)      |
+| `allowDelete`       | `boolean`                    | Enable deletion (default: `true`)                  |
+| `allowDuplicate`    | `boolean`                    | Enable duplicate (default: `false`)                |
+| `allowRefresh`      | `boolean`                    | Enable refresh (default: `true`)                   |
+| `allowRename`       | `boolean`                    | Enable renaming (default: `true`)                  |
+| `allowCopy`         | `boolean`                    | Enable copying (default: `true`)                   |
+| `allowCut`          | `boolean`                    | Enable cutting (default: `true`)                   |
+| `allowPaste`        | `boolean`                    | Enable pasting (default: `true`)                   |
+| `allowFavorite`     | `boolean`                    | Enable favorites (default: `true`)                 |
+| `allowShareItem`    | `boolean`                    | Enable sharing (default: `true`)                   |
+| `initialPath`       | `string[]`                   | Initial navigation path                            |
+| `height`            | `string \| number`           | Component height (default: `"100%"`)               |
+| `width`             | `string \| number`           | Component width (default: `"100%"`)                |
+| `primaryColor`      | `string`                     | Primary theme color (default: `"#6155b4"`)         |
+| `fontFamily`        | `string`                     | Font family (default: `"Nunito Sans, sans-serif"`) |
 
 ## 🎛️ Customization
 
@@ -298,7 +299,7 @@ Define custom column headers to display different data fields:
 const headers = [
   {
     columnName: "Model Name",
-    getValue: (item) => item.displayName || "None",
+    getValue: (item) => item.name || "None",
     isNameColumn: true, // This column will show icons, checkboxes, and favorite buttons
   },
   {

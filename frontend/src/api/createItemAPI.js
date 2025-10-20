@@ -5,7 +5,7 @@ export const createItemAPI = async (item) => {
     const response = await api.post("/item", {
       parentPk: item.parentPk,
       itemType: item.itemType,
-      displayName: item.displayName,
+      name: item.name,
       resourceType: item.resourceType,
       resourcePk: item.resourcePk,
     });

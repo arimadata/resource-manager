@@ -155,7 +155,7 @@ export const EventSubscribers = ({
     //   component: (
     //     <>{`Share [${selectedItems
     //       .filter((item) => !item.isDirectory)
-    //       .map((item) => item.displayName)
+    //       .map((item) => item.name)
     //       .join(", ")}]`}</>
     //   ),
     //   width: "35%",

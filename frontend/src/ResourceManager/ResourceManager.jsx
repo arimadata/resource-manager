@@ -180,7 +180,7 @@ ResourceManager.propTypes = {
     PropTypes.shape({
       // Original structure fields
       pk: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
       itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
       iconName: PropTypes.string,
       isFavorited: PropTypes.bool,

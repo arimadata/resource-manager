@@ -75,7 +75,7 @@ export const SingleItemProvider = ({
         {
           ...defaultFolderTemplate,
           pk: tempPk,
-          displayName: duplicateNameHandler("New Folder", currentPathItems),
+          name: duplicateNameHandler("New Folder", currentPathItems),
           path: [...currentPath, tempPk],
           itemType: "folder",
           isDirectory: true,

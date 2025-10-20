@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { dateStringValidator } from "../../../validators/propValidators";
 
 const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
-  const [renameItem, setRenameItem] = useState(item?.displayName);
+  const [renameItem, setRenameItem] = useState(item?.name);
   // const [renameItemWarning, setRenameItemWarning] = useState(false);
   const [itemRenameError, setItemRenameError] = useState(false);
   const [renameErrorMessage, setRenameErrorMessage] = useState("");
@@ -52,11 +52,9 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
   }, [itemRenameError]);
 
   function handleFileRenaming() {
-    if (renameItem === "" || renameItem === item.displayName) {
+    if (renameItem === "" || renameItem === item.name) {
       eventBroker.publish("cancel");
-    } else if (
-      currentPathItems.some((file) => file.displayName === renameItem)
-    ) {
+    } else if (currentPathItems.some((file) => file.name === renameItem)) {
       // new name already exists in current folder
       setItemRenameError(true);
       setRenameErrorMessage(
@@ -68,7 +66,7 @@ const RenameAction = ({ itemsViewRef, item, eventBroker }) => {
       setItemRenameError(false);
       eventBroker.publish("renameItemDone", {
         ...item,
-        displayName: renameItem,
+        name: renameItem,
         isEditing: false,
       });
     }
@@ -142,7 +140,7 @@ RenameAction.propTypes = {
   itemsViewRef: PropTypes.object.isRequired,
   item: PropTypes.shape({
     pk: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
     iconName: PropTypes.string,
     isFavorited: PropTypes.bool,

@@ -21,7 +21,7 @@ const closedModal = {
 const headers = [
   {
     columnName: "Model Name",
-    getValue: (item) => item.displayName || "None",
+    getValue: (item) => item.name || "None",
     isNameColumn: true,
   },
 
@@ -57,7 +57,7 @@ const headers = [
 const initialItems = [
   {
     pk: "1",
-    displayName: "Documents",
+    name: "Documents",
     itemType: "folder",
     iconName: "BsFolderFill",
     parentPk: null,
@@ -65,7 +65,7 @@ const initialItems = [
   },
   {
     createdAt: "2025-09-09T09:35:17.634046Z",
-    displayName: "Test Report",
+    name: "Test Report",
     iconName: "BsFileEarmarkFill",
     isFavorited: false,
     itemType: "resource",
@@ -74,7 +74,7 @@ const initialItems = [
       createdAt: "2025-09-04T15:38:24.358281Z",
       updatedAt: "2025-09-04T15:38:24.358281Z",
       description: "Test Description",
-      displayName: "Test Report",
+      name: "Test Report",
       pk: "6250780034072576",
       userPk: "test@gmail.com",
       tabs: [],
@@ -88,7 +88,7 @@ const initialItems = [
   },
   {
     createdAt: "2025-09-09T09:35:17.634046Z",
-    displayName: "Test Report 1",
+    name: "Test Report 1",
     iconName: "BsFileEarmarkFill",
     isFavorited: false,
     itemType: "resource",
@@ -97,7 +97,7 @@ const initialItems = [
       createdAt: "2025-09-04T15:39:24.358281Z",
       updatedAt: "2025-09-04T15:38:24.358281Z",
       description: "Test Description",
-      displayName: "Test Report 2",
+      name: "Test Report 2",
       pk: "6250780034072576",
       userPk: "test@gmail.com",
       tabs: [],

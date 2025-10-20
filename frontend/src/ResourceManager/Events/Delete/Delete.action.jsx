@@ -8,7 +8,7 @@ const DeleteAction = ({ eventBroker }) => {
 
   const getDeleteMessage = () => {
     if (selectedItems.length === 1) {
-      return `Are you sure you want to delete "${selectedItems[0].displayName}"?`;
+      return `Are you sure you want to delete "${selectedItems[0].name}"?`;
     } else if (selectedItems.length > 1) {
       return `Are you sure you want to delete these ${selectedItems.length} items?`;
     }
