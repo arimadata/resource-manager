@@ -49,7 +49,7 @@ export const ItemsProvider = ({ children, itemsData }) => {
     const defaultValues = {
       pk: null,
       parentPk: null,
-      displayName: "",
+      name: "",
       isEditing: false,
       isFavorited: false,
       resource: null,
@@ -104,7 +104,7 @@ ItemsProvider.propTypes = {
   itemsData: PropTypes.arrayOf(
     PropTypes.shape({
       pk: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
       itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
       iconName: PropTypes.string,
       isFavorited: PropTypes.bool,

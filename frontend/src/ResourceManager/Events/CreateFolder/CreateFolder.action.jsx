@@ -8,7 +8,7 @@ import { dateStringValidator } from "../../../validators/propValidators";
 import PropTypes from "prop-types";
 
 const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
-  const [folderName, setFolderName] = useState(item.displayName);
+  const [folderName, setFolderName] = useState(item.name);
   const [folderNameError, setFolderNameError] = useState(false);
   const [folderErrorMessage, setFolderErrorMessage] = useState("");
   const [errorXPlacement, setErrorXPlacement] = useState("right");
@@ -62,7 +62,7 @@ const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
     );
 
     const alreadyExists = syncedCurrPathItems.find((i) => {
-      return i.displayName.toLowerCase() === newFolderName.toLowerCase();
+      return i.name.toLowerCase() === newFolderName.toLowerCase();
     });
 
     if (alreadyExists) {
@@ -82,7 +82,7 @@ const CreateFolderAction = ({ itemsViewRef, item, eventBroker }) => {
 
     eventBroker.publish("createFolderDone", {
       ...item,
-      displayName: newFolderName,
+      name: newFolderName,
       isEditing: false,
       isTemporary: false,
     });
@@ -149,7 +149,7 @@ CreateFolderAction.propTypes = {
   item: PropTypes.shape({
     // Original structure fields
     pk: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
     iconName: PropTypes.string,
     isFavorited: PropTypes.bool,

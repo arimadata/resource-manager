@@ -27,7 +27,7 @@ export function CreateModal({ onConfirm, onCancel }) {
           <button
             onClick={() =>
               onConfirm({
-                displayName: name,
+                name,
               })
             }
             style={{ marginLeft: 8 }}

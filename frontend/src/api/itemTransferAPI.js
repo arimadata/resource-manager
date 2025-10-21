@@ -5,7 +5,7 @@ export const copyItemAPI = async (copiedItems, destinationPk) => {
     const promises = copiedItems.map((item) =>
       api.post(`/item/${item.pk}/copy`, {
         parentPk: destinationPk,
-        displayName: item.displayName, // In case of rename
+        name: item.name, // In case of rename
       })
     );
     const response = await Promise.all(promises);

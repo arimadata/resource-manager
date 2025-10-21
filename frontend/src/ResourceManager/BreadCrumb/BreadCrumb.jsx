@@ -40,7 +40,7 @@ const BreadCrumb = ({ eventBroker }) => {
 
       if (item) {
         breadcrumbFolders.push({
-          name: item.displayName,
+          name: item.name,
           path: currentPath.slice(0, i + 1),
         });
       }

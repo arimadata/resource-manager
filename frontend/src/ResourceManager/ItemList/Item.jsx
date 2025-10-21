@@ -42,8 +42,7 @@ const Item = ({
   const isItemMoving =
     clipBoard?.isMoving &&
     clipBoard.items.find(
-      (i) =>
-        i.displayName === item.displayName && arraysEqual(i.path, item.path)
+      (i) => i.name === item.name && arraysEqual(i.path, item.path)
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
 
@@ -164,9 +163,7 @@ const Item = ({
     } else {
       setSelectedItems((prev) =>
         prev.filter(
-          (f) =>
-            f.displayName !== item.displayName &&
-            !arraysEqual(f.path, item.path)
+          (f) => f.name !== item.name && !arraysEqual(f.path, item.path)
         )
       );
     }
@@ -259,7 +256,7 @@ const Item = ({
             } ${dropZoneClass} ${
               itemSelected || !!item.isEditing ? "item-selected" : ""
             } ${isItemMoving ? "item-moving" : ""}`}
-            title={isNameColumn ? item.displayName : undefined}
+            title={isNameColumn ? item.name : undefined}
             onClick={handleItemSelection}
             onContextMenu={handleItemContextMenu}
             onMouseEnter={handleMouseOver}
@@ -293,8 +290,8 @@ const Item = ({
                 {/* Selection Checkbox Cell */}
                 {!item.isEditing && (
                   <Checkbox
-                    name={item.displayName}
-                    id={item.displayName}
+                    name={item.name}
+                    id={item.name}
                     checked={itemSelected}
                     className={`selection-checkbox ${checkboxClassName}`}
                     onChange={handleCheckboxChange}
@@ -381,7 +378,7 @@ const Item = ({
 
       {/* Drag Icon & Tooltip Setup */}
       {tooltipPosition && (
-        <Tooltip tooltipPosition={tooltipPosition} name={item.displayName} />
+        <Tooltip tooltipPosition={tooltipPosition} name={item.name} />
       )}
 
       <div ref={dragIconRef} className="drag-icon">
@@ -397,7 +394,7 @@ Item.propTypes = {
   index: PropTypes.number.isRequired,
   item: PropTypes.shape({
     pk: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
     iconName: PropTypes.string,
     isFavorited: PropTypes.bool,
