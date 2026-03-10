@@ -24,7 +24,6 @@ const headers = [
     getValue: (item) => item.name || "None",
     isNameColumn: true,
   },
-
   {
     columnName: "Description",
     getValue: (item) => {
@@ -348,12 +347,9 @@ function App() {
         release();
       });
   };
-
-  const onRename = (data, lock) => {
-    console.log("onRename -> data:", data);
-    // // Optional: Lock the UI until the rename is completed
-    // const release = lock();
-    // incrementLoadingCount();
+  {
+    console.log("onPaste -> data:", data);
+    // Optional: Lock the UI unti
     renameAPI(data)
       .then((response) => {
         if (response.status === 200) {
@@ -371,7 +367,7 @@ function App() {
         // decrementLoadingCount();
         // release();
       });
-  };
+  }
 
   const onSelect = (data, lock) => {
     console.log("onSelect -> data:", data);

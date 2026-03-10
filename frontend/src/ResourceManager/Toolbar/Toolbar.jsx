@@ -29,7 +29,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
     },
     {
       icon: <BsFileEarmarkPlus size={18} />,
-      text: resourceManagerCfg.createItemLabel || "New item",
+      text: resourceManagerCfg.createItemLabel || "New Item",
       show: !!resourceManagerCfg.allowCreateItem,
       onClick: () => eventBroker.publish("createItem"),
     },
@@ -154,7 +154,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
   return (
     <div className="toolbar">
       <div className="fm-toolbar">
-        <div>
+        <div className="toolbar-left-items">
           {toolbarLeftItems
             .filter((item) => item.show)
             .map((item, index) => (
