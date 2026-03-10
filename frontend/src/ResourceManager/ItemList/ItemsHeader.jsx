@@ -51,14 +51,13 @@ const ItemsHeader = ({ eventBroker, headers }) => {
           onClick={() => handleSort(header.columnName)}
         >
           {header.isNameColumn && (
-            <div className="item-select-all">
-              <Checkbox
-                checked={allItemsSelected}
-                onChange={handleSelectAll}
-                title="Select all"
-                disabled={currentPathItems.length === 0}
-              />
-            </div>
+            <Checkbox
+              checked={allItemsSelected}
+              onClick={(e) => e.stopPropagation()}
+              onChange={handleSelectAll}
+              title="Select all"
+              disabled={currentPathItems.length === 0}
+            />
           )}
           <span className="header-text">{header.columnName}</span>
           {renderSortIcon(header.columnName)}

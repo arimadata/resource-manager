@@ -102,6 +102,8 @@
       position: absolute;
       left: 5px;
       top: 8px;
+      width: 15px;
+      height: 15px;
     }
 
     .hidden {
@@ -179,9 +181,10 @@
       padding: 12px 8px;
     }
 
-    .item-select-all {
-      justify-content: center;
-      padding-left: 0;
+    .fm-checkbox {
+      width: 15px;
+      height: 15px;
+      margin-bottom: 4px;
     }
 
     .sortable-header {
@@ -383,6 +386,8 @@
 
   .selection-checkbox {
     flex-shrink: 0;
+    width: 15px;
+    height: 15px;
   }
 
   .item-icon-wrapper {

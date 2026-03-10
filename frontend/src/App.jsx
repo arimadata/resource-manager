@@ -301,10 +301,6 @@ function App() {
       });
   };
 
-  const onOpen = (data, lock) => {
-    console.log("onOpen -> data:", data);
-  };
-
   const onPaste = (data, lock) => {
     console.log("onPaste -> data:", data);
     // Optional: Lock the UI until the paste is completed
@@ -347,9 +343,12 @@ function App() {
         release();
       });
   };
-  {
-    console.log("onPaste -> data:", data);
-    // Optional: Lock the UI unti
+
+  const onRename = (data, lock) => {
+    console.log("onRename -> data:", data);
+    // // Optional: Lock the UI until the rename is completed
+    // const release = lock();
+    // incrementLoadingCount();
     renameAPI(data)
       .then((response) => {
         if (response.status === 200) {
@@ -367,7 +366,7 @@ function App() {
         // decrementLoadingCount();
         // release();
       });
-  }
+  };
 
   const onSelect = (data, lock) => {
     console.log("onSelect -> data:", data);
@@ -464,7 +463,6 @@ function App() {
           onDuplicate={onDuplicate}
           renderCustomToolbar={customToolbar}
           onFavorite={onFavorite}
-          onOpen={onOpen}
           onPaste={onPaste}
           onRefresh={onRefresh}
           onRename={onRename}
