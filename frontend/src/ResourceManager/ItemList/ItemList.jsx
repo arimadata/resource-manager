@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Item from "./Item";
 import PropTypes from "prop-types";
 import { useNavigation } from "../../contexts/NavigationContext";
@@ -8,14 +8,23 @@ import { useSingleItem } from "../../contexts/SingleItemContext";
 import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
 import Loader from "../../components/Loader/Loader";
+import Pagination from "../../components/Pagination/Pagination";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
+const ItemList = ({
+  eventBroker,
+  headers,
+  isLoading,
+  primaryColor,
+  page,
+  pageSize,
+  onPageChange,
+  allowPagination,
+}) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
-
-  const gridTemplateColumns = headers.map(() => "1fr").join(" ");
+  const [internalPage, setInternalPage] = useState(page ?? 1);
 
   const {
     emptySelectCtxItems,
@@ -29,6 +38,61 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   } = useSingleItem();
 
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
+
+  const currentPage = page ?? internalPage;
+
+  const handlePageChange = useCallback(
+    (newPage) => {
+      if (onPageChange) {
+        onPageChange(newPage);
+      } else {
+        setInternalPage(newPage);
+      }
+    },
+    [onPageChange]
+  );
+
+  const gridTemplateColumns = headers.map(() => "1fr").join(" ");
+
+  const totalItems = currentPathItems.length;
+  const isTotalItemsAvailable = totalItems > 0;
+
+  const maxPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const totalPages = pageSize > 0 ? maxPages : 1;
+
+  const isPaginationAvailable =
+    !isLoading && isTotalItemsAvailable && allowPagination && totalPages > 1;
+
+  const paginatedItems = useMemo(() => {
+    if (!currentPathItems || currentPathItems.length === 0) {
+      return [];
+    }
+
+    if (!allowPagination) {
+      return currentPathItems;
+    }
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const slicedItems = currentPathItems.slice(startIndex, endIndex);
+    return slicedItems;
+  }, [currentPathItems, currentPage, pageSize, allowPagination]);
+
+  useEffect(() => {
+    if (!allowPagination || !isTotalItemsAvailable) {
+      return;
+    }
+
+    if (currentPage > totalPages) {
+      handlePageChange(totalPages);
+    }
+  }, [
+    allowPagination,
+    isTotalItemsAvailable,
+    currentPage,
+    totalPages,
+    handlePageChange,
+  ]);
 
   return (
     <div
@@ -47,28 +111,41 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
             className="items-loader"
           />
         </div>
-      ) : currentPathItems?.length > 0 ? (
+      ) : isTotalItemsAvailable ? (
         <>
-          {currentPathItems.map((item, index) => (
-            <Item
-              key={index}
-              index={index}
-              item={item}
-              eventBroker={eventBroker}
-              itemsViewRef={itemsViewRef}
-              selectedItemIndexes={selectedItemIndexes}
-              handleContextMenu={handleContextMenu}
-              setVisible={setVisible}
-              setRightClickedItem={setRightClickedItem}
-              headers={headers}
-              primaryColor={primaryColor}
-            />
-          ))}
+          {paginatedItems.map((item, index) => {
+            const paginatedIndex = index + (currentPage - 1) * pageSize;
+            const itemIndex = allowPagination ? paginatedIndex : index;
+
+            return (
+              <Item
+                key={item.pk}
+                index={itemIndex}
+                item={item}
+                eventBroker={eventBroker}
+                itemsViewRef={itemsViewRef}
+                selectedItemIndexes={selectedItemIndexes}
+                handleContextMenu={handleContextMenu}
+                setVisible={setVisible}
+                setRightClickedItem={setRightClickedItem}
+                headers={headers}
+                primaryColor={primaryColor}
+              />
+            );
+          })}
         </>
       ) : (
         <div className="empty-folder">No items found.</div>
       )}
-
+      {isPaginationAvailable && (
+        <div className="items-pagination-container">
+          <Pagination
+            totalPages={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+          />
+        </div>
+      )}
       <ContextMenu
         contextMenuRef={contextMenuRef.ref}
         menuItems={isSelectionCtx ? selectCtxItems : emptySelectCtxItems}
@@ -103,6 +180,10 @@ ItemList.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool,
   primaryColor: PropTypes.string,
+  page: PropTypes.number,
+  pageSize: PropTypes.number,
+  onPageChange: PropTypes.func,
+  allowPagination: PropTypes.bool,
 };
 
 export default ItemList;

@@ -48,6 +48,9 @@ export interface ResourceManagerProps<T extends object> {
   headers: ResourceManagerHeader<T>[];
   items: ResourceManagerItem<T>[];
   isLoading?: boolean;
+  page?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
   onCreateFolder?: (
     data: ResourceManagerItem<T>,
     lock: () => () => void
@@ -81,6 +84,7 @@ export interface ResourceManagerProps<T extends object> {
   allowDelete?: boolean;
   allowDuplicate?: boolean;
   createItemLabel?: string;
+  allowPagination?: boolean;
   initialPath?: string | null;
   customEmptySelectCtxItems?: ContextMenuItem<T>[];
   customSelectCtxItems?: ContextMenuItem<T>[];

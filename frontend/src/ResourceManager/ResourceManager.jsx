@@ -40,6 +40,9 @@ const ResourceManager = ({
   headers,
   items,
   isLoading,
+  page,
+  pageSize = 15,
+  onPageChange,
   onCopy,
   onCreateFolder,
   onCreateItem,
@@ -67,6 +70,7 @@ const ResourceManager = ({
   allowDelete = true,
   allowDuplicate = false,
   createItemLabel = "New item",
+  allowPagination = true,
   initialPath = null,
   customEmptySelectCtxItems = [],
   customSelectCtxItems = [],
@@ -137,6 +141,10 @@ const ResourceManager = ({
                       headers={headers}
                       isLoading={isLoading}
                       primaryColor={primaryColor}
+                      page={page}
+                      pageSize={pageSize}
+                      onPageChange={onPageChange}
+                      allowPagination={allowPagination}
                     />
                   </div>
                   {/* Event subscriber section such as "Delete" modal */}
@@ -201,6 +209,9 @@ ResourceManager.propTypes = {
     })
   ).isRequired,
   isLoading: PropTypes.bool,
+  page: PropTypes.number,
+  pageSize: PropTypes.number,
+  onPageChange: PropTypes.func,
   onCreateFolder: PropTypes.func,
   onCreateItem: PropTypes.func,
   onCreate: PropTypes.func,
@@ -229,6 +240,7 @@ ResourceManager.propTypes = {
   allowDelete: PropTypes.bool,
   allowDuplicate: PropTypes.bool,
   createItemLabel: PropTypes.string,
+  allowPagination: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
   customEmptySelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
