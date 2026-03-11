@@ -175,6 +175,7 @@ All event handlers receive data and an optional `lock` function for UI control.
 
 | Handler          | Parameters         | Description                                     |
 | ---------------- | ------------------ | ----------------------------------------------- |
+| `onPageChange`   | `(page)`           | Called when the current page changes            |
 | `onCreateFolder` | `(data, lock)`     | Called when creating a new folder               |
 | `onCreateItem`   | `(data, release)`  | Called when creating custom items (modal event) |
 | `onOpen`         | `(data, lock)`     | Called when opening item                        |
@@ -267,27 +268,35 @@ const onCreateItem = (data, release) => {
 
 ## 🎨 Props
 
-| Prop                | Type                         | Description                                        |
-| ------------------- | ---------------------------- | -------------------------------------------------- |
-| `items`             | `ResourceManagerItem<T>[]`   | Array of items to display                          |
-| `headers`           | `ResourceManagerHeader<T>[]` | Array of headers to use                            |
-| `isLoading`         | `boolean`                    | Loading state indicator                            |
-| `allowCreateFolder` | `boolean`                    | Enable folder creation (default: `true`)           |
-| `allowCreateItem`   | `boolean`                    | Enable custom item creation (default: `true`)      |
-| `allowDelete`       | `boolean`                    | Enable deletion (default: `true`)                  |
-| `allowRefresh`      | `boolean`                    | Enable refresh (default: `true`)                   |
-| `allowDuplicate`    | `boolean`                    | Enable duplicate (default: `false`)                |
-| `allowRename`       | `boolean`                    | Enable renaming (default: `true`)                  |
-| `allowCopy`         | `boolean`                    | Enable copying (default: `true`)                   |
-| `allowCut`          | `boolean`                    | Enable cutting (default: `true`)                   |
-| `allowPaste`        | `boolean`                    | Enable pasting (default: `true`)                   |
-| `allowFavorite`     | `boolean`                    | Enable favorites (default: `true`)                 |
-| `allowShareItem`    | `boolean`                    | Enable sharing (default: `true`)                   |
-| `initialPath`       | `string[]`                   | Initial navigation path                            |
-| `height`            | `string \| number`           | Component height (default: `"100%"`)               |
-| `width`             | `string \| number`           | Component width (default: `"100%"`)                |
-| `primaryColor`      | `string`                     | Primary theme color (default: `"#6155b4"`)         |
-| `fontFamily`        | `string`                     | Font family (default: `"Nunito Sans, sans-serif"`) |
+| Prop                        | Type                         | Description                                                      |
+| --------------------------- | ---------------------------- | ---------------------------------------------------------------- |
+| `items`                     | `ResourceManagerItem<T>[]`   | Array of items to display                                        |
+| `headers`                   | `ResourceManagerHeader<T>[]` | Column definitions                                               |
+| `isLoading`                 | `boolean`                    | Loading state indicator                                          |
+| `page`                      | `number`                     | Current page (1‑based, optional; internal state used if omitted) |
+| `pageSize`                  | `number`                     | Items per page                                                   |
+| `onPageChange`              | `(page: number) => void`     | Called when the page changes                                     |
+| `allowCreateFolder`         | `boolean`                    | Enable folder creation (default: `true`)                         |
+| `allowCreateItem`           | `boolean`                    | Enable custom item creation (default: `true`)                    |
+| `allowRefresh`              | `boolean`                    | Enable refresh (default: `true`)                                 |
+| `allowShareItem`            | `boolean`                    | Enable sharing (default: `true`)                                 |
+| `allowCut`                  | `boolean`                    | Enable cutting (default: `true`)                                 |
+| `allowCopy`                 | `boolean`                    | Enable copying (default: `true`)                                 |
+| `allowFavorite`             | `boolean`                    | Enable favorites (default: `true`)                               |
+| `allowOpen`                 | `boolean`                    | Enable open action (default: `true`)                             |
+| `allowPaste`                | `boolean`                    | Enable pasting (default: `true`)                                 |
+| `allowRename`               | `boolean`                    | Enable renaming (default: `true`)                                |
+| `allowDelete`               | `boolean`                    | Enable deletion (default: `true`)                                |
+| `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                              |
+| `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)            |
+| `initialPath`               | `string \| null`             | Initial encoded path string (optional)                           |
+| `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                |
+| `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected     |
+| `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions  |
+| `height`                    | `string \| number`           | Component height (default: `"100%"`)                             |
+| `width`                     | `string \| number`           | Component width (default: `"100%"`)                              |
+| `primaryColor`              | `string`                     | Primary theme color (default: `"#6155b4"`)                       |
+| `fontFamily`                | `string`                     | Font family (default: `"Rubik, sans-serif"`)                     |
 
 ## 🏗️ Architecture
 

@@ -477,6 +477,13 @@
   min-height: 200px;
 }
 
+.items-pagination-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding: 22px 24px;
+}
+
 .empty-folder {
   @include flex-center;
   width: 100%;
