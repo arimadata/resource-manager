@@ -1,17 +1,12 @@
 import { useKeyPress } from "./useKeyPress";
 import { shortcuts } from "../utils/shortcuts";
 import { useNavigation } from "../contexts/NavigationContext";
-import { useSelection } from "../contexts/SelectionContext";
 
 export const useKeyboardEventPublisher = ({
   eventBroker,
   resourceManagerCfg,
 }) => {
   const { currentFolder } = useNavigation();
-  const { selectedItems } = useSelection();
-  const selectedItem = selectedItems[0];
-  const isOpenShortcutDisabled =
-    !selectedItem || !resourceManagerCfg.allowOpen(selectedItem);
 
   const triggerCreateFolder = () => {
     eventBroker.publish("createFolder");
@@ -97,7 +92,7 @@ export const useKeyboardEventPublisher = ({
   );
   useKeyPress(shortcuts.rename, triggerRename, !resourceManagerCfg.allowRename);
   useKeyPress(shortcuts.delete, triggerDelete, !resourceManagerCfg.allowDelete);
-  useKeyPress(shortcuts.open, triggerOpen, isOpenShortcutDisabled);
+  useKeyPress(shortcuts.open, triggerOpen);
   useKeyPress(shortcuts.jumpToFirst, triggerSelectFirst);
   useKeyPress(shortcuts.jumpToLast, triggerSelectLast);
   useKeyPress(shortcuts.selectAll, triggerSelectAll);

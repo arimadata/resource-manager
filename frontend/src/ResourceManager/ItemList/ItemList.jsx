@@ -10,13 +10,7 @@ import { useSelection } from "../../contexts/SelectionContext";
 import Loader from "../../components/Loader/Loader";
 import "./ItemList.scss";
 
-const ItemList = ({
-  eventBroker,
-  headers,
-  isLoading,
-  primaryColor,
-  allowOpen,
-}) => {
+const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   const { currentPathItems } = useNavigation();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
@@ -68,7 +62,6 @@ const ItemList = ({
               setRightClickedItem={setRightClickedItem}
               headers={headers}
               primaryColor={primaryColor}
-              allowOpen={allowOpen}
             />
           ))}
         </>
@@ -110,7 +103,6 @@ ItemList.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool,
   primaryColor: PropTypes.string,
-  allowOpen: PropTypes.func,
 };
 
 export default ItemList;

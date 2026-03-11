@@ -154,6 +154,10 @@ function App() {
     };
   };
 
+  const onOpen = (data, lock) => {
+    console.log("onOpen -> data:", data);
+  };
+
   const onShare = (data, release) => {
     console.log("onShare -> data:", data);
     // 1. Setup modal handlers as needed with API calls if necessary
@@ -459,6 +463,7 @@ function App() {
           onCreateFolder={onCreateFolder}
           onCreateItem={onCreateItem}
           onCut={onCut}
+          onOpen={onOpen}
           onDelete={onDelete}
           onDuplicate={onDuplicate}
           renderCustomToolbar={customToolbar}

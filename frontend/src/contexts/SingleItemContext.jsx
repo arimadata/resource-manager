@@ -39,8 +39,6 @@ export const SingleItemProvider = ({
   const { currentPath, setCurrentPath, currentPathItems, setCurrentPathItems } =
     useNavigation();
   const getIcon = useIcon();
-  const allowOpenItem = (item) =>
-    Boolean(item) && resourceManagerCfg.allowOpen(item);
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -122,10 +120,6 @@ export const SingleItemProvider = ({
   // Context handlers
 
   const handleItemOpen = () => {
-    if (!allowOpenItem(rightClickedItem)) {
-      setVisible(false);
-      return;
-    }
     eventBroker.publish("openItem");
     setVisible(false);
   };
@@ -288,7 +282,6 @@ export const SingleItemProvider = ({
         <FaRegFile size={16} />
       ),
       onClick: handleItemOpen,
-      hidden: !allowOpenItem(rightClickedItem),
       divider: true,
     },
     resourceManagerCfg.allowCut && {
@@ -409,7 +402,6 @@ SingleItemProvider.propTypes = {
     allowCopy: PropTypes.bool,
     allowPaste: PropTypes.bool,
     allowRename: PropTypes.bool,
-    allowOpen: PropTypes.func,
     createItemLabel: PropTypes.string,
     allowRefresh: PropTypes.bool,
     allowDelete: PropTypes.bool,

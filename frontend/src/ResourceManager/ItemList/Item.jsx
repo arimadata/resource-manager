@@ -14,12 +14,6 @@ import { ICON_SIZE } from "../../constants/iconSize";
 import { DRAG_ICON_SIZE } from "../../constants/dragIconSize";
 import PropTypes from "prop-types";
 
-const mmmStatus = {
-  new: "success-status",
-  processed: "warning-status",
-  failed: "error-status",
-};
-
 const Item = ({
   index,
   item,
@@ -30,7 +24,6 @@ const Item = ({
   setRightClickedItem,
   headers,
   primaryColor,
-  allowOpen,
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
   const [itemHovered, setItemHovered] = useState(false);
@@ -54,9 +47,6 @@ const Item = ({
   const canSelectItems = eventBroker.canTransition("selectItems");
 
   const handleItemAccess = (item) => {
-    if (!allowOpen(item)) {
-      return;
-    }
     eventBroker.publish("openItem", item);
   };
 
@@ -106,7 +96,7 @@ const Item = ({
 
     // Double click to open item
     const currentTime = new Date().getTime();
-    if (currentTime - lastClickTime < 300 && allowOpen(item)) {
+    if (currentTime - lastClickTime < 300) {
       handleItemAccess(item);
       return;
     }
@@ -257,13 +247,6 @@ const Item = ({
       {/* Dynamic Header Cells */}
       {headers.map((header) => {
         const isNameColumn = header.isNameColumn;
-        const isStatusColumn =
-          item.resourceType === "mmm" &&
-          item.itemType === "resource" &&
-          header.columnName === "Status";
-        const status = isStatusColumn ? item.resource.status : null;
-        const statusClass = status ? mmmStatus[status] : "";
-
         return (
           <div
             key={header.columnName.toLowerCase().replace(" ", "-")}
@@ -339,7 +322,7 @@ const Item = ({
                 </span>
               </>
             ) : (
-              <span className={`cell-text ${statusClass}`}>
+              <span className="cell-text" style={header.getStyle?.(item)}>
                 {header.getValue(item)}
               </span>
             )}
@@ -363,18 +346,16 @@ const Item = ({
           onMouseLeave={handleMouseLeave}
         >
           <div className="actions-container">
-            {allowOpen(item) && (
-              <button
-                className="action-btn"
-                title="Open"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleItemAccess(item);
-                }}
-              >
-                <span>Open</span>
-              </button>
-            )}
+            <button
+              className="action-btn"
+              title="Open"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleItemAccess(item);
+              }}
+            >
+              <span>Open</span>
+            </button>
             {!item.isDirectory && (
               <button
                 className="action-btn share-btn"
@@ -456,7 +437,6 @@ Item.propTypes = {
     })
   ).isRequired,
   primaryColor: PropTypes.string,
-  allowOpen: PropTypes.func,
 };
 
 export default Item;

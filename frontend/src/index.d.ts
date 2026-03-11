@@ -1,8 +1,9 @@
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 
 export interface ResourceManagerHeader<T extends object> {
   columnName: string;
   getValue: (item: ResourceManagerItem<T>) => string;
+  getStyle?: (item: ResourceManagerItem<T>) => CSSProperties;
   sortAccessor?: (value: string | number) => string | number;
   isNameColumn?: boolean;
 }
@@ -74,7 +75,7 @@ export interface ResourceManagerProps<T extends object> {
   allowCut?: boolean;
   allowCopy?: boolean;
   allowFavorite?: boolean;
-  allowOpen?: (item: ResourceManagerItem<T>) => boolean;
+  allowOpen?: boolean;
   allowPaste?: boolean;
   allowRename?: boolean;
   allowDelete?: boolean;

@@ -55,7 +55,6 @@ const ResourceManager = ({
   onSelect,
   onShare,
   onPathChange,
-  allowOpen = () => true,
   allowCreateFolder = true,
   allowCreateItem = true,
   allowShareItem = true,
@@ -96,7 +95,6 @@ const ResourceManager = ({
     allowPaste,
     allowRename,
     allowFavorite,
-    allowOpen,
     allowDuplicate,
     createItemLabel,
   };
@@ -139,7 +137,6 @@ const ResourceManager = ({
                       headers={headers}
                       isLoading={isLoading}
                       primaryColor={primaryColor}
-                      allowOpen={allowOpen}
                     />
                   </div>
                   {/* Event subscriber section such as "Delete" modal */}
@@ -211,7 +208,7 @@ ResourceManager.propTypes = {
   onDelete: PropTypes.func,
   onDuplicate: PropTypes.func,
   onOpen: PropTypes.func,
-  allowOpen: PropTypes.func,
+  allowOpen: PropTypes.bool,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,

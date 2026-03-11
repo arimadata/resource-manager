@@ -142,7 +142,6 @@
         bottom: -72px;
       }
     }
-
   }
 
   .item-selected {
@@ -448,18 +447,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    &.success-status {
-      color: $success-color;
-    }
-
-    &.warning-status {
-      color: $warning-color;
-    }
-
-    &.error-status {
-      color: $error-color;
-    }
   }
 }
 
