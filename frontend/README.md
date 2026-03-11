@@ -289,7 +289,7 @@ const onCreateItem = (data, release) => {
 | `allowDelete`               | `boolean`                    | Enable deletion (default: `true`)                                |
 | `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                              |
 | `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)            |
-| `initialPath`               | `string \| null`             | Initial encoded path string (optional)                           |
+| `initialPath`               | `string[] \| null`           | Initial path segments (array of IDs/PKs) or `null` (optional)    |
 | `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                |
 | `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected     |
 | `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions  |
