@@ -163,8 +163,8 @@ interface ResourceManagerItem<T extends object = object> {
 ```typescript
 interface ResourceManagerHeader<T extends object> {
   columnName: string; // Column name
-  getValue: (item: ResourceManagerItem<T>) => any; // Getter function to extract the value for this column from a resource/folder item
-  sortAccessor?: (value: any) => any; // Accessor for sorting purposes
+  getValue: (item: ResourceManagerItem<T>) => string; // Getter function to extract the display value for this column from a resource/folder item
+  sortAccessor?: (value: string | number) => string | number; // Accessor for sorting purposes
   isNameColumn?: boolean; // Mark this column as name column. Used for favorite button, icons and select checkbox placement
 }
 ```
@@ -283,6 +283,8 @@ const onCreateItem = (data, release) => {
 | `allowPaste`        | `boolean`                    | Enable pasting (default: `true`)                   |
 | `allowFavorite`     | `boolean`                    | Enable favorites (default: `true`)                 |
 | `allowShareItem`    | `boolean`                    | Enable sharing (default: `true`)                   |
+| `allowOpen`         | `(item: ResourceManagerItem<T>) => boolean` | Controls whether an item can be opened. When it returns `false`, open actions are hidden/blocked for that item (default: always `true`) |
+| `createItemLabel`   | `string`                     | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`) |
 | `initialPath`       | `string[]`                   | Initial navigation path                            |
 | `height`            | `string \| number`           | Component height (default: `"100%"`)               |
 | `width`             | `string \| number`           | Component width (default: `"100%"`)                |
