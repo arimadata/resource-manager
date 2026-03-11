@@ -164,6 +164,7 @@ interface ResourceManagerItem<T extends object = object> {
 interface ResourceManagerHeader<T extends object> {
   columnName: string; // Column name
   getValue: (item: ResourceManagerItem<T>) => string; // Getter function to extract the display value for this column from a resource/folder item
+  getStyle?: (item: ResourceManagerItem<T>) => CSSProperties; // Styling function to handle specific styling for each column item
   sortAccessor?: (value: string | number) => string | number; // Accessor for sorting purposes
   isNameColumn?: boolean; // Mark this column as name column. Used for favorite button, icons and select checkbox placement
 }
@@ -267,29 +268,28 @@ const onCreateItem = (data, release) => {
 
 ## 🎨 Props
 
-| Prop                | Type                                        | Description                                                                                                                             |
-| ------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `items`             | `ResourceManagerItem<T>[]`                  | Array of items to display                                                                                                               |
-| `headers`           | `ResourceManagerHeader<T>[]`                | Array of headers to use                                                                                                                 |
-| `isLoading`         | `boolean`                                   | Loading state indicator                                                                                                                 |
-| `allowCreateFolder` | `boolean`                                   | Enable folder creation (default: `true`)                                                                                                |
-| `allowCreateItem`   | `boolean`                                   | Enable custom item creation (default: `true`)                                                                                           |
-| `allowDelete`       | `boolean`                                   | Enable deletion (default: `true`)                                                                                                       |
-| `allowRefresh`      | `boolean`                                   | Enable refresh (default: `true`)                                                                                                        |
-| `allowDuplicate`    | `boolean`                                   | Enable duplicate (default: `false`)                                                                                                     |
-| `allowRename`       | `boolean`                                   | Enable renaming (default: `true`)                                                                                                       |
-| `allowCopy`         | `boolean`                                   | Enable copying (default: `true`)                                                                                                        |
-| `allowCut`          | `boolean`                                   | Enable cutting (default: `true`)                                                                                                        |
-| `allowPaste`        | `boolean`                                   | Enable pasting (default: `true`)                                                                                                        |
-| `allowFavorite`     | `boolean`                                   | Enable favorites (default: `true`)                                                                                                      |
-| `allowShareItem`    | `boolean`                                   | Enable sharing (default: `true`)                                                                                                        |
-| `allowOpen`         | `(item: ResourceManagerItem<T>) => boolean` | Controls whether an item can be opened. When it returns `false`, open actions are hidden/blocked for that item (default: always `true`) |
-| `createItemLabel`   | `string`                                    | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`)                                       |
-| `initialPath`       | `string[]`                                  | Initial navigation path                                                                                                                 |
-| `height`            | `string \| number`                          | Component height (default: `"100%"`)                                                                                                    |
-| `width`             | `string \| number`                          | Component width (default: `"100%"`)                                                                                                     |
-| `primaryColor`      | `string`                                    | Primary theme color (default: `"#6155b4"`)                                                                                              |
-| `fontFamily`        | `string`                                    | Font family (default: `"Nunito Sans, sans-serif"`)                                                                                      |
+| Prop                | Type                         | Description                                                                                       |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| `items`             | `ResourceManagerItem<T>[]`   | Array of items to display                                                                         |
+| `headers`           | `ResourceManagerHeader<T>[]` | Array of headers to use                                                                           |
+| `isLoading`         | `boolean`                    | Loading state indicator                                                                           |
+| `allowCreateFolder` | `boolean`                    | Enable folder creation (default: `true`)                                                          |
+| `allowCreateItem`   | `boolean`                    | Enable custom item creation (default: `true`)                                                     |
+| `allowDelete`       | `boolean`                    | Enable deletion (default: `true`)                                                                 |
+| `allowRefresh`      | `boolean`                    | Enable refresh (default: `true`)                                                                  |
+| `allowDuplicate`    | `boolean`                    | Enable duplicate (default: `false`)                                                               |
+| `allowRename`       | `boolean`                    | Enable renaming (default: `true`)                                                                 |
+| `allowCopy`         | `boolean`                    | Enable copying (default: `true`)                                                                  |
+| `allowCut`          | `boolean`                    | Enable cutting (default: `true`)                                                                  |
+| `allowPaste`        | `boolean`                    | Enable pasting (default: `true`)                                                                  |
+| `allowFavorite`     | `boolean`                    | Enable favorites (default: `true`)                                                                |
+| `allowShareItem`    | `boolean`                    | Enable sharing (default: `true`)                                                                  |
+| `createItemLabel`   | `string`                     | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`) |
+| `initialPath`       | `string[]`                   | Initial navigation path                                                                           |
+| `height`            | `string \| number`           | Component height (default: `"100%"`)                                                              |
+| `width`             | `string \| number`           | Component width (default: `"100%"`)                                                               |
+| `primaryColor`      | `string`                     | Primary theme color (default: `"#6155b4"`)                                                        |
+| `fontFamily`        | `string`                     | Font family (default: `"Nunito Sans, sans-serif"`)                                                |
 
 ## 🏗️ Architecture
 
