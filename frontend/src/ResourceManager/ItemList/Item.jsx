@@ -14,6 +14,12 @@ import { ICON_SIZE } from "../../constants/iconSize";
 import { DRAG_ICON_SIZE } from "../../constants/dragIconSize";
 import PropTypes from "prop-types";
 
+const mmmStatus = {
+  new: "success-status",
+  processed: "warning-status",
+  failed: "error-status",
+};
+
 const Item = ({
   index,
   item,
@@ -251,6 +257,12 @@ const Item = ({
       {/* Dynamic Header Cells */}
       {headers.map((header) => {
         const isNameColumn = header.isNameColumn;
+        const isStatusColumn =
+          item.resourceType === "mmm" &&
+          item.itemType === "resource" &&
+          header.columnName === "Status";
+        const status = isStatusColumn ? item.resource.status : null;
+        const statusClass = status ? mmmStatus[status] : "";
 
         return (
           <div
@@ -309,7 +321,9 @@ const Item = ({
                 </div>
 
                 {/* Name Cell */}
-                <span className="item-name-text">{header.getValue(item)}</span>
+                <span className={`item-name-text`}>
+                  {header.getValue(item)}
+                </span>
 
                 {/* Favorite Icon Cell */}
                 <span
@@ -325,7 +339,9 @@ const Item = ({
                 </span>
               </>
             ) : (
-              header.getValue(item)
+              <span className={`cell-text ${statusClass}`}>
+                {header.getValue(item)}
+              </span>
             )}
           </div>
         );

@@ -100,33 +100,24 @@
       opacity: 0.5;
     }
   }
+}
 
-  .toggle-view-icon {
-    background-color: transparent;
-    border: none;
+.item-action.icon-only {
+  padding: 0 8px !important;
 
-    &:hover {
-      cursor: pointer;
-    }
+  &:focus {
+    background-color: $contrast-color;
+    border-radius: 3px;
   }
 
-  .icon-only {
-    padding: 0 8px !important;
-
-    &:focus {
-      background-color: $contrast-color;
-      border-radius: 3px;
-    }
-
-    &:hover {
-      color: var(--file-manager-primary-color);
-    }
+  &:hover {
+    color: var(--file-manager-primary-color);
   }
+}
 
-  .item-separator {
-    height: 36px;
-    background: $border-color;
-    width: 1px;
-    margin: 0 5px;
-  }
+.item-separator {
+  height: 36px;
+  background: $border-color;
+  width: 1px;
+  margin: 0 5px;
 }

@@ -37,14 +37,14 @@
         }
       }
 
-      &.fm-button-danger {
-        background: $danger-color;
+      &.fm-button-error {
+        background: $error-color;
         color: white;
-        border: 1px solid $danger-color;
+        border: 1px solid $error-color;
 
         &:hover {
-          background: $danger-color-hover;
-          border-color: $danger-color-hover;
+          background: $error-color-hover;
+          border-color: $error-color-hover;
         }
       }
     }

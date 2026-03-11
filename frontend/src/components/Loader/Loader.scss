@@ -46,26 +46,6 @@
   }
 }
 
-.upload-loading {
-  position: relative;
-  display: block;
-  background-color: transparent;
-  backdrop-filter: none;
-  z-index: 0;
-
-  .loader-content {
-    background-color: transparent;
-    box-shadow: none;
-    border: none;
-    padding: 8px;
-  }
-
-  .spinner {
-    font-size: 14px;
-    color: var(--file-manager-primary-color);
-  }
-}
-
 .items-loader {
   position: relative;
   background-color: transparent;
