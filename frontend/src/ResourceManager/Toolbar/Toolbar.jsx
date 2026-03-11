@@ -29,7 +29,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
     },
     {
       icon: <BsFileEarmarkPlus size={18} />,
-      text: resourceManagerCfg.createItemLabel || "New Item",
+      text: resourceManagerCfg.createItemLabel || "New item",
       show: !!resourceManagerCfg.allowCreateItem,
       onClick: () => eventBroker.publish("createItem"),
     },
