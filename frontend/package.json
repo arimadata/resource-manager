@@ -2,7 +2,7 @@
   "name": "@arimadata/resource-manager",
   "description": "A React resource manager with event-driven architecture and keyboard shortcuts. Designed to resemble Dropbox, it provides a complete interface for managing files and folders with built-in hooks for database persistence.",
   "private": false,
-  "version": "0.1.6",
+  "version": "0.1.7",
   "type": "module",
   "main": "dist/resource-manager.cjs.js",
   "module": "dist/resource-manager.es.js",

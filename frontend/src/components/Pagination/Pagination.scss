@@ -1,0 +1,62 @@
+@use "../../styles/variables" as *;
+
+$pagination-button-radius: 17px;
+
+.fm-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  .fm-pagination-button {
+    height: 34px;
+    border: 0;
+    background-color: transparent;
+    color: #3f4654;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, color 0.15s ease,
+      opacity 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #eef1f5;
+    }
+
+    &.selected {
+      background-color: #e6e9ef;
+      color: #1f2530;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+  }
+
+  .fm-pagination-page {
+    min-width: 34px;
+    padding: 0 10px;
+    border-radius: $pagination-button-radius;
+  }
+
+  .fm-pagination-control {
+    width: 34px;
+    min-width: 34px;
+    padding: 0;
+    border-radius: $pagination-button-radius;
+  }
+
+  .fm-pagination-ellipsis {
+    min-width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6c7482;
+    font-size: 13px;
+    user-select: none;
+  }
+}
