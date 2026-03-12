@@ -250,7 +250,6 @@ ResourceManager.propTypes = {
       divider: PropTypes.bool,
       hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       className: PropTypes.string,
-      shortcut: PropTypes.arrayOf(PropTypes.string),
       children: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.string.isRequired,
@@ -258,7 +257,6 @@ ResourceManager.propTypes = {
           onClick: PropTypes.func,
           hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
           className: PropTypes.string,
-          shortcut: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })
@@ -271,7 +269,6 @@ ResourceManager.propTypes = {
       divider: PropTypes.bool,
       hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       className: PropTypes.string,
-      shortcut: PropTypes.arrayOf(PropTypes.string),
       children: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.string.isRequired,
@@ -279,7 +276,6 @@ ResourceManager.propTypes = {
           onClick: PropTypes.func,
           hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
           className: PropTypes.string,
-          shortcut: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })
