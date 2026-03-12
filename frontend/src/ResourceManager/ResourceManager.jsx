@@ -69,6 +69,7 @@ const ResourceManager = ({
   allowRename = true,
   allowDelete = true,
   allowDuplicate = false,
+  createItemLabel = "New item",
   allowPagination = true,
   initialPath = null,
   customEmptySelectCtxItems = [],
@@ -99,7 +100,7 @@ const ResourceManager = ({
     allowRename,
     allowFavorite,
     allowDuplicate,
-    createItemLabel: "New item",
+    createItemLabel,
   };
 
   const eventBroker = useEventBroker(resourceManagerCfg);
@@ -217,12 +218,13 @@ ResourceManager.propTypes = {
   onRename: PropTypes.func,
   onDelete: PropTypes.func,
   onDuplicate: PropTypes.func,
+  onOpen: PropTypes.func,
+  allowOpen: PropTypes.bool,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
   onShare: PropTypes.func,
   onFavorite: PropTypes.func,
-  onOpen: PropTypes.func,
   onRefresh: PropTypes.func,
   allowRefresh: PropTypes.bool,
   onSelect: PropTypes.func,
@@ -233,11 +235,11 @@ ResourceManager.propTypes = {
   allowCut: PropTypes.bool,
   allowCopy: PropTypes.bool,
   allowFavorite: PropTypes.bool,
-  allowOpen: PropTypes.bool,
   allowPaste: PropTypes.bool,
   allowRename: PropTypes.bool,
   allowDelete: PropTypes.bool,
   allowDuplicate: PropTypes.bool,
+  createItemLabel: PropTypes.string,
   allowPagination: PropTypes.bool,
   initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
   customEmptySelectCtxItems: PropTypes.arrayOf(
@@ -248,6 +250,7 @@ ResourceManager.propTypes = {
       divider: PropTypes.bool,
       hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       className: PropTypes.string,
+      shortcut: PropTypes.arrayOf(PropTypes.string),
       children: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.string.isRequired,
@@ -255,6 +258,7 @@ ResourceManager.propTypes = {
           onClick: PropTypes.func,
           hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
           className: PropTypes.string,
+          shortcut: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })
@@ -267,6 +271,7 @@ ResourceManager.propTypes = {
       divider: PropTypes.bool,
       hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       className: PropTypes.string,
+      shortcut: PropTypes.arrayOf(PropTypes.string),
       children: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.string.isRequired,
@@ -274,6 +279,7 @@ ResourceManager.propTypes = {
           onClick: PropTypes.func,
           hidden: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
           className: PropTypes.string,
+          shortcut: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })

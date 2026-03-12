@@ -1,16 +1,6 @@
 @use "../styles/variables" as *;
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
 
-.text-white {
-  color: white;
-}
-
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 img,
 svg {
   vertical-align: middle;
@@ -23,10 +13,6 @@ svg {
   overflow-x: hidden;
   padding: 0;
   box-shadow: 0 2px 10px $contrast-color;
-}
-
-.w-25 {
-  width: 25%;
 }
 
 .resource-manager {
@@ -66,27 +52,5 @@ svg {
   &:hover {
     cursor: pointer;
     background-color: $contrast-color;
-  }
-}
-
-.fm-rename-folder-container {
-  padding: 8px 0;
-
-  .fm-rename-folder-input {
-    border-bottom: 1px solid $border-color;
-    padding: 8px 12px 12px;
-
-    .fm-rename-warning {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-  }
-
-  .fm-rename-folder-action {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    padding: 8px 8px 0 0;
   }
 }

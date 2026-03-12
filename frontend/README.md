@@ -163,8 +163,9 @@ interface ResourceManagerItem<T extends object = object> {
 ```typescript
 interface ResourceManagerHeader<T extends object> {
   columnName: string; // Column name
-  getValue: (item: ResourceManagerItem<T>) => any; // Getter function to extract the value for this column from a resource/folder item
-  sortAccessor?: (value: any) => any; // Accessor for sorting purposes
+  getValue: (item: ResourceManagerItem<T>) => string; // Getter function to extract the display value for this column from a resource/folder item
+  getStyle?: (item: ResourceManagerItem<T>) => CSSProperties; // Styling function to handle specific styling for each column item
+  sortAccessor?: (value: string | number) => string | number; // Accessor for sorting purposes
   isNameColumn?: boolean; // Mark this column as name column. Used for favorite button, icons and select checkbox placement
 }
 ```
@@ -268,35 +269,36 @@ const onCreateItem = (data, release) => {
 
 ## 🎨 Props
 
-| Prop                        | Type                         | Description                                                      |
-| --------------------------- | ---------------------------- | ---------------------------------------------------------------- |
-| `items`                     | `ResourceManagerItem<T>[]`   | Array of items to display                                        |
-| `headers`                   | `ResourceManagerHeader<T>[]` | Column definitions                                               |
-| `isLoading`                 | `boolean`                    | Loading state indicator                                          |
-| `page`                      | `number`                     | Current page (1‑based, optional; internal state used if omitted) |
-| `pageSize`                  | `number`                     | Items per page                                                   |
-| `onPageChange`              | `(page: number) => void`     | Called when the page changes                                     |
-| `allowCreateFolder`         | `boolean`                    | Enable folder creation (default: `true`)                         |
-| `allowCreateItem`           | `boolean`                    | Enable custom item creation (default: `true`)                    |
-| `allowRefresh`              | `boolean`                    | Enable refresh (default: `true`)                                 |
-| `allowShareItem`            | `boolean`                    | Enable sharing (default: `true`)                                 |
-| `allowCut`                  | `boolean`                    | Enable cutting (default: `true`)                                 |
-| `allowCopy`                 | `boolean`                    | Enable copying (default: `true`)                                 |
-| `allowFavorite`             | `boolean`                    | Enable favorites (default: `true`)                               |
-| `allowOpen`                 | `boolean`                    | Enable open action (default: `true`)                             |
-| `allowPaste`                | `boolean`                    | Enable pasting (default: `true`)                                 |
-| `allowRename`               | `boolean`                    | Enable renaming (default: `true`)                                |
-| `allowDelete`               | `boolean`                    | Enable deletion (default: `true`)                                |
-| `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                              |
-| `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)            |
-| `initialPath`               | `string[] \| null`           | Initial path segments (array of IDs/PKs) or `null` (optional)    |
-| `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                |
-| `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected     |
-| `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions  |
-| `height`                    | `string \| number`           | Component height (default: `"100%"`)                             |
-| `width`                     | `string \| number`           | Component width (default: `"100%"`)                              |
-| `primaryColor`              | `string`                     | Primary theme color (default: `"#6155b4"`)                       |
-| `fontFamily`                | `string`                     | Font family (default: `"Rubik, sans-serif"`)                     |
+| Prop                        | Type                         | Description                                                                                       |
+| --------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| `items`                     | `ResourceManagerItem<T>[]`   | Array of items to display                                                                         |
+| `headers`                   | `ResourceManagerHeader<T>[]` | Column definitions                                                                                |
+| `isLoading`                 | `boolean`                    | Loading state indicator                                                                           |
+| `page`                      | `number`                     | Current page (1‑based, optional; internal state used if omitted)                                  |
+| `pageSize`                  | `number`                     | Items per page                                                                                    |
+| `onPageChange`              | `(page: number) => void`     | Called when the page changes                                                                      |
+| `allowCreateFolder`         | `boolean`                    | Enable folder creation (default: `true`)                                                          |
+| `allowCreateItem`           | `boolean`                    | Enable custom item creation (default: `true`)                                                     |
+| `allowRefresh`              | `boolean`                    | Enable refresh (default: `true`)                                                                  |
+| `allowShareItem`            | `boolean`                    | Enable sharing (default: `true`)                                                                  |
+| `allowCut`                  | `boolean`                    | Enable cutting (default: `true`)                                                                  |
+| `allowCopy`                 | `boolean`                    | Enable copying (default: `true`)                                                                  |
+| `allowFavorite`             | `boolean`                    | Enable favorites (default: `true`)                                                                |
+| `allowOpen`                 | `boolean`                    | Enable open action (default: `true`)                                                              |
+| `allowPaste`                | `boolean`                    | Enable pasting (default: `true`)                                                                  |
+| `allowRename`               | `boolean`                    | Enable renaming (default: `true`)                                                                 |
+| `allowDelete`               | `boolean`                    | Enable deletion (default: `true`)                                                                 |
+| `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                                                               |
+| `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)                                             |
+| `createItemLabel`           | `string`                     | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`) |
+| `initialPath`               | `string[] \| null`           | Initial path segments/PKs as an array (optional)                                                  |
+| `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                                                 |
+| `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected                                      |
+| `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions                                   |
+| `height`                    | `string \| number`           | Component height (default: `"100%"`)                                                              |
+| `width`                     | `string \| number`           | Component width (default: `"100%"`)                                                               |
+| `primaryColor`              | `string`                     | Primary theme color (default: `"#6155b4"`)                                                        |
+| `fontFamily`                | `string`                     | Font family (default: `"Rubik, sans-serif"`)                                                      |
 
 ## 🎛️ Customization
 

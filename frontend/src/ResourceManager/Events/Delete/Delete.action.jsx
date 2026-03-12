@@ -24,7 +24,7 @@ const DeleteAction = ({ eventBroker }) => {
           Cancel
         </Button>
         <Button
-          type="danger"
+          type="error"
           onClick={() => eventBroker.publish("deleteItemsDone")}
         >
           Delete

@@ -24,7 +24,6 @@ const headers = [
     getValue: (item) => item.name || "None",
     isNameColumn: true,
   },
-
   {
     columnName: "Description",
     getValue: (item) => {
@@ -153,6 +152,10 @@ function App() {
     return () => {
       setModal(closedModal);
     };
+  };
+
+  const onOpen = (data, lock) => {
+    console.log("onOpen -> data:", data);
   };
 
   const onShare = (data, release) => {
@@ -300,10 +303,6 @@ function App() {
         // decrementLoadingCount();
         // release();
       });
-  };
-
-  const onOpen = (data, lock) => {
-    console.log("onOpen -> data:", data);
   };
 
   const onPaste = (data, lock) => {
@@ -464,11 +463,11 @@ function App() {
           onCreateFolder={onCreateFolder}
           onCreateItem={onCreateItem}
           onCut={onCut}
+          onOpen={onOpen}
           onDelete={onDelete}
           onDuplicate={onDuplicate}
           renderCustomToolbar={customToolbar}
           onFavorite={onFavorite}
-          onOpen={onOpen}
           onPaste={onPaste}
           onRefresh={onRefresh}
           onRename={onRename}

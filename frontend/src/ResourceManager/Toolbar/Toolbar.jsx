@@ -154,7 +154,7 @@ const Toolbar = ({ resourceManagerCfg, eventBroker, renderCustomToolbar }) => {
   return (
     <div className="toolbar">
       <div className="fm-toolbar">
-        <div>
+        <div className="toolbar-left-items">
           {toolbarLeftItems
             .filter((item) => item.show)
             .map((item, index) => (

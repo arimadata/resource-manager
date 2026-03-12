@@ -1,9 +1,10 @@
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 
 export interface ResourceManagerHeader<T extends object> {
   columnName: string;
-  getValue: (item: ResourceManagerItem<T>) => any;
-  sortAccessor?: (value: any) => any;
+  getValue: (item: ResourceManagerItem<T>) => string;
+  getStyle?: (item: ResourceManagerItem<T>) => CSSProperties;
+  sortAccessor?: (value: string | number) => string | number;
   isNameColumn?: boolean;
 }
 
@@ -82,6 +83,7 @@ export interface ResourceManagerProps<T extends object> {
   allowRename?: boolean;
   allowDelete?: boolean;
   allowDuplicate?: boolean;
+  createItemLabel?: string;
   allowPagination?: boolean;
   initialPath?: string | null;
   customEmptySelectCtxItems?: ContextMenuItem<T>[];

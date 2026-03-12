@@ -247,7 +247,6 @@ const Item = ({
       {/* Dynamic Header Cells */}
       {headers.map((header) => {
         const isNameColumn = header.isNameColumn;
-
         return (
           <div
             key={header.columnName.toLowerCase().replace(" ", "-")}
@@ -305,7 +304,9 @@ const Item = ({
                 </div>
 
                 {/* Name Cell */}
-                <span className="item-name-text">{header.getValue(item)}</span>
+                <span className={`item-name-text`}>
+                  {header.getValue(item)}
+                </span>
 
                 {/* Favorite Icon Cell */}
                 <span
@@ -321,7 +322,9 @@ const Item = ({
                 </span>
               </>
             ) : (
-              header.getValue(item)
+              <span className="cell-text" style={header.getStyle?.(item)}>
+                {header.getValue(item)}
+              </span>
             )}
           </div>
         );

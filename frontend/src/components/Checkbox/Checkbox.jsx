@@ -28,8 +28,6 @@ const Checkbox = ({
 
 Checkbox.displayName = "Checkbox";
 Checkbox.propTypes = {
-  name: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
