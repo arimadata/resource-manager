@@ -105,17 +105,16 @@ export const SingleItemProvider = ({
   const addOrReplaceItem = (item) => {
     if (item?.pk) {
       const existingIndex = items.findIndex((i) => i.pk === item.pk);
-      const nextItems = [...items];
+      const newItems = [...items];
 
       if (existingIndex >= 0) {
-        nextItems.splice(existingIndex, 1, item);
+        newItems.splice(existingIndex, 1, item);
       } else if (item.itemType === "folder") {
-        nextItems.unshift(item);
+        newItems.unshift(item);
       } else {
-        nextItems.push(item);
+        newItems.push(item);
       }
 
-      const newItems = nextItems;
       setItems(newItems);
     } else {
       console.warn("Received event 'addOrReplaceItem' with no item data");
