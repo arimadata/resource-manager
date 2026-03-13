@@ -71,7 +71,6 @@ export const SingleItemProvider = ({
     const tempPk = new Date().valueOf().toString();
     setCurrentPathItems((prev) => {
       return [
-        ...prev,
         {
           ...defaultFolderTemplate,
           pk: tempPk,
@@ -85,6 +84,7 @@ export const SingleItemProvider = ({
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
+        ...prev,
       ];
     });
   };
@@ -104,7 +104,18 @@ export const SingleItemProvider = ({
 
   const addOrReplaceItem = (item) => {
     if (item?.pk) {
-      const newItems = items.filter((i) => i.pk !== item.pk).concat(item);
+      const existingIndex = items.findIndex((i) => i.pk === item.pk);
+      const nextItems = [...items];
+
+      if (existingIndex >= 0) {
+        nextItems.splice(existingIndex, 1, item);
+      } else if (item.itemType === "folder") {
+        nextItems.unshift(item);
+      } else {
+        nextItems.push(item);
+      }
+
+      const newItems = nextItems;
       setItems(newItems);
     } else {
       console.warn("Received event 'addOrReplaceItem' with no item data");
