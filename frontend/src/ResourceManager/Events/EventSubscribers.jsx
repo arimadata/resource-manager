@@ -20,6 +20,7 @@ export const EventSubscribers = ({
   onDuplicate,
   onFavorite,
   onOpen,
+  onOpenInNewTab,
   onPaste,
   onRefresh,
   onRename,
@@ -65,6 +66,7 @@ export const EventSubscribers = ({
     onDuplicate,
     onFavorite,
     onOpen,
+    onOpenInNewTab,
     onPaste,
     onRefresh,
     onRename,
@@ -108,6 +110,7 @@ export const EventSubscribers = ({
     duplicateItems: duplicateItems,
     toggleFavorite: () => toggleFavorite(eventBroker?.data),
     openItem: () => openItem(eventBroker?.data || selectedItems[0]),
+    openItemInNewTab: () => openItem(eventBroker?.data || selectedItems[0]),
     // Resetting events
     refresh: () => {
       // User pressed "refresh" button or "F5", this may be a
@@ -209,6 +212,7 @@ EventSubscribers.propTypes = {
   onDuplicate: PropTypes.func.isRequired,
   onFavorite: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
+  onOpenInNewTab: PropTypes.func.isRequired,
   onPaste: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onRename: PropTypes.func.isRequired,

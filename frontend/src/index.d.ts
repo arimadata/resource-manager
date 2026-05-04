@@ -71,14 +71,18 @@ export interface ResourceManagerProps<T extends object> {
   onRefresh?: (data: null, lock: () => () => void) => void;
   onSelect?: (data: ResourceManagerItem<T>[], lock: () => () => void) => void;
   onOpen?: (data: ResourceManagerItem<T>, lock: () => () => void) => void;
+  onOpenInNewTab?: (
+    data: ResourceManagerItem<T>,
+    lock: () => () => void
+  ) => void;
   allowCreateFolder?: boolean;
   allowCreateItem?: boolean;
+  allowOpenInNewTab?: boolean;
   allowRefresh?: boolean;
   allowShareItem?: boolean;
   allowCut?: boolean;
   allowCopy?: boolean;
   allowFavorite?: boolean;
-  allowOpen?: boolean;
   allowPaste?: boolean;
   allowRename?: boolean;
   allowDelete?: boolean;

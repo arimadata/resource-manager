@@ -52,6 +52,7 @@ const ResourceManager = ({
   onDuplicate,
   onFavorite,
   onOpen,
+  onOpenInNewTab,
   onPaste,
   onRefresh,
   onRename,
@@ -60,6 +61,7 @@ const ResourceManager = ({
   onPathChange,
   allowCreateFolder = true,
   allowCreateItem = true,
+  allowOpenInNewTab = true,
   allowShareItem = true,
   allowCut = true,
   // allowCopy = true,
@@ -100,6 +102,7 @@ const ResourceManager = ({
     allowRename,
     allowFavorite,
     allowDuplicate,
+    allowOpenInNewTab,
     createItemLabel,
   };
 
@@ -158,6 +161,7 @@ const ResourceManager = ({
                     onDuplicate={onDuplicate}
                     onFavorite={onFavorite}
                     onOpen={onOpen}
+                    onOpenInNewTab={onOpenInNewTab}
                     onPaste={onPaste}
                     onRefresh={onRefresh}
                     onRename={onRename}
@@ -219,7 +223,7 @@ ResourceManager.propTypes = {
   onDelete: PropTypes.func,
   onDuplicate: PropTypes.func,
   onOpen: PropTypes.func,
-  allowOpen: PropTypes.bool,
+  onOpenInNewTab: PropTypes.func,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
@@ -231,6 +235,7 @@ ResourceManager.propTypes = {
   onPathChange: PropTypes.func,
   allowCreateFolder: PropTypes.bool,
   allowCreateItem: PropTypes.bool,
+  allowOpenInNewTab: PropTypes.bool,
   allowShareItem: PropTypes.bool,
   allowCut: PropTypes.bool,
   allowCopy: PropTypes.bool,
