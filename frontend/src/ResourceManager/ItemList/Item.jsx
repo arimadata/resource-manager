@@ -50,6 +50,10 @@ const Item = ({
     eventBroker.publish("openItem", item);
   };
 
+  const handleItemAccessInNewTab = (item) => {
+    eventBroker.publish("openItemInNewTab", item);
+  };
+
   const handleItemShare = () => {
     if (!item.isDirectory) {
       eventBroker.publish("shareItems", [item]);
@@ -114,6 +118,15 @@ const Item = ({
     }
     setRightClickedItem(item);
     handleContextMenu(e, true);
+  };
+
+  const handleMiddleClick = (e) => {
+    if (e.button === 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!canSelectItems || item.isEditing) return;
+      handleItemAccessInNewTab(item);
+    }
   };
 
   const calculateHoverPosition = useCallback(
@@ -257,6 +270,7 @@ const Item = ({
             } ${isItemMoving ? "item-moving" : ""}`}
             title={isNameColumn ? item.name : undefined}
             onClick={handleItemSelection}
+            onAuxClick={handleMiddleClick}
             onContextMenu={handleItemContextMenu}
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseLeave}

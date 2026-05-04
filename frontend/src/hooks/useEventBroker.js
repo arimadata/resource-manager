@@ -169,6 +169,7 @@ export const useEventBroker = (resourceManagerCfg) => {
     "pasteItemsDone",
     // Item interactions
     "openItem",
+    "openItemInNewTab",
     "toggleFavorite",
   ];
   const releaseEvents = ["cancel", "refresh", "release"];
@@ -193,6 +194,7 @@ export const useEventBroker = (resourceManagerCfg) => {
         renameItem: resourceManagerCfg.allowRename,
         renameItemDone: resourceManagerCfg.allowRename,
         toggleFavorite: resourceManagerCfg.allowFavorite,
+        openItemInNewTab: resourceManagerCfg.allowOpenInNewTab,
       };
 
       return eventEnabledMap[eventName] || true;

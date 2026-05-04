@@ -174,23 +174,24 @@ interface ResourceManagerHeader<T extends object> {
 
 All event handlers receive data and an optional `lock` function for UI control.
 
-| Handler          | Parameters         | Description                                     |
-| ---------------- | ------------------ | ----------------------------------------------- |
-| `onPageChange`   | `(page)`           | Called when the current page changes            |
-| `onCreateFolder` | `(data, lock)`     | Called when creating a new folder               |
-| `onCreateItem`   | `(data, release)`  | Called when creating custom items (modal event) |
-| `onOpen`         | `(data, lock)`     | Called when opening item                        |
-| `onDelete`       | `(items, lock)`    | Called when deleting items (modal event)        |
-| `onRename`       | `(item, lock)`     | Called when renaming an item                    |
-| `onCopy`         | `(items, lock)`    | Called when copying items                       |
-| `onCut`          | `(items, lock)`    | Called when cutting items                       |
-| `onPaste`        | `(data, lock)`     | Called when pasting items                       |
-| `onDuplicate`    | `(data, lock)`     | Called when duplicating items                   |
-| `onFavorite`     | `(item, lock)`     | Called when toggling favorites                  |
-| `onRefresh`      | `(data, lock)`     | Called when refreshing                          |
-| `onSelect`       | `(items, lock)`    | Called when selection changes                   |
-| `onShare`        | `(items, release)` | Called when sharing items (modal event)         |
-| `onPathChange`   | `(path)`           | Called on path change                           |
+| Handler          | Parameters         | Description                                            |
+| ---------------- | ------------------ | ------------------------------------------------------ |
+| `onPageChange`   | `(page)`           | Called when the current page changes                   |
+| `onCreateFolder` | `(data, lock)`     | Called when creating a new folder                      |
+| `onCreateItem`   | `(data, release)`  | Called when creating custom items (modal event)        |
+| `onOpen`         | `(data, lock)`     | Called when opening item (double-click or Enter)       |
+| `onOpenInNewTab` | `(data, lock)`     | Called when opening item in new tab (middle-click)     |
+| `onDelete`       | `(items, lock)`    | Called when deleting items (modal event)               |
+| `onRename`       | `(item, lock)`     | Called when renaming an item                           |
+| `onCopy`         | `(items, lock)`    | Called when copying items                              |
+| `onCut`          | `(items, lock)`    | Called when cutting items                              |
+| `onPaste`        | `(data, lock)`     | Called when pasting items                              |
+| `onDuplicate`    | `(data, lock)`     | Called when duplicating items                          |
+| `onFavorite`     | `(item, lock)`     | Called when toggling favorites                         |
+| `onRefresh`      | `(data, lock)`     | Called when refreshing                                 |
+| `onSelect`       | `(items, lock)`    | Called when selection changes                          |
+| `onShare`        | `(items, release)` | Called when sharing items (modal event)                |
+| `onPathChange`   | `(path)`           | Called on path change                                  |
 
 ### Lock/Release Pattern
 
@@ -249,23 +250,25 @@ const onCreateItem = (data, release) => {
 
 ## ⌨️ Keyboard Shortcuts
 
-| Action             | Shortcut        |
-| ------------------ | --------------- |
-| New Folder         | `Alt + N`       |
-| Cut                | `Ctrl + X`      |
-| Copy               | `Ctrl + C`      |
-| Paste              | `Ctrl + V`      |
-| Duplicate          | `Ctrl + D`      |
-| Rename             | `F2`            |
-| Delete             | `Del`           |
-| Select All         | `Ctrl + A`      |
-| Multi-select       | `Ctrl + Click`  |
-| Range Select       | `Shift + Click` |
-| Range Expand       | `Shift + ↑/↓`   |
-| Navigate Up/Down   | `↑/↓` arrows    |
-| Jump to First/Last | `Home/End`      |
-| Refresh            | `F5`            |
-| Clear Selection    | `Esc`           |
+| Action             | Shortcut           |
+| ------------------ | ------------------ |
+| New Folder         | `Alt + N`          |
+| Cut                | `Ctrl + X`         |
+| Copy               | `Ctrl + C`         |
+| Paste              | `Ctrl + V`         |
+| Duplicate          | `Ctrl + D`         |
+| Rename             | `F2`               |
+| Delete             | `Del`              |
+| Open               | `Enter`            |
+| Open in New Tab    | `Middle Click`     |
+| Select All         | `Ctrl + A`         |
+| Multi-select       | `Ctrl + Click`     |
+| Range Select       | `Shift + Click`    |
+| Range Expand       | `Shift + ↑/↓`      |
+| Navigate Up/Down   | `↑/↓` arrows       |
+| Jump to First/Last | `Home/End`         |
+| Refresh            | `F5`               |
+| Clear Selection    | `Esc`              |
 
 ## 🎨 Props
 
@@ -279,12 +282,12 @@ const onCreateItem = (data, release) => {
 | `onPageChange`              | `(page: number) => void`     | Called when the page changes                                                                      |
 | `allowCreateFolder`         | `boolean`                    | Enable folder creation (default: `true`)                                                          |
 | `allowCreateItem`           | `boolean`                    | Enable custom item creation (default: `true`)                                                     |
+| `allowOpenInNewTab`         | `boolean`                    | Enable open in new tab via middle-click and context menu (default: `true`)                        |
 | `allowRefresh`              | `boolean`                    | Enable refresh (default: `true`)                                                                  |
 | `allowShareItem`            | `boolean`                    | Enable sharing (default: `true`)                                                                  |
 | `allowCut`                  | `boolean`                    | Enable cutting (default: `true`)                                                                  |
 | `allowCopy`                 | `boolean`                    | Enable copying (default: `true`)                                                                  |
 | `allowFavorite`             | `boolean`                    | Enable favorites (default: `true`)                                                                |
-| `allowOpen`                 | `boolean`                    | Enable open action (default: `true`)                                                              |
 | `allowPaste`                | `boolean`                    | Enable pasting (default: `true`)                                                                  |
 | `allowRename`               | `boolean`                    | Enable renaming (default: `true`)                                                                 |
 | `allowDelete`               | `boolean`                    | Enable deletion (default: `true`)                                                                 |

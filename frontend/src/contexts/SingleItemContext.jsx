@@ -8,7 +8,7 @@ import {
   BsFiles,
 } from "react-icons/bs";
 import { FaRegFile, FaRegPaste, FaArrowUpFromBracket } from "react-icons/fa6";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiExternalLink, FiRefreshCw } from "react-icons/fi";
 import { MdOutlineDelete } from "react-icons/md";
 import { PiFolderOpen } from "react-icons/pi";
 import { useClipBoard } from "./ClipboardContext";
@@ -131,6 +131,11 @@ export const SingleItemProvider = ({
 
   const handleItemOpen = () => {
     eventBroker.publish("openItem");
+    setVisible(false);
+  };
+
+  const handleOpenInNewTab = () => {
+    eventBroker.publish("openItemInNewTab");
     setVisible(false);
   };
 
@@ -292,6 +297,12 @@ export const SingleItemProvider = ({
         <FaRegFile size={16} />
       ),
       onClick: handleItemOpen,
+      divider: !resourceManagerCfg.allowOpenInNewTab,
+    },
+    resourceManagerCfg.allowOpenInNewTab && {
+      title: "Open in new tab",
+      icon: <FiExternalLink size={18} />,
+      onClick: handleOpenInNewTab,
       divider: true,
     },
     resourceManagerCfg.allowCut && {
@@ -417,6 +428,7 @@ SingleItemProvider.propTypes = {
     allowDelete: PropTypes.bool,
     allowFavorite: PropTypes.bool,
     allowDuplicate: PropTypes.bool,
+    allowOpenInNewTab: PropTypes.bool,
   }).isRequired,
   customEmptySelectCtxItems: PropTypes.array,
   customSelectCtxItems: PropTypes.array,

@@ -158,6 +158,10 @@ function App() {
     console.log("onOpen -> data:", data);
   };
 
+  const onOpenInNewTab = (data, lock) => {
+    console.log("onOpenInNewTab -> data:", data);
+  };
+
   const onShare = (data, release) => {
     console.log("onShare -> data:", data);
     // 1. Setup modal handlers as needed with API calls if necessary
@@ -464,6 +468,7 @@ function App() {
           onCreateItem={onCreateItem}
           onCut={onCut}
           onOpen={onOpen}
+          onOpenInNewTab={onOpenInNewTab}
           onDelete={onDelete}
           onDuplicate={onDuplicate}
           renderCustomToolbar={customToolbar}

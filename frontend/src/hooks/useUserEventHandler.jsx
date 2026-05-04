@@ -10,6 +10,7 @@ export const useUserEventHandler = ({
   onDuplicate,
   onFavorite,
   onOpen,
+  onOpenInNewTab,
   onPaste,
   onRefresh,
   onRename,
@@ -32,6 +33,7 @@ export const useUserEventHandler = ({
     renameItemDone: [onRename, null],
     toggleFavorite: [onFavorite, null],
     openItem: [onOpen, selectedItems[0]],
+    openItemInNewTab: [onOpenInNewTab, selectedItems[0]],
     refresh: [onRefresh, null],
     selectItemsDone: [onSelect, selectedItems],
   };

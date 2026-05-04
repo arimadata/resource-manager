@@ -7,6 +7,7 @@ export const shortcuts = {
   rename: ["F2"],
   delete: ["Delete"],
   open: ["Enter"],
+  openInNewTab: ["MouseMiddle"],
   selectAll: ["Control", "A"],
   selectArrowUp: ["Shift", "ArrowUp"],
   selectArrowDown: ["Shift", "ArrowDown"],
