@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Item from "./Item";
 import PropTypes from "prop-types";
 import { useNavigation } from "../../contexts/NavigationContext";
+import { usePagination } from "../../contexts/PaginationContext";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import { useSingleItem } from "../../contexts/SingleItemContext";
@@ -11,20 +12,12 @@ import Loader from "../../components/Loader/Loader";
 import Pagination from "../../components/Pagination/Pagination";
 import "./ItemList.scss";
 
-const ItemList = ({
-  eventBroker,
-  headers,
-  isLoading,
-  primaryColor,
-  page,
-  pageSize,
-  onPageChange,
-  allowPagination,
-}) => {
+const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   const { currentPathItems } = useNavigation();
+  const { currentPage, pageSize, allowPagination, handlePageChange } =
+    usePagination();
   const { selectedItemIndexes } = useSelection();
   const itemsViewRef = useRef(null);
-  const [internalPage, setInternalPage] = useState(page ?? 1);
 
   const {
     emptySelectCtxItems,
@@ -38,19 +31,6 @@ const ItemList = ({
   } = useSingleItem();
 
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
-
-  const currentPage = page ?? internalPage;
-
-  const handlePageChange = useCallback(
-    (newPage) => {
-      if (onPageChange) {
-        onPageChange(newPage);
-      } else {
-        setInternalPage(newPage);
-      }
-    },
-    [onPageChange]
-  );
 
   const gridTemplateColumns = headers.map(() => "1fr").join(" ");
 
@@ -180,10 +160,6 @@ ItemList.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool,
   primaryColor: PropTypes.string,
-  page: PropTypes.number,
-  pageSize: PropTypes.number,
-  onPageChange: PropTypes.func,
-  allowPagination: PropTypes.bool,
 };
 
 export default ItemList;

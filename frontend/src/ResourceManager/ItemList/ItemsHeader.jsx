@@ -3,21 +3,34 @@ import { FaArrowDown } from "react-icons/fa6";
 import PropTypes from "prop-types";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { useSelection } from "../../contexts/SelectionContext";
-import { useNavigation } from "../../contexts/NavigationContext";
+import { usePagination } from "../../contexts/PaginationContext";
 import { SORT_DIRECTIONS } from "../../constants/sortDirections";
 import { useSorting } from "../../contexts/SortingContext";
+import { useNavigation } from "../../contexts/NavigationContext";
 
 const ItemsHeader = ({ eventBroker, headers }) => {
   const { selectedItems } = useSelection();
+  const { currentPage, pageSize, allowPagination } = usePagination();
   const { currentPathItems } = useNavigation();
   const { sortColumn, sortDirection, handleSort } = useSorting();
 
+  const paginatedItems = useMemo(() => {
+    if (!currentPathItems || currentPathItems.length === 0) return [];
+    if (!allowPagination) return currentPathItems;
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const slicedItems = currentPathItems.slice(startIndex, endIndex);
+    return slicedItems;
+  }, [currentPathItems, currentPage, pageSize, allowPagination]);
+
   const allItemsSelected = useMemo(() => {
-    return (
-      currentPathItems.length > 0 &&
-      selectedItems.length === currentPathItems.length
+    if (paginatedItems.length === 0) return;
+    const isAllSelected = paginatedItems.every((item) =>
+      selectedItems.some((selected) => selected.pk === item.pk)
     );
-  }, [selectedItems, currentPathItems]);
+    return isAllSelected;
+  }, [selectedItems, paginatedItems]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -56,7 +69,7 @@ const ItemsHeader = ({ eventBroker, headers }) => {
               onClick={(e) => e.stopPropagation()}
               onChange={handleSelectAll}
               title="Select all"
-              disabled={currentPathItems.length === 0}
+              disabled={paginatedItems.length === 0}
             />
           )}
           <span className="header-text">{header.columnName}</span>

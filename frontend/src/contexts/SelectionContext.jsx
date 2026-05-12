@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "./NavigationContext";
+import { usePagination } from "./PaginationContext";
 import { arraysEqual } from "../utils/arraysEqual";
 import PropTypes from "prop-types";
 
@@ -7,9 +8,20 @@ const SelectionContext = createContext();
 
 export const SelectionProvider = ({ eventBroker, children }) => {
   const { currentPathItems } = useNavigation();
+  const { currentPage, pageSize, allowPagination } = usePagination();
   const [selectedItems, _setSelectedItems] = useState([]);
   const [selectedItemIndexes, _setSelectedItemIndexes] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
+
+  const paginatedItems = useMemo(() => {
+    if (!currentPathItems || currentPathItems.length === 0) return [];
+    if (!allowPagination) return currentPathItems;
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const slicedItems = currentPathItems.slice(startIndex, endIndex);
+    return slicedItems;
+  }, [currentPathItems, currentPage, pageSize, allowPagination]);
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -44,7 +56,7 @@ export const SelectionProvider = ({ eventBroker, children }) => {
   };
 
   const selectAll = () => {
-    setSelectedItems(currentPathItems);
+    setSelectedItems(paginatedItems);
   };
 
   const unselectAll = () => {

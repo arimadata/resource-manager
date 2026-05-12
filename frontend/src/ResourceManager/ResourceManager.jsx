@@ -5,6 +5,7 @@ import { EventSubscribers } from "./Events/EventSubscribers";
 import { ItemsProvider } from "../contexts/ItemsContext";
 import { NavigationProvider } from "../contexts/NavigationContext";
 import { SelectionProvider } from "../contexts/SelectionContext";
+import { PaginationProvider } from "../contexts/PaginationContext";
 import { ClipBoardProvider } from "../contexts/ClipboardContext";
 import { useEventBroker } from "../hooks/useEventBroker";
 import { SingleItemProvider } from "../contexts/SingleItemContext";
@@ -121,57 +122,60 @@ const ResourceManager = ({
             headers={headers}
             onPathChange={onPathChange}
           >
-            <SelectionProvider eventBroker={eventBroker}>
-              <ClipBoardProvider eventBroker={eventBroker}>
-                {/* Toolbar with "New Folder", "Upload", "Refresh" */}
-                {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
-                <SingleItemProvider
-                  eventBroker={eventBroker}
-                  resourceManagerCfg={resourceManagerCfg}
-                  customEmptySelectCtxItems={customEmptySelectCtxItems}
-                  customSelectCtxItems={customSelectCtxItems}
-                >
-                  <Toolbar
-                    resourceManagerCfg={resourceManagerCfg}
+            <PaginationProvider
+              page={page}
+              pageSize={pageSize}
+              allowPagination={allowPagination}
+              onPageChange={onPageChange}
+            >
+              <SelectionProvider eventBroker={eventBroker}>
+                <ClipBoardProvider eventBroker={eventBroker}>
+                  {/* Toolbar with "New Folder", "Upload", "Refresh" */}
+                  {/* On item click: converts to "Cut", "Copy", "Rename", "Download", "Delete", "(n) items selected"*/}
+                  <SingleItemProvider
                     eventBroker={eventBroker}
-                    renderCustomToolbar={renderCustomToolbar}
-                  />
-                  <div className="folders-preview" style={{ width: "100%" }}>
-                    <BreadCrumb eventBroker={eventBroker} />
-                    {/* Main section with files and folders */}
-                    <ItemList
+                    resourceManagerCfg={resourceManagerCfg}
+                    customEmptySelectCtxItems={customEmptySelectCtxItems}
+                    customSelectCtxItems={customSelectCtxItems}
+                  >
+                    <Toolbar
+                      resourceManagerCfg={resourceManagerCfg}
                       eventBroker={eventBroker}
-                      headers={headers}
-                      isLoading={isLoading}
-                      primaryColor={primaryColor}
-                      page={page}
-                      pageSize={pageSize}
-                      onPageChange={onPageChange}
-                      allowPagination={allowPagination}
+                      renderCustomToolbar={renderCustomToolbar}
                     />
-                  </div>
-                  {/* Event subscriber section such as "Delete" modal */}
-                  <EventSubscribers
-                    resourceManagerCfg={resourceManagerCfg}
-                    onCopy={onCopy}
-                    onCreateFolder={onCreateFolder}
-                    onCreateItem={onCreateItem}
-                    onCut={onCut}
-                    onDelete={onDelete}
-                    onDuplicate={onDuplicate}
-                    onFavorite={onFavorite}
-                    onOpen={onOpen}
-                    onOpenInNewTab={onOpenInNewTab}
-                    onPaste={onPaste}
-                    onRefresh={onRefresh}
-                    onRename={onRename}
-                    onSelect={onSelect}
-                    onShare={onShare}
-                    eventBroker={eventBroker}
-                  />
-                </SingleItemProvider>
-              </ClipBoardProvider>
-            </SelectionProvider>
+                    <div className="folders-preview" style={{ width: "100%" }}>
+                      <BreadCrumb eventBroker={eventBroker} />
+                      {/* Main section with files and folders */}
+                      <ItemList
+                        eventBroker={eventBroker}
+                        headers={headers}
+                        isLoading={isLoading}
+                        primaryColor={primaryColor}
+                      />
+                    </div>
+                    {/* Event subscriber section such as "Delete" modal */}
+                    <EventSubscribers
+                      resourceManagerCfg={resourceManagerCfg}
+                      onCopy={onCopy}
+                      onCreateFolder={onCreateFolder}
+                      onCreateItem={onCreateItem}
+                      onCut={onCut}
+                      onDelete={onDelete}
+                      onDuplicate={onDuplicate}
+                      onFavorite={onFavorite}
+                      onOpen={onOpen}
+                      onOpenInNewTab={onOpenInNewTab}
+                      onPaste={onPaste}
+                      onRefresh={onRefresh}
+                      onRename={onRename}
+                      onSelect={onSelect}
+                      onShare={onShare}
+                      eventBroker={eventBroker}
+                    />
+                  </SingleItemProvider>
+                </ClipBoardProvider>
+              </SelectionProvider>
+            </PaginationProvider>
           </NavigationProvider>
         </ItemsProvider>
       </SortingProvider>
