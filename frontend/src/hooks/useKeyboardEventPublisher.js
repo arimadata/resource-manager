@@ -1,12 +1,20 @@
 import { useKeyPress } from "./useKeyPress";
 import { shortcuts } from "../utils/shortcuts";
 import { useNavigation } from "../contexts/NavigationContext";
+import { useClipBoard } from "../contexts/ClipboardContext";
+import { useSelection } from "../contexts/SelectionContext";
+import { useItems } from "../contexts/ItemsContext";
 
 export const useKeyboardEventPublisher = ({
   eventBroker,
   resourceManagerCfg,
 }) => {
   const { currentFolder } = useNavigation();
+  const { clipBoard } = useClipBoard();
+  const { selectedItems } = useSelection();
+  const { items } = useItems();
+
+  const areItemsSelected = selectedItems.length > 0;
 
   const triggerCreateFolder = () => {
     eventBroker.publish("createFolder");
@@ -83,19 +91,31 @@ export const useKeyboardEventPublisher = ({
     triggerCreateFolder,
     !resourceManagerCfg.allowCreateFolder
   );
-  useKeyPress(shortcuts.cut, triggerCutItems, !resourceManagerCfg.allowCut);
-  useKeyPress(shortcuts.copy, triggerCopyItems, !resourceManagerCfg.allowCopy);
+  useKeyPress(
+    shortcuts.cut,
+    triggerCutItems,
+    !resourceManagerCfg.allowCut || !areItemsSelected
+  );
+  useKeyPress(
+    shortcuts.copy,
+    triggerCopyItems,
+    !resourceManagerCfg.allowCopy || !areItemsSelected
+  );
   useKeyPress(
     shortcuts.paste,
     triggerPasteItems,
-    !resourceManagerCfg.allowPaste
+    !resourceManagerCfg.allowPaste || !clipBoard
   );
-  useKeyPress(shortcuts.rename, triggerRename, !resourceManagerCfg.allowRename);
+  useKeyPress(
+    shortcuts.rename,
+    triggerRename,
+    !resourceManagerCfg.allowRename || selectedItems.length !== 1
+  );
   useKeyPress(shortcuts.delete, triggerDelete, !resourceManagerCfg.allowDelete);
   useKeyPress(shortcuts.open, triggerOpen);
   useKeyPress(shortcuts.jumpToFirst, triggerSelectFirst);
   useKeyPress(shortcuts.jumpToLast, triggerSelectLast);
-  useKeyPress(shortcuts.selectAll, triggerSelectAll);
+  useKeyPress(shortcuts.selectAll, triggerSelectAll, items.length === 0);
   useKeyPress(shortcuts.cancel, triggerCancel);
   useKeyPress(
     shortcuts.refresh,
@@ -109,6 +129,6 @@ export const useKeyboardEventPublisher = ({
   useKeyPress(
     shortcuts.duplicate,
     triggerDuplicateItems,
-    !resourceManagerCfg.allowDuplicate
+    !resourceManagerCfg.allowDuplicate || !areItemsSelected
   );
 };
