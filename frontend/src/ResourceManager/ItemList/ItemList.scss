@@ -241,6 +241,38 @@
     &.item-moving {
       opacity: 0.5;
     }
+
+    // Animation for new folder creation
+
+    &.item-entering {
+      overflow: hidden;
+      will-change: min-height, padding, opacity;
+      animation: item-row-enter 0.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    }
+  }
+
+  // Animation frames configuration on new folder creation
+  @keyframes item-row-enter {
+    from {
+      min-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+    }
+
+    to {
+      min-height: 50px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .item-name-cell.item-entering,
+    .item-standard-cell.item-entering {
+      animation: none;
+    }
   }
 
   // Make item-container a positioned grid row

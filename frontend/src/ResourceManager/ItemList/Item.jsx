@@ -26,6 +26,7 @@ const Item = ({
   primaryColor,
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
+  const [isEntering, setIsEntering] = useState(() => item.isTemporary);
   const [itemHovered, setItemHovered] = useState(false);
   const [lastClickTime, setLastClickTime] = useState(0);
   const [checkboxClassName, setCheckboxClassName] = useState("hidden");
@@ -45,6 +46,10 @@ const Item = ({
       (i) => i.name === item.name && arraysEqual(i.path, item.path)
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
+
+  const handleEnterAnimationEnd = useCallback(() => {
+    setIsEntering(false);
+  }, []);
 
   const handleItemAccess = (item) => {
     eventBroker.publish("openItem", item);
@@ -240,6 +245,14 @@ const Item = ({
     );
   }, [selectedItemIndexes, index]);
 
+  // Animation timer when creating new folders
+  useEffect(() => {
+    if (!isEntering) return;
+
+    const timer = setTimeout(() => setIsEntering(false), 450);
+    return () => clearTimeout(timer);
+  }, [isEntering]);
+
   // Recalculate hover position when selectedItems change (toolbar height may change)
   useEffect(() => {
     if (itemHovered && hoveredElementRef.current) {
@@ -267,7 +280,12 @@ const Item = ({
               isNameColumn ? "item-name-cell" : "item-standard-cell"
             } ${dropZoneClass} ${
               itemSelected || !!item.isEditing ? "item-selected" : ""
-            } ${isItemMoving ? "item-moving" : ""}`}
+            } ${isItemMoving ? "item-moving" : ""} ${
+              isEntering ? "item-entering" : ""
+            }`}
+            onAnimationEnd={
+              isEntering && isNameColumn ? handleEnterAnimationEnd : undefined
+            }
             title={isNameColumn ? item.name : undefined}
             onClick={handleItemSelection}
             onAuxClick={handleMiddleClick}
@@ -426,6 +444,9 @@ Item.propTypes = {
     isDirectory: PropTypes.bool,
     path: PropTypes.arrayOf(PropTypes.string),
     isEditing: PropTypes.bool,
+
+    // Optimistic placeholder shown while a new folder is being named; removed on cancel or once persisted.
+    isTemporary: PropTypes.bool,
   }).isRequired,
   itemsViewRef: PropTypes.object.isRequired,
   selectedItemIndexes: PropTypes.array.isRequired,
