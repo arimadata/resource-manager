@@ -101,6 +101,8 @@ NavigationProvider.propTypes = {
       getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
       isNameColumn: PropTypes.bool,
+      // Column width: number (px) or CSS length string.
+      width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     })
   ).isRequired,
   onPathChange: PropTypes.func,
