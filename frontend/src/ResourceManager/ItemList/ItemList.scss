@@ -157,6 +157,7 @@
   display: grid;
   gap: 0;
   padding: 0;
+  width: 100%;
   background-color: white;
 
   .items-header {
@@ -167,6 +168,9 @@
       align-items: center;
       border-bottom: 1px solid $border-color;
       padding: 16px;
+      min-width: 0;
+      width: 100%;
+      overflow: hidden;
       position: sticky;
       top: 0;
       z-index: 1;
@@ -174,6 +178,10 @@
     }
 
     .item-name-header {
+      padding: 12px 8px;
+    }
+
+    .item-standard-header {
       padding: 12px 8px;
     }
 
@@ -197,12 +205,18 @@
       }
 
       .header-text {
+        flex: 1;
+        min-width: 0;
         font-weight: 500;
         font-size: 14px;
         line-height: 24px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .sort-icon {
+        flex-shrink: 0;
         font-size: 10px;
         transition: transform 0.15s ease;
         margin-left: 2px;
@@ -226,6 +240,9 @@
     align-items: center;
     border-bottom: 1px solid #f1f3f4;
     min-height: 50px;
+    min-width: 0;
+    width: 100%; // Fill grid track — width is owned by grid-template-columns
+    overflow: hidden;
     padding: 8px;
     transition: background-color 0.1s ease;
     position: relative;
@@ -411,6 +428,10 @@
   align-items: center;
   gap: 12px;
   padding-left: 12px;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 
   .selection-checkbox {
     flex-shrink: 0;
@@ -432,12 +453,19 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+    min-width: 0; // Required for ellipsis inside flex row
   }
 
   .rename-item-container.list {
+    flex: 1;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
 
     .rename-item {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       text-align: left;
       border-radius: 3px;
       border: 1px solid $border-color;
@@ -470,9 +498,20 @@
 }
 
 .item-standard-cell {
+  display: flex;
+  align-items: center;
   padding-left: 12px;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 
   .cell-text {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
     font-size: 14px;
     color: $cell-text-color;
     font-weight: 400;

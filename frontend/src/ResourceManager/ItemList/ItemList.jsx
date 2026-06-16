@@ -10,6 +10,7 @@ import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
 import Loader from "../../components/Loader/Loader";
 import Pagination from "../../components/Pagination/Pagination";
+import { buildGridTemplateColumns } from "../../utils/columnWidth";
 import "./ItemList.scss";
 
 const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
@@ -32,7 +33,10 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
 
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
 
-  const gridTemplateColumns = headers.map(() => "1fr").join(" ");
+  const gridTemplateColumns = useMemo(
+    () => buildGridTemplateColumns(headers),
+    [headers]
+  );
 
   const totalItems = currentPathItems.length;
   const isTotalItemsAvailable = totalItems > 0;
@@ -156,6 +160,8 @@ ItemList.propTypes = {
       getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
       isNameColumn: PropTypes.bool,
+      // Column width: number (px) or CSS length string.
+      width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     })
   ).isRequired,
   isLoading: PropTypes.bool,
