@@ -34,7 +34,6 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
 
   const gridTemplateColumns = buildGridTemplateColumns(headers)  
-  
 
   const totalItems = currentPathItems.length;
   const isTotalItemsAvailable = totalItems > 0;
