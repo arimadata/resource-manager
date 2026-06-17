@@ -47,9 +47,9 @@ const Item = ({
     );
   const canSelectItems = eventBroker.canTransition("selectItems");
 
-  const handleEnterAnimationEnd = useCallback(() => {
+  const handleEnterAnimationEnd = () => {
     setIsEntering(false);
-  }, []);
+  }
 
   const handleItemAccess = (item) => {
     eventBroker.publish("openItem", item);

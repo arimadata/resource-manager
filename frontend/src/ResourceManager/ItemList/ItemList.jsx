@@ -33,10 +33,8 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
 
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
 
-  const gridTemplateColumns = useMemo(
-    () => buildGridTemplateColumns(headers),
-    [headers]
-  );
+  const gridTemplateColumns = buildGridTemplateColumns(headers)  
+  
 
   const totalItems = currentPathItems.length;
   const isTotalItemsAvailable = totalItems > 0;
@@ -160,7 +158,6 @@ ItemList.propTypes = {
       getValue: PropTypes.func.isRequired,
       sortAccessor: PropTypes.func,
       isNameColumn: PropTypes.bool,
-      // Column width: number (px) or CSS length string.
       width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     })
   ).isRequired,
