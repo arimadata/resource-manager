@@ -10,7 +10,7 @@ import ItemsHeader from "./ItemsHeader";
 import { useSelection } from "../../contexts/SelectionContext";
 import Loader from "../../components/Loader/Loader";
 import Pagination from "../../components/Pagination/Pagination";
-import { buildGridTemplateColumns } from "../../utils/columnWidth";
+import { buildGridTemplateColumns } from "../../utils/buildGridTemplateColumns";
 import "./ItemList.scss";
 
 const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
