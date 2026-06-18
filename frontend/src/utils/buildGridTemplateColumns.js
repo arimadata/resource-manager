@@ -6,7 +6,7 @@
 export const buildGridTemplateColumns = (headers) =>
   headers
     .map(({ width }) => {
-      const normalized = width == null ? null : typeof width === "number" ? `${width}px` : width;
+      const normalized = typeof width === "number" ? `${width}px` : width;
       return normalized ? `minmax(0, ${normalized})` : "minmax(0, 1fr)";
     })
     .join(" ");
