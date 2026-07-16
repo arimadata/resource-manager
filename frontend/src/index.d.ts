@@ -6,6 +6,7 @@ export interface ResourceManagerHeader<T extends object> {
   getStyle?: (item: ResourceManagerItem<T>) => CSSProperties;
   sortAccessor?: (value: string | number) => string | number;
   isNameColumn?: boolean;
+  width?: number | string;
 }
 
 export interface ResourceManagerItem<T extends object = object> {
