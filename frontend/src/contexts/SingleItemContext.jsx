@@ -290,7 +290,7 @@ export const SingleItemProvider = ({
         onClick: handleShareItem,
       },
     {
-      title: "Open",
+      title: resourceManagerCfg.openButtonLabel,
       icon: rightClickedItem?.isDirectory ? (
         <PiFolderOpen size={20} />
       ) : (
@@ -429,6 +429,7 @@ SingleItemProvider.propTypes = {
     allowFavorite: PropTypes.bool,
     allowDuplicate: PropTypes.bool,
     allowOpenInNewTab: PropTypes.bool,
+    openButtonLabel: PropTypes.string,
   }).isRequired,
   customEmptySelectCtxItems: PropTypes.array,
   customSelectCtxItems: PropTypes.array,
