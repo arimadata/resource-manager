@@ -302,6 +302,7 @@ const onCreateItem = (data, release) => {
 | `width`                     | `string \| number`           | Component width (default: `"100%"`)                                                               |
 | `primaryColor`              | `string`                     | Primary theme color (default: `"#6155b4"`)                                                        |
 | `fontFamily`                | `string`                     | Font family (default: `"Rubik, sans-serif"`)                                                      |
+| `openButtonLabel`           | `string`                     | Custom label for the Open button in hover actions and context menu (default: `"Open"`)            |
 
 ## 🏗️ Architecture
 
