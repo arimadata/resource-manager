@@ -24,6 +24,7 @@ const Item = ({
   setRightClickedItem,
   headers,
   primaryColor,
+  openButtonLabel = "Open",
 }) => {
   const [itemSelected, setItemSelected] = useState(false);
   const [isEntering, setIsEntering] = useState(() => item.isTemporary);
@@ -263,9 +264,8 @@ const Item = ({
 
   return (
     <div
-      className={`item-container ${dropZoneClass} ${
-        itemSelected || !!item.isEditing ? "item-selected" : ""
-      } ${isItemMoving ? "item-moving" : ""}`}
+      className={`item-container ${dropZoneClass} ${itemSelected || !!item.isEditing ? "item-selected" : ""
+        } ${isItemMoving ? "item-moving" : ""}`}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
       onContextMenu={handleItemContextMenu}
@@ -276,13 +276,10 @@ const Item = ({
         return (
           <div
             key={header.columnName.toLowerCase().replace(" ", "-")}
-            className={`${
-              isNameColumn ? "item-name-cell" : "item-standard-cell"
-            } ${dropZoneClass} ${
-              itemSelected || !!item.isEditing ? "item-selected" : ""
-            } ${isItemMoving ? "item-moving" : ""} ${
-              isEntering ? "item-entering" : ""
-            }`}
+            className={`${isNameColumn ? "item-name-cell" : "item-standard-cell"
+              } ${dropZoneClass} ${itemSelected || !!item.isEditing ? "item-selected" : ""
+              } ${isItemMoving ? "item-moving" : ""} ${isEntering ? "item-entering" : ""
+              }`}
             onAnimationEnd={
               isEntering && isNameColumn ? handleEnterAnimationEnd : undefined
             }
@@ -365,9 +362,8 @@ const Item = ({
       {/* Hover Actions Overlay */}
       {itemHovered && hoverPosition && (
         <div
-          className={`item-hover-actions fixed-position ${
-            itemSelected ? "selected-background" : "default-background"
-          }`}
+          className={`item-hover-actions fixed-position ${itemSelected ? "selected-background" : "default-background"
+            }`}
           style={{
             top: hoverPosition.top,
             left: hoverPosition.left,
@@ -380,13 +376,13 @@ const Item = ({
           <div className="actions-container">
             <button
               className="action-btn"
-              title="Open"
+              title={openButtonLabel}
               onClick={(e) => {
                 e.stopPropagation();
                 handleItemAccess(item);
               }}
             >
-              <span>Open</span>
+              <span>{openButtonLabel}</span>
             </button>
             {!item.isDirectory && (
               <button
@@ -473,6 +469,7 @@ Item.propTypes = {
     })
   ).isRequired,
   primaryColor: PropTypes.string,
+  openButtonLabel: PropTypes.string,
 };
 
 export default Item;
