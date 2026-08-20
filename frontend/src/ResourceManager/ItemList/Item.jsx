@@ -49,7 +49,7 @@ const Item = ({
 
   const handleEnterAnimationEnd = () => {
     setIsEntering(false);
-  }
+  };
 
   const handleItemAccess = (item) => {
     eventBroker.publish("openItem", item);
@@ -180,9 +180,7 @@ const Item = ({
       setSelectedItems((prev) => [...prev, item]);
     } else {
       setSelectedItems((prev) =>
-        prev.filter(
-          (f) => f.name !== item.name && !arraysEqual(f.path, item.path)
-        )
+        prev.filter((f) => f.pk !== item.pk && !arraysEqual(f.path, item.path))
       );
     }
 
