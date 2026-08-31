@@ -15,7 +15,7 @@ export const useFolderNavigation = () => {
   const [initialPath, setInitialPath] = useState(getFolderPathFromLocation);
 
   const syncPathWithUrl = useCallback((newPath) => {
-    const folderPk = newPath[0] ?? null;
+    const folderPk = newPath.at(-1) ?? null;
 
     setInitialPath((previousPath) =>
       arraysEqual(previousPath, newPath) ? previousPath : newPath
