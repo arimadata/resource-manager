@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ResourceManager from "./ResourceManager/ResourceManager";
 import { renameAPI } from "./api/renameAPI";
 import { deleteAPI } from "./api/deleteAPI";
@@ -6,6 +6,7 @@ import { copyItemAPI, moveItemAPI } from "./api/itemTransferAPI";
 import { getAllItemsAPI } from "./api/getAllItemsAPI";
 import { createItemAPI } from "./api/createItemAPI";
 import { favoriteAPI } from "./api/favoriteAPI";
+import { useFolderNavigation } from "./hooks/useFolderNavigation";
 import "./App.scss";
 import { CreateModal } from "./exampleModals/CreateModal";
 import { ShareModal } from "./exampleModals/ShareModal";
@@ -114,6 +115,7 @@ function App() {
   const [loadingCount, setLoadingCount] = useState(0);
   const [items, setItems] = useState(initialItems);
   const [modal, setModal] = useState(closedModal);
+  const { initialPath, syncPathWithUrl } = useFolderNavigation();
   const isMountRef = useRef(false);
 
   const incrementLoadingCount = () => {
@@ -190,9 +192,13 @@ function App() {
     };
   };
 
-  const onPathChange = (newPath) => {
-    console.log("Path changed to:", newPath);
-  };
+  const onPathChange = useCallback(
+    (newPath) => {
+      console.log("Path changed to:", newPath);
+      syncPathWithUrl(newPath);
+    },
+    [syncPathWithUrl]
+  );
 
   ////////////////////////////////////////////////////
 
@@ -479,7 +485,7 @@ function App() {
           onSelect={onSelect}
           onShare={onShare}
           onPathChange={onPathChange}
-          initialPath={null}
+          initialPath={initialPath}
           customEmptySelectCtxItems={customEmptySelectCtxItems}
           customSelectCtxItems={customSelectCtxItems}
           height="100%"
