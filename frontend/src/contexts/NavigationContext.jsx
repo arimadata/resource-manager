@@ -15,7 +15,7 @@ export const NavigationProvider = ({
 }) => {
   const { sortColumn, sortDirection } = useSorting();
   const { items } = useItems();
-  const isMountRef = useRef(false);
+  const previousInitialPathRef = useRef(initialPath || []);
   const [currentPath, setCurrentPath] = useState(initialPath || []);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [currentPathItems, setCurrentPathItems] = useState([]);
@@ -55,6 +55,8 @@ export const NavigationProvider = ({
           const currentFolderPk = currentPath[currentPath.length - 1];
           return items.find((item) => item.pk === currentFolderPk) ?? null;
         });
+
+        console.log('items: ',items)
       } else {
         setCurrentPathItems([]);
         setCurrentFolder(null);
@@ -63,11 +65,17 @@ export const NavigationProvider = ({
   }, [items, currentPath, sortColumn, sortDirection, headers]);
 
   useEffect(() => {
-    if (!isMountRef.current && Array.isArray(items) && items.length > 0) {
-      setCurrentPath(initialPath || []);
-      isMountRef.current = true;
+    const nextInitialPath = initialPath || [];
+
+    if (!arraysEqual(previousInitialPathRef.current, nextInitialPath)) {
+      previousInitialPathRef.current = nextInitialPath;
+      setCurrentPath((previousPath) =>
+        arraysEqual(previousPath, nextInitialPath)
+          ? previousPath
+          : nextInitialPath
+      );
     }
-  }, [initialPath, items]);
+  }, [initialPath]);
 
   useEffect(() => {
     if (onPathChange) {
