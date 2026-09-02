@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ResourceManager from "./ResourceManager/ResourceManager";
 import { renameAPI } from "./api/renameAPI";
 import { deleteAPI } from "./api/deleteAPI";
@@ -6,7 +6,6 @@ import { copyItemAPI, moveItemAPI } from "./api/itemTransferAPI";
 import { getAllItemsAPI } from "./api/getAllItemsAPI";
 import { createItemAPI } from "./api/createItemAPI";
 import { favoriteAPI } from "./api/favoriteAPI";
-import { useFolderNavigation } from "./hooks/useFolderNavigation";
 import "./App.scss";
 import { CreateModal } from "./exampleModals/CreateModal";
 import { ShareModal } from "./exampleModals/ShareModal";
@@ -112,14 +111,9 @@ const initialItems = [
 ];
 
 function App() {
-  const [loadingCount, setLoadingCount] = useState(0);
+  const [loadingCount, setLoadingCount] = useState(1);
   const [items, setItems] = useState(initialItems);
-  const [itemsLoaded, setItemsLoaded] = useState(false);
   const [modal, setModal] = useState(closedModal);
-  const { initialPath, syncPathWithUrl } = useFolderNavigation(
-    items,
-    itemsLoaded
-  );
   const isMountRef = useRef(false);
 
   const incrementLoadingCount = () => {
@@ -196,21 +190,10 @@ function App() {
     };
   };
 
-  const onPathChange = useCallback(
-    (newPath) => {
-      console.log("Path changed to:", newPath);
-      syncPathWithUrl(newPath);
-    },
-    [syncPathWithUrl]
-  );
-
-  ////////////////////////////////////////////////////
-
   const getItems = async () => {
     try {
       const response = await getAllItemsAPI();
       setItems(response.data.data);
-      setItemsLoaded(true);
     } catch (error) {
       console.error("Error getting items:", error);
     }
@@ -221,7 +204,6 @@ function App() {
     isMountRef.current = true;
 
     const loadInitialData = async () => {
-      incrementLoadingCount();
       try {
         await getItems();
       } finally {
@@ -489,8 +471,6 @@ function App() {
           onRename={onRename}
           onSelect={onSelect}
           onShare={onShare}
-          onPathChange={onPathChange}
-          initialPath={initialPath}
           customEmptySelectCtxItems={customEmptySelectCtxItems}
           customSelectCtxItems={customSelectCtxItems}
           height="100%"
