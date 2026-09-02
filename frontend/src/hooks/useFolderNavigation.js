@@ -4,6 +4,8 @@ import { arraysEqual } from "../utils/arraysEqual";
 const NAVIGATION_PATH_STATE_KEY = "resourceManagerPath";
 
 const getFolderPathFromLocation = () => {
+  if (typeof window === "undefined") return [];
+
   const historyPath = window.history.state?.[NAVIGATION_PATH_STATE_KEY];
   if (Array.isArray(historyPath)) return historyPath;
 
@@ -12,9 +14,11 @@ const getFolderPathFromLocation = () => {
 };
 
 export const useFolderNavigation = (items, canValidateFolder = false) => {
-  const [initialPath, setInitialPath] = useState(getFolderPathFromLocation);
+  const [initialPath, setInitialPath] = useState(getFolderPathFromLocation());
 
   const syncPathWithUrl = useCallback((newPath, replace = false) => {
+    if (typeof window === "undefined") return;
+
     const folderPk = newPath.at(-1) ?? null;
 
     setInitialPath((previousPath) =>
@@ -48,7 +52,13 @@ export const useFolderNavigation = (items, canValidateFolder = false) => {
 
   useEffect(() => {
     const accessedFolderPk = initialPath.at(-1);
-    if (!canValidateFolder || !accessedFolderPk || !Array.isArray(items)) return;
+    if (
+      !canValidateFolder ||
+      !accessedFolderPk ||
+      !Array.isArray(items)
+    ) {
+      return;
+    }
 
     const folderExists = items.some(
       (item) =>
@@ -62,6 +72,10 @@ export const useFolderNavigation = (items, canValidateFolder = false) => {
   }, [canValidateFolder, initialPath, items, syncPathWithUrl]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    setInitialPath(getFolderPathFromLocation());
+
     const handlePopState = () => {
       setInitialPath(getFolderPathFromLocation());
     };
