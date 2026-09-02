@@ -114,8 +114,12 @@ const initialItems = [
 function App() {
   const [loadingCount, setLoadingCount] = useState(0);
   const [items, setItems] = useState(initialItems);
+  const [itemsLoaded, setItemsLoaded] = useState(false);
   const [modal, setModal] = useState(closedModal);
-  const { initialPath, syncPathWithUrl } = useFolderNavigation();
+  const { initialPath, syncPathWithUrl } = useFolderNavigation(
+    items,
+    itemsLoaded
+  );
   const isMountRef = useRef(false);
 
   const incrementLoadingCount = () => {
@@ -206,6 +210,7 @@ function App() {
     try {
       const response = await getAllItemsAPI();
       setItems(response.data.data);
+      setItemsLoaded(true);
     } catch (error) {
       console.error("Error getting items:", error);
     }
