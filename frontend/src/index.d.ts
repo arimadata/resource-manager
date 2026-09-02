@@ -103,11 +103,3 @@ export interface ResourceManagerProps<T extends object> {
 export declare const ResourceManager: <T extends object>(
   props: ResourceManagerProps<T>
 ) => ReactElement;
-
-export declare const useFolderNavigation: <T extends object>(
-  items: ResourceManagerItem<T>[],
-  canValidateFolder?: boolean
-) => {
-  initialPath: string[];
-  syncPathWithUrl: (newPath: string[], replace?: boolean) => void;
-};
