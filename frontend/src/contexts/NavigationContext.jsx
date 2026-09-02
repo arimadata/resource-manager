@@ -19,6 +19,14 @@ export const NavigationProvider = ({
   const [currentPath, setCurrentPath] = useState(initialPath || []);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [currentPathItems, setCurrentPathItems] = useState([]);
+  const currentFolderPk = currentPath.at(-1);
+  const resolvedCurrentFolder = currentFolderPk
+    ? items.find(
+        (item) => item.pk === currentFolderPk && item.isDirectory
+      ) ?? null
+    : null;
+  const resolvedCurrentPath = resolvedCurrentFolder?.path ?? currentPath;
+  const isCurrentPathResolved = currentPath.length === 0 || (resolvedCurrentFolder && arraysEqual(currentPath, resolvedCurrentPath));
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -35,6 +43,11 @@ export const NavigationProvider = ({
   // Context handlers
 
   useEffect(() => {
+    if (!arraysEqual(currentPath, resolvedCurrentPath)) {
+      setCurrentPath(resolvedCurrentPath);
+      return;
+    }
+
     if (Array.isArray(items)) {
       if (items.length > 0) {
         const currPathItems = items.filter((item) =>
@@ -56,13 +69,19 @@ export const NavigationProvider = ({
           return items.find((item) => item.pk === currentFolderPk) ?? null;
         });
 
-        console.log('items: ',items)
       } else {
         setCurrentPathItems([]);
         setCurrentFolder(null);
       }
     }
-  }, [items, currentPath, sortColumn, sortDirection, headers]);
+  }, [
+    items,
+    currentPath,
+    resolvedCurrentPath,
+    sortColumn,
+    sortDirection,
+    headers,
+  ]);
 
   useEffect(() => {
     const nextInitialPath = initialPath || [];
@@ -78,10 +97,10 @@ export const NavigationProvider = ({
   }, [initialPath]);
 
   useEffect(() => {
-    if (onPathChange) {
+    if (onPathChange && isCurrentPathResolved) {
       onPathChange(currentPath);
     }
-  }, [currentPath, onPathChange]);
+  }, [currentPath, isCurrentPathResolved, onPathChange]);
 
   return (
     <NavigationContext.Provider
