@@ -111,7 +111,7 @@ const initialItems = [
 ];
 
 function App() {
-  const [loadingCount, setLoadingCount] = useState(0);
+  const [loadingCount, setLoadingCount] = useState(1);
   const [items, setItems] = useState(initialItems);
   const [modal, setModal] = useState(closedModal);
   const isMountRef = useRef(false);
@@ -190,12 +190,6 @@ function App() {
     };
   };
 
-  const onPathChange = (newPath) => {
-    console.log("Path changed to:", newPath);
-  };
-
-  ////////////////////////////////////////////////////
-
   const getItems = async () => {
     try {
       const response = await getAllItemsAPI();
@@ -210,7 +204,6 @@ function App() {
     isMountRef.current = true;
 
     const loadInitialData = async () => {
-      incrementLoadingCount();
       try {
         await getItems();
       } finally {
@@ -478,8 +471,6 @@ function App() {
           onRename={onRename}
           onSelect={onSelect}
           onShare={onShare}
-          onPathChange={onPathChange}
-          initialPath={null}
           customEmptySelectCtxItems={customEmptySelectCtxItems}
           customSelectCtxItems={customSelectCtxItems}
           height="100%"

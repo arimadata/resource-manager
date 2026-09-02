@@ -90,7 +90,7 @@ export interface ResourceManagerProps<T extends object> {
   allowDuplicate?: boolean;
   createItemLabel?: string;
   allowPagination?: boolean;
-  initialPath?: string | null;
+  initialPath?: string[] | null;
   customEmptySelectCtxItems?: ContextMenuItem<T>[];
   customSelectCtxItems?: ContextMenuItem<T>[];
   renderCustomToolbar?: ReactNode;
