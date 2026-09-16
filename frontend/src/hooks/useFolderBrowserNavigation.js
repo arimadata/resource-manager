@@ -33,12 +33,14 @@ export const useFolderBrowserNavigation = (
     const handlePopState = () => {
       const folderPk = getFolderPkFromURL();
       isPopstateNavigation.current = true;
-      setCurrentPath(folderPk ? resolveCurrentPath(folderPk) : []);
+      setCurrentPath(
+        folderPk ? buildFolderPath(folderPk, initialItemsMap) : []
+      );
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [setCurrentPath]);
+  }, [setCurrentPath, initialItemsMap]);
 
   useEffect(() => {
     if (!isInitializedRef.current) return;
