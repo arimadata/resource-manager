@@ -40,6 +40,7 @@ import "./ResourceManager.scss";
 const ResourceManager = ({
   headers,
   items,
+  initialItems,
   isLoading,
   page,
   pageSize = 15,
@@ -74,7 +75,7 @@ const ResourceManager = ({
   allowDuplicate = false,
   createItemLabel = "New item",
   allowPagination = true,
-  initialPath = null,
+  initialPath = [],
   customEmptySelectCtxItems = [],
   customSelectCtxItems = [],
   height = "auto",
@@ -118,9 +119,9 @@ const ResourceManager = ({
       style={customStyles}
     >
       <SortingProvider>
-        <ItemsProvider itemsData={items}>
+        <ItemsProvider items={items} initialItems={initialItems}>
           <NavigationProvider
-            initialPath={initialPath || []}
+            initialPath={initialPath}
             headers={headers}
             onPathChange={onPathChange}
           >
@@ -220,6 +221,23 @@ ResourceManager.propTypes = {
       isEditing: PropTypes.bool,
     })
   ).isRequired,
+  initialItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      pk: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+      iconName: PropTypes.string,
+      isFavorited: PropTypes.bool,
+      parentPk: PropTypes.string,
+      scope: PropTypes.string,
+      scopePk: PropTypes.string,
+      createdAt: dateStringValidator,
+      updatedAt: dateStringValidator,
+      resource: PropTypes.object,
+      resourcePk: PropTypes.string,
+      resourceType: PropTypes.string,
+    })
+  ),
   isLoading: PropTypes.bool,
   page: PropTypes.number,
   pageSize: PropTypes.number,
@@ -254,7 +272,7 @@ ResourceManager.propTypes = {
   allowDuplicate: PropTypes.bool,
   createItemLabel: PropTypes.string,
   allowPagination: PropTypes.bool,
-  initialPath: PropTypes.arrayOf(PropTypes.string), // can be empty
+  initialPath: PropTypes.arrayOf(PropTypes.string),
   customEmptySelectCtxItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,

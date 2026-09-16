@@ -48,6 +48,7 @@ export interface ContextMenuItem<T extends object> {
 export interface ResourceManagerProps<T extends object> {
   headers: ResourceManagerHeader<T>[];
   items: ResourceManagerItem<T>[];
+  initialItems: ResourceManagerItem<T>[];
   isLoading?: boolean;
   page?: number;
   pageSize?: number;
@@ -90,7 +91,7 @@ export interface ResourceManagerProps<T extends object> {
   allowDuplicate?: boolean;
   createItemLabel?: string;
   allowPagination?: boolean;
-  initialPath?: string | null;
+  initialPath?: string[];
   customEmptySelectCtxItems?: ContextMenuItem<T>[];
   customSelectCtxItems?: ContextMenuItem<T>[];
   renderCustomToolbar?: ReactNode;

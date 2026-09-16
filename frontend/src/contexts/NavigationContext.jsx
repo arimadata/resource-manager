@@ -4,6 +4,8 @@ import { sortItems } from "../utils/sortItems";
 import { arraysEqual } from "../utils/arraysEqual";
 import { useSorting } from "./SortingContext";
 import PropTypes from "prop-types";
+import { useFolderBrowserNavigation } from "../hooks/useFolderBrowserNavigation";
+import { getFolderPkFromURL } from "../utils/getFolderPkFromURL";
 
 const NavigationContext = createContext();
 
@@ -31,6 +33,12 @@ export const NavigationProvider = ({
     }
   };
 
+  const { resolveCurrentPath } = useFolderBrowserNavigation(
+    currentPath,
+    setCurrentPath,
+    isMountRef
+  );
+
   ////////////////////////////////////////////////////////////
   // Context handlers
 
@@ -53,7 +61,9 @@ export const NavigationProvider = ({
         setCurrentFolder(() => {
           if (currentPath.length === 0) return null;
           const currentFolderPk = currentPath[currentPath.length - 1];
-          return items.find((item) => item.pk === currentFolderPk) ?? null;
+          const currentFolder =
+            items.find((item) => item.pk === currentFolderPk) ?? null;
+          return currentFolder;
         });
       } else {
         setCurrentPathItems([]);
@@ -63,11 +73,25 @@ export const NavigationProvider = ({
   }, [items, currentPath, sortColumn, sortDirection, headers]);
 
   useEffect(() => {
-    if (!isMountRef.current && Array.isArray(items) && items.length > 0) {
-      setCurrentPath(initialPath || []);
+    if (!Array.isArray(items) || items.length === 0 || isMountRef.current)
+      return;
+
+    const urlFolderPk = getFolderPkFromURL();
+
+    if (urlFolderPk) {
+      const resolvedPath = resolveCurrentPath(urlFolderPk);
+
+      if (resolvedPath.length === 0) return;
+
+      setCurrentPath(resolvedPath);
       isMountRef.current = true;
+      return;
     }
-  }, [initialPath, items]);
+
+    if (initialPath?.length > 0) setCurrentPath(initialPath);
+
+    isMountRef.current = true;
+  }, [initialPath, items, resolveCurrentPath]);
 
   useEffect(() => {
     if (onPathChange) {

@@ -17,7 +17,7 @@ const BreadCrumb = ({ eventBroker }) => {
   const [dragOverFolder, setDragOverFolder] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const { currentPath } = useNavigation();
-  const { itemMap } = useItems();
+  const { itemsMap } = useItems();
   const { clipBoard } = useClipBoard();
   const breadCrumbRef = useRef(null);
   const foldersRef = useRef([]);
@@ -36,7 +36,7 @@ const BreadCrumb = ({ eventBroker }) => {
 
     for (let i = 0; i < currentPath.length; i++) {
       const itemPk = currentPath[i];
-      const item = itemMap.get(itemPk);
+      const item = itemsMap.get(itemPk);
 
       if (item) {
         breadcrumbFolders.push({
@@ -49,7 +49,7 @@ const BreadCrumb = ({ eventBroker }) => {
     setFolders(breadcrumbFolders);
     setHiddenFolders([]);
     setHiddenFoldersWidth([]);
-  }, [currentPath, itemMap]);
+  }, [currentPath, itemsMap]);
 
   const switchPath = (path) => {
     eventBroker.publish("switchPath", path);
@@ -82,7 +82,7 @@ const BreadCrumb = ({ eventBroker }) => {
 
     const destinationFolder =
       folder.path.length > 0
-        ? itemMap.get(folder.path[folder.path.length - 1])
+        ? itemsMap.get(folder.path[folder.path.length - 1])
         : null;
 
     if (clipBoard?.items && clipBoard.isMoving) {
