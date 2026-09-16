@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { arraysEqual } from "../utils/arraysEqual";
 import { dateStringValidator } from "../validators/propValidators";
 import PropTypes from "prop-types";
@@ -30,10 +30,16 @@ const transformItems = (rawItems, itemMap) => {
   }));
 };
 
-export const ItemsProvider = ({ children, itemsData }) => {
-  const [items, setItemsState] = useState([]);
-  const [itemMap, setItemMapState] = useState(new Map());
+export const ItemsProvider = ({ children, items, initialItems }) => {
+  const [itemsState, setItemsState] = useState([]);
+  const [itemsMap, setItemsMap] = useState(new Map());
   const [defaultFolderTemplate, setDefaultFolderTemplate] = useState(null);
+
+  const initialItemsMap = useMemo(() => {
+    const initialMap = new Map();
+    initialItems.forEach((item) => initialMap.set(item.pk, item));
+    return initialMap;
+  }, [initialItems]);
 
   const setItems = (newItems) => {
     // Setting items will also set the itemMap (and transform the items)
@@ -43,7 +49,7 @@ export const ItemsProvider = ({ children, itemsData }) => {
       newItemMap.set(item.pk, item);
     });
     const transformedItems = transformItems(newItems, newItemMap);
-    setItemMapState(newItemMap);
+    setItemsMap(newItemMap);
     setItemsState(transformedItems);
     // Make sure we have at least one folder to use as template
     const defaultValues = {
@@ -71,15 +77,15 @@ export const ItemsProvider = ({ children, itemsData }) => {
   };
 
   useEffect(() => {
-    if (Array.isArray(itemsData)) {
-      setItems(itemsData);
+    if (Array.isArray(items)) {
+      setItems(items);
     }
-  }, [itemsData]);
+  }, [items]);
 
   const getChildren = (item) => {
     if (!item.isDirectory) return [];
 
-    return items.filter((child) =>
+    return itemsState.filter((child) =>
       arraysEqual(child.path.slice(0, -1), item.path)
     );
   };
@@ -87,8 +93,10 @@ export const ItemsProvider = ({ children, itemsData }) => {
   return (
     <ItemsContext.Provider
       value={{
-        items,
-        itemMap,
+        items: itemsState,
+        itemsMap,
+        initialItems,
+        initialItemsMap,
         setItems,
         getChildren,
         defaultFolderTemplate,
@@ -101,7 +109,27 @@ export const ItemsProvider = ({ children, itemsData }) => {
 
 ItemsProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  itemsData: PropTypes.arrayOf(
+  initialItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      pk: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      itemType: PropTypes.oneOf(["folder", "resource"]).isRequired,
+      iconName: PropTypes.string,
+      isFavorited: PropTypes.bool,
+      parentPk: PropTypes.string,
+      scope: PropTypes.string,
+      scopePk: PropTypes.string,
+      createdAt: dateStringValidator,
+      updatedAt: dateStringValidator,
+      resource: PropTypes.object,
+      resourcePk: PropTypes.string,
+      resourceType: PropTypes.string,
+      isDirectory: PropTypes.bool,
+      path: PropTypes.string,
+      isEditing: PropTypes.bool,
+    })
+  ).isRequired,
+  items: PropTypes.arrayOf(
     PropTypes.shape({
       pk: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,

@@ -210,6 +210,7 @@ function App() {
     isMountRef.current = true;
 
     const loadInitialData = async () => {
+      incrementLoadingCount();
       try {
         await getItems();
       } finally {
@@ -461,6 +462,7 @@ function App() {
         <ResourceManager
           headers={headers}
           items={items}
+          initialItems={items}
           isLoading={isLoading}
           onCopy={onCopy}
           onCreateFolder={onCreateFolder}
@@ -478,7 +480,7 @@ function App() {
           onSelect={onSelect}
           onShare={onShare}
           onPathChange={onPathChange}
-          initialPath={null}
+          initialPath={[]}
           customEmptySelectCtxItems={customEmptySelectCtxItems}
           customSelectCtxItems={customSelectCtxItems}
           height="100%"

@@ -275,6 +275,7 @@ const onCreateItem = (data, release) => {
 | Prop                        | Type                         | Description                                                                                       |
 | --------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
 | `items`                     | `ResourceManagerItem<T>[]`   | Array of items to display                                                                         |
+| `initialItems`              | `ResourceManagerItem<T>[]`   | Initial array of items                                                                            |
 | `headers`                   | `ResourceManagerHeader<T>[]` | Column definitions                                                                                |
 | `isLoading`                 | `boolean`                    | Loading state indicator                                                                           |
 | `page`                      | `number`                     | Current page (1‑based, optional; internal state used if omitted)                                  |
@@ -294,7 +295,7 @@ const onCreateItem = (data, release) => {
 | `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                                                               |
 | `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)                                             |
 | `createItemLabel`           | `string`                     | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`) |
-| `initialPath`               | `string[] \| null`           | Initial path segments/PKs as an array (optional)                                                  |
+| `initialPath`               | `string[]`                   | Initial path segments/PKs as an array (optional)                                                  |
 | `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                                                 |
 | `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected                                      |
 | `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions                                   |

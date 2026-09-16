@@ -174,24 +174,24 @@ interface ResourceManagerHeader<T extends object> {
 
 All event handlers receive data and an optional `lock` function for UI control.
 
-| Handler          | Parameters         | Description                                            |
-| ---------------- | ------------------ | ------------------------------------------------------ |
-| `onPageChange`   | `(page)`           | Called when the current page changes                   |
-| `onCreateFolder` | `(data, lock)`     | Called when creating a new folder                      |
-| `onCreateItem`   | `(data, release)`  | Called when creating custom items (modal event)        |
-| `onOpen`         | `(data, lock)`     | Called when opening item (double-click or Enter)       |
-| `onOpenInNewTab` | `(data, lock)`     | Called when opening item in new tab (middle-click)     |
-| `onDelete`       | `(items, lock)`    | Called when deleting items (modal event)               |
-| `onRename`       | `(item, lock)`     | Called when renaming an item                           |
-| `onCopy`         | `(items, lock)`    | Called when copying items                              |
-| `onCut`          | `(items, lock)`    | Called when cutting items                              |
-| `onPaste`        | `(data, lock)`     | Called when pasting items                              |
-| `onDuplicate`    | `(data, lock)`     | Called when duplicating items                          |
-| `onFavorite`     | `(item, lock)`     | Called when toggling favorites                         |
-| `onRefresh`      | `(data, lock)`     | Called when refreshing                                 |
-| `onSelect`       | `(items, lock)`    | Called when selection changes                          |
-| `onShare`        | `(items, release)` | Called when sharing items (modal event)                |
-| `onPathChange`   | `(path)`           | Called on path change                                  |
+| Handler          | Parameters         | Description                                        |
+| ---------------- | ------------------ | -------------------------------------------------- |
+| `onPageChange`   | `(page)`           | Called when the current page changes               |
+| `onCreateFolder` | `(data, lock)`     | Called when creating a new folder                  |
+| `onCreateItem`   | `(data, release)`  | Called when creating custom items (modal event)    |
+| `onOpen`         | `(data, lock)`     | Called when opening item (double-click or Enter)   |
+| `onOpenInNewTab` | `(data, lock)`     | Called when opening item in new tab (middle-click) |
+| `onDelete`       | `(items, lock)`    | Called when deleting items (modal event)           |
+| `onRename`       | `(item, lock)`     | Called when renaming an item                       |
+| `onCopy`         | `(items, lock)`    | Called when copying items                          |
+| `onCut`          | `(items, lock)`    | Called when cutting items                          |
+| `onPaste`        | `(data, lock)`     | Called when pasting items                          |
+| `onDuplicate`    | `(data, lock)`     | Called when duplicating items                      |
+| `onFavorite`     | `(item, lock)`     | Called when toggling favorites                     |
+| `onRefresh`      | `(data, lock)`     | Called when refreshing                             |
+| `onSelect`       | `(items, lock)`    | Called when selection changes                      |
+| `onShare`        | `(items, release)` | Called when sharing items (modal event)            |
+| `onPathChange`   | `(path)`           | Called on path change                              |
 
 ### Lock/Release Pattern
 
@@ -250,31 +250,32 @@ const onCreateItem = (data, release) => {
 
 ## ⌨️ Keyboard Shortcuts
 
-| Action             | Shortcut           |
-| ------------------ | ------------------ |
-| New Folder         | `Alt + N`          |
-| Cut                | `Ctrl + X`         |
-| Copy               | `Ctrl + C`         |
-| Paste              | `Ctrl + V`         |
-| Duplicate          | `Ctrl + D`         |
-| Rename             | `F2`               |
-| Delete             | `Del`              |
-| Open               | `Enter`            |
-| Open in New Tab    | `Middle Click`     |
-| Select All         | `Ctrl + A`         |
-| Multi-select       | `Ctrl + Click`     |
-| Range Select       | `Shift + Click`    |
-| Range Expand       | `Shift + ↑/↓`      |
-| Navigate Up/Down   | `↑/↓` arrows       |
-| Jump to First/Last | `Home/End`         |
-| Refresh            | `F5`               |
-| Clear Selection    | `Esc`              |
+| Action             | Shortcut        |
+| ------------------ | --------------- |
+| New Folder         | `Alt + N`       |
+| Cut                | `Ctrl + X`      |
+| Copy               | `Ctrl + C`      |
+| Paste              | `Ctrl + V`      |
+| Duplicate          | `Ctrl + D`      |
+| Rename             | `F2`            |
+| Delete             | `Del`           |
+| Open               | `Enter`         |
+| Open in New Tab    | `Middle Click`  |
+| Select All         | `Ctrl + A`      |
+| Multi-select       | `Ctrl + Click`  |
+| Range Select       | `Shift + Click` |
+| Range Expand       | `Shift + ↑/↓`   |
+| Navigate Up/Down   | `↑/↓` arrows    |
+| Jump to First/Last | `Home/End`      |
+| Refresh            | `F5`            |
+| Clear Selection    | `Esc`           |
 
 ## 🎨 Props
 
 | Prop                        | Type                         | Description                                                                                       |
 | --------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
 | `items`                     | `ResourceManagerItem<T>[]`   | Array of items to display                                                                         |
+| `initialItems`              | `ResourceManagerItem<T>[]`   | Initial array of items                                                                            |
 | `headers`                   | `ResourceManagerHeader<T>[]` | Column definitions                                                                                |
 | `isLoading`                 | `boolean`                    | Loading state indicator                                                                           |
 | `page`                      | `number`                     | Current page (1‑based, optional; internal state used if omitted)                                  |
@@ -294,7 +295,7 @@ const onCreateItem = (data, release) => {
 | `allowDuplicate`            | `boolean`                    | Enable duplicate (default: `false`)                                                               |
 | `allowPagination`           | `boolean`                    | Enable internal pagination controls (default: `true`)                                             |
 | `createItemLabel`           | `string`                     | Custom label used for create-item actions in the toolbar and context menu (default: `"New item"`) |
-| `initialPath`               | `string[] \| null`           | Initial path segments/PKs as an array (optional)                                                  |
+| `initialPath`               | `string[]`                   | Initial path segments/PKs as an array (optional)                                                  |
 | `customEmptySelectCtxItems` | `ContextMenuItem<T>[]`       | Extra context‑menu items when nothing is selected                                                 |
 | `customSelectCtxItems`      | `ContextMenuItem<T>[]`       | Extra context‑menu items when one or more items are selected                                      |
 | `renderCustomToolbar`       | `ReactNode`                  | Custom toolbar content rendered to the right of default actions                                   |
