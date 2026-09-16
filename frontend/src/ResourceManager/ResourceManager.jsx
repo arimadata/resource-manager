@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import Toolbar from "./Toolbar/Toolbar";
 import BreadCrumb from "./BreadCrumb/BreadCrumb";
 import ItemList from "./ItemList/ItemList";
@@ -13,7 +12,6 @@ import { SingleItemProvider } from "../contexts/SingleItemContext";
 import { SortingProvider } from "../contexts/SortingContext";
 import PropTypes from "prop-types";
 import { dateStringValidator } from "../validators/propValidators";
-import { useFolderNavigation } from "../hooks/useFolderNavigation";
 import "./ResourceManager.scss";
 
 /**
@@ -42,7 +40,7 @@ import "./ResourceManager.scss";
 const ResourceManager = ({
   headers,
   items,
-  isLoading = false,
+  isLoading,
   page,
   pageSize = 15,
   onPageChange,
@@ -76,6 +74,7 @@ const ResourceManager = ({
   allowDuplicate = false,
   createItemLabel = "New item",
   allowPagination = true,
+  initialPath = null,
   customEmptySelectCtxItems = [],
   customSelectCtxItems = [],
   height = "auto",
@@ -109,19 +108,6 @@ const ResourceManager = ({
   };
 
   const eventBroker = useEventBroker(resourceManagerCfg);
-  const {
-    initialPath: urlInitialPath,
-    syncPathWithUrl,
-  } = useFolderNavigation(items, !isLoading);
-  const handlePathChange = useCallback(
-    (path) => {
-        syncPathWithUrl(path);
-      onPathChange?.(path);
-    },
-    [onPathChange, syncPathWithUrl]
-  );
-  const navigationInitialPath = urlInitialPath
-    
 
   return (
     <main
@@ -132,9 +118,9 @@ const ResourceManager = ({
       <SortingProvider>
         <ItemsProvider itemsData={items}>
           <NavigationProvider
-            initialPath={navigationInitialPath}
+            initialPath={initialPath || []}
             headers={headers}
-            onPathChange={handlePathChange}
+            onPathChange={onPathChange}
           >
             <PaginationProvider
               page={page}

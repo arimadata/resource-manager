@@ -15,18 +15,10 @@ export const NavigationProvider = ({
 }) => {
   const { sortColumn, sortDirection } = useSorting();
   const { items } = useItems();
-  const previousInitialPathRef = useRef(initialPath || []);
+  const isMountRef = useRef(false);
   const [currentPath, setCurrentPath] = useState(initialPath || []);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [currentPathItems, setCurrentPathItems] = useState([]);
-  const currentFolderPk = currentPath.at(-1);
-  const resolvedCurrentFolder = currentFolderPk
-    ? items.find(
-        (item) => item.pk === currentFolderPk && item.isDirectory
-      ) ?? null
-    : null;
-  const resolvedCurrentPath = resolvedCurrentFolder?.path ?? currentPath;
-  const isCurrentPathResolved = currentPath.length === 0 || (resolvedCurrentFolder && arraysEqual(currentPath, resolvedCurrentPath));
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -43,11 +35,6 @@ export const NavigationProvider = ({
   // Context handlers
 
   useEffect(() => {
-    if (!arraysEqual(currentPath, resolvedCurrentPath)) {
-      setCurrentPath(resolvedCurrentPath);
-      return;
-    }
-
     if (Array.isArray(items)) {
       if (items.length > 0) {
         const currPathItems = items.filter((item) =>
@@ -68,39 +55,25 @@ export const NavigationProvider = ({
           const currentFolderPk = currentPath[currentPath.length - 1];
           return items.find((item) => item.pk === currentFolderPk) ?? null;
         });
-
       } else {
         setCurrentPathItems([]);
         setCurrentFolder(null);
       }
     }
-  }, [
-    items,
-    currentPath,
-    resolvedCurrentPath,
-    sortColumn,
-    sortDirection,
-    headers,
-  ]);
+  }, [items, currentPath, sortColumn, sortDirection, headers]);
 
   useEffect(() => {
-    const nextInitialPath = initialPath || [];
-
-    if (!arraysEqual(previousInitialPathRef.current, nextInitialPath)) {
-      previousInitialPathRef.current = nextInitialPath;
-      setCurrentPath((previousPath) =>
-        arraysEqual(previousPath, nextInitialPath)
-          ? previousPath
-          : nextInitialPath
-      );
+    if (!isMountRef.current && Array.isArray(items) && items.length > 0) {
+      setCurrentPath(initialPath || []);
+      isMountRef.current = true;
     }
-  }, [initialPath]);
+  }, [initialPath, items]);
 
   useEffect(() => {
-    if (onPathChange && isCurrentPathResolved) {
+    if (onPathChange) {
       onPathChange(currentPath);
     }
-  }, [currentPath, isCurrentPathResolved, onPathChange]);
+  }, [currentPath, onPathChange]);
 
   return (
     <NavigationContext.Provider
