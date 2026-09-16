@@ -13,7 +13,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import { buildGridTemplateColumns } from "../../utils/buildGridTemplateColumns";
 import "./ItemList.scss";
 
-const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
+const ItemList = ({ eventBroker, headers, isLoading, primaryColor, openButtonLabel }) => {
   const { currentPathItems } = useNavigation();
   const { currentPage, pageSize, allowPagination, handlePageChange } =
     usePagination();
@@ -111,6 +111,7 @@ const ItemList = ({ eventBroker, headers, isLoading, primaryColor }) => {
                 setRightClickedItem={setRightClickedItem}
                 headers={headers}
                 primaryColor={primaryColor}
+                openButtonLabel={openButtonLabel}
               />
             );
           })}
@@ -162,6 +163,7 @@ ItemList.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool,
   primaryColor: PropTypes.string,
+  openButtonLabel: PropTypes.string,
 };
 
 export default ItemList;

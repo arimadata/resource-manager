@@ -98,6 +98,7 @@ export interface ResourceManagerProps<T extends object> {
   width?: string | number;
   primaryColor?: string;
   fontFamily?: string;
+  openButtonLabel?: string;
 }
 
 export declare const ResourceManager: <T extends object>(

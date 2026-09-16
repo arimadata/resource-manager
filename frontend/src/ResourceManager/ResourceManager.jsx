@@ -81,6 +81,7 @@ const ResourceManager = ({
   width = "100%",
   fontFamily = "Rubik, sans-serif",
   primaryColor = "#6155b4",
+  openButtonLabel = "Open",
 }) => {
   const customStyles = {
     height,
@@ -105,6 +106,7 @@ const ResourceManager = ({
     allowDuplicate,
     allowOpenInNewTab,
     createItemLabel,
+    openButtonLabel,
   };
 
   const eventBroker = useEventBroker(resourceManagerCfg);
@@ -151,6 +153,7 @@ const ResourceManager = ({
                         headers={headers}
                         isLoading={isLoading}
                         primaryColor={primaryColor}
+                        openButtonLabel={openButtonLabel}
                       />
                     </div>
                     {/* Event subscriber section such as "Delete" modal */}
@@ -295,6 +298,7 @@ ResourceManager.propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryColor: PropTypes.string,
   fontFamily: PropTypes.string,
+  openButtonLabel: PropTypes.string,
 };
 
 export default ResourceManager;
