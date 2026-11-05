@@ -284,11 +284,17 @@ export const SingleItemProvider = ({
   // Context Menu - Selected Items: when selecting an item //
   const defaultSelectCtxItems = [
     resourceManagerCfg.allowShareItem &&
-      !rightClickedItem?.isDirectory && {
-        title: "Share",
-        icon: <FaArrowUpFromBracket size={16} />,
-        onClick: handleShareItem,
-      },
+    !rightClickedItem?.isDirectory && {
+      title: "Share",
+      icon: <FaArrowUpFromBracket size={16} />,
+      onClick: handleShareItem,
+    },
+    resourceManagerCfg.allowDuplicate &&
+    rightClickedItem?.itemType === "resource" && {
+      title: "Duplicate",
+      icon: <BsFiles size={18} />,
+      onClick: handleDuplicate,
+    },
     {
       title: resourceManagerCfg.openButtonLabel,
       icon: rightClickedItem?.isDirectory ? (
@@ -310,12 +316,6 @@ export const SingleItemProvider = ({
       icon: <BsScissors size={19} />,
       onClick: () => handleMoveOrCopyItems(true),
     },
-    resourceManagerCfg.allowDuplicate &&
-      rightClickedItem?.itemType === "resource" && {
-        title: "Duplicate",
-        icon: <BsFiles size={18} />,
-        onClick: handleDuplicate,
-      },
     resourceManagerCfg.allowCopy && {
       title: "Copy",
       icon: <BsCopy strokeWidth={0.1} size={17} />,
